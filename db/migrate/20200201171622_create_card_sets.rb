@@ -19,9 +19,10 @@ class CreateCardSets < ActiveRecord::Migration[6.0]
       t.string :release_date
       t.integer :tcgplayer_group_id
       t.integer :total_set_size
-      t.string :type
+      t.string :set_type
 
-      t.timestamps
     end
+
+    add_index :card_sets, :mcm_id, unique: true
   end
 end

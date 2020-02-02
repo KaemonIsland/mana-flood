@@ -11,8 +11,6 @@ class CreateCards < ActiveRecord::Migration[6.0]
       t.integer :edhrec_rank
       t.float :face_converted_mana_cost
       t.string :flavor_text
-      t.string :frame_effects
-      t.string :frame_version
       t.boolean :has_foil
       t.boolean :has_non_foil
       t.boolean :is_alternative
@@ -28,7 +26,6 @@ class CreateCards < ActiveRecord::Migration[6.0]
       t.boolean :is_starter
       t.boolean :is_story_spotlight
       t.boolean :is_textless
-      t.boolean :is_timeshifted
       t.string :layout
       t.string :leadership_skills
       t.string :legalities
@@ -61,15 +58,15 @@ class CreateCards < ActiveRecord::Migration[6.0]
       t.integer :tcgplayer_product_id
       t.string :text
       t.string :toughness
-      t.string :type
-      t.string :types
+      t.string :card_type
+      t.string :card_types
       t.string :uuid
       t.string :variations
       t.string :watermark
 
       t.belongs_to :card_set, foreign_key: "set_id"
-      
-      t.timestamps
     end
+
+    add_index :cards, :uuid, unique: true
   end
 end

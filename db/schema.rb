@@ -33,9 +33,8 @@ ActiveRecord::Schema.define(version: 2020_02_01_190811) do
     t.string "release_date"
     t.integer "tcgplayer_group_id"
     t.integer "total_set_size"
-    t.string "type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "set_type"
+    t.index ["mcm_id"], name: "index_card_sets_on_mcm_id", unique: true
   end
 
   create_table "cards", force: :cascade do |t|
@@ -48,8 +47,6 @@ ActiveRecord::Schema.define(version: 2020_02_01_190811) do
     t.integer "edhrec_rank"
     t.float "face_converted_mana_cost"
     t.string "flavor_text"
-    t.string "frame_effects"
-    t.string "frame_version"
     t.boolean "has_foil"
     t.boolean "has_non_foil"
     t.boolean "is_alternative"
@@ -65,7 +62,6 @@ ActiveRecord::Schema.define(version: 2020_02_01_190811) do
     t.boolean "is_starter"
     t.boolean "is_story_spotlight"
     t.boolean "is_textless"
-    t.boolean "is_timeshifted"
     t.string "layout"
     t.string "leadership_skills"
     t.string "legalities"
@@ -98,15 +94,14 @@ ActiveRecord::Schema.define(version: 2020_02_01_190811) do
     t.integer "tcgplayer_product_id"
     t.string "text"
     t.string "toughness"
-    t.string "type"
-    t.string "types"
+    t.string "card_type"
+    t.string "card_types"
     t.string "uuid"
     t.string "variations"
     t.string "watermark"
     t.bigint "card_set_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["card_set_id"], name: "index_cards_on_card_set_id"
+    t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end
 
   create_table "collected_cards", force: :cascade do |t|

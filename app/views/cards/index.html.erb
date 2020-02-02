@@ -1,0 +1,5 @@
+<h1>Showing all cards!</h1>
+
+<% @cards.each do |card| %>
+  <%= render 'card', { card: card } %>
+<% end %>

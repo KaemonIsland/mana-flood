@@ -25,6 +25,12 @@ gem 'jbuilder', '~> 2.7'
 # Authentication
 gem 'devise'
 
+# React-Rails
+gem 'react-rails'
+
+# Pagination
+gem 'kaminari'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
