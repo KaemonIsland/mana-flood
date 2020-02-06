@@ -1,4 +1,5 @@
 class CardSetsController < ApplicationController
+  before_action :can_update, only: [:update_card_set_db]
   skip_before_action :verify_authenticity_token, only: [:update_card_set_db]
   respond_to :json
 
@@ -7,11 +8,6 @@ class CardSetsController < ApplicationController
   end
 
   def update_card_set_db
-    if !user_signed_in? || !current_user.admin?
-      render body: nil, status: 401
-      return nil
-    end
-
     render body: nil, status: 200
     @card_sets = params[:card_sets]
     @card_uuids = params[:card_uuids]
@@ -26,5 +22,12 @@ class CardSetsController < ApplicationController
         @set.cards << @card if @card
       end
     end
+  end
+
+  private
+
+  if !user_signed_in? || !current_user.admin?
+    render body: nil, status: 401
+    return nil
   end
 end
