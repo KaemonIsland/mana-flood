@@ -166,7 +166,7 @@ export const buildSetParams = (sets: Array<object>): object => {
    * card_uuids an array of objects containing the mcm_id and an array of card uuids. We use this to add cards to a set
    * card_sets the actual card_set object
    */
-  let setParams = { card_uuids: [], card_sets: [] }
+  let setParams = { card_uuids: [], card_sets: [], cards: [] }
 
   Object.values(sets).forEach((set: Set) => {
     // We don't want any sets without an mcmId
@@ -196,6 +196,10 @@ export const buildSetParams = (sets: Array<object>): object => {
           uuids: getCardUuids(set[key]),
         })
 
+        setParams.cards.push(...set[key])
+      } else if (key === 'tokens') {
+        setParams.cards.push(...set[key])
+
         // Stringify any objects
       } else if (typeof value === 'object') {
         formattedSet[key] = JSON.stringify(value)
@@ -205,6 +209,9 @@ export const buildSetParams = (sets: Array<object>): object => {
     }
     setParams.card_sets.push(formattedSet)
   })
+
+  setParams.cards = buildCardParams(setParams.cards)
+
   // Converts all camelCase keys to snake_case for Rails
   return snakeCaseKeys(setParams)
 }

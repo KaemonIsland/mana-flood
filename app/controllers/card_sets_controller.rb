@@ -7,12 +7,18 @@ class CardSetsController < ApplicationController
     @card_sets = CardSet.all
   end
 
+  def show
+    @card_set = CardSet.find(params[:id])
+  end
+
   def update_card_set_db
-    render body: nil, status: 200
     @card_sets = params[:card_sets]
+    @cards = params[:cards]
     @card_uuids = params[:card_uuids]
     # Insterts/updates CardSet database
     CardSet.upsert_all(@card_sets, unique_by: 'mcm_id')
+
+    Card.upsert_all(@cards, unique_by: 'uuid')
 
     # Add cards to sets card_obj = { mcm_id: 00, uuids: [ '123', '456', '789' ] }
     @card_uuids.each do |card_obj|
@@ -22,12 +28,15 @@ class CardSetsController < ApplicationController
         @set.cards << @card if @card
       end
     end
+    render body: nil, status: 200
   end
 
   private
 
-  if !user_signed_in? || !current_user.admin?
-    render body: nil, status: 401
-    return nil
+  def can_update
+    if !user_signed_in? || !current_user.admin?
+      render body: nil, status: 401
+      return nil
+    end
   end
 end

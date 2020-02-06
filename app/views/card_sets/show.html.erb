@@ -1,0 +1,14 @@
+<h1><%= @card_set.name %></h1>
+
+<h2>There are <%= @card_set.cards.count %> cards in this set</h2>
+
+
+<div>
+  <ul>
+    <% @card_set.cards.each do |card| %>
+      <li><%= card.name %></li>
+      <img src="https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=<%= card.multiverse_id %>&type=card" />
+      
+    <% end %>
+  </ul>
+</div>

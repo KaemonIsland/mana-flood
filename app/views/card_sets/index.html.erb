@@ -1,0 +1,6 @@
+<h1>All Sets</h1>
+
+<% @card_sets.each do |set| %>
+  <p><%= set.name %></p>
+  <%= link_to 'Show', "/sets/#{set.id}" %>
+<% end %>
