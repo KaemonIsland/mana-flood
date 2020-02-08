@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+
+  namespace :api do
+    namespace :v1 do
+      resources :collected_cards, except: [:new, :edit]
+    end
+  end
+
   get 'cards', to: 'cards#index'
 
   get 'sets', to: 'card_sets#index'

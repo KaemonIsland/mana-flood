@@ -4,7 +4,7 @@ class CardSetsController < ApplicationController
   respond_to :json
 
   def index
-    @card_sets = CardSet.all
+    @card_sets = CardSet.all.order("release_date DESC")
   end
 
   def show

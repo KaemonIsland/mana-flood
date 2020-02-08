@@ -3,6 +3,7 @@ class CreateCollectedCards < ActiveRecord::Migration[6.0]
     create_table :collected_cards do |t|
       t.belongs_to :collection
       t.belongs_to :card
+      t.integer :quantity
 
       t.timestamps
     end
