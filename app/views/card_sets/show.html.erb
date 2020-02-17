@@ -1,7 +1,5 @@
 <h1><%= @card_set.name %></h1>
 
-<h2>There are <%= @card_set.cards.count %> cards in this set</h2>
-
 
 <div>
   <ul>
@@ -9,6 +7,15 @@
       <li><%= card.name %></li>
       <img src="https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=<%= card.multiverse_id %>&type=card" />
       
+      <% if card.collected_cards.find_by(collection_id: current_user.collection).present? %>
+        <div>Collected: <%= card.collected_cards.find_by(collection_id: current_user.collection).quantity %></div>
+      <% end %>
+
+      <% if card.collections.find_by(user_id: current_user.id) %>
+        <%= link_to 'Add more to collection', update_card_path(card.id), data: { method: 'PUT' } %>
+      <% else %>
+        <%= link_to 'Add to collection', add_card_path(card.id), data: { method: 'POST' } %>
+      <% end %>
     <% end %>
   </ul>
 </div>
