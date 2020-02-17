@@ -11,13 +11,6 @@
         <div>Collected: <%= card.collected_cards.find_by(collection_id: current_user.collection).quantity %></div>
       <% end %>
 
-      <% if card.collections.find_by(user_id: current_user.id) %>
-        <%= link_to 'Add more to collection', update_card_path(card.id), data: { method: 'PUT' } %>
-      <% else %>
-        <%= link_to 'Add to collection', add_card_path(card.id), data: { method: 'POST' } %>
-      <% end %>
-
-      <%= link_to 'Remove card from collection', remove_card_path(card.id), data: { method: 'DELETE' } %>
     <% end %>
   </ul>
 </div>
