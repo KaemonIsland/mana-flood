@@ -24,6 +24,8 @@ class CollectedCardsController < ApplicationController
   end
 
   def destroy
+    if @collected_card.destroy
+    end
   end
 
   private

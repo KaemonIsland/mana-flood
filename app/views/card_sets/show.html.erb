@@ -16,6 +16,8 @@
       <% else %>
         <%= link_to 'Add to collection', add_card_path(card.id), data: { method: 'POST' } %>
       <% end %>
+
+      <%= link_to 'Remove card from collection', remove_card_path(card.id), data: { method: 'DELETE' } %>
     <% end %>
   </ul>
 </div>
