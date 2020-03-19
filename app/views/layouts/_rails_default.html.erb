@@ -1,5 +1,19 @@
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
 
+<link href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.min.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+    @font-face {
+        font-family: 'Keyrune';
+        src: url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.eot');
+        src: url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.eot?#iefix') format('embedded-opentype'),
+            url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.woff2') format('woff2'),
+            url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.woff') format('woff'),
+            url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.ttf') format('truetype'),
+            url('//cdn.jsdelivr.net/npm/keyrune@latest/fonts/keyrune.svg') format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+</style>
 <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>

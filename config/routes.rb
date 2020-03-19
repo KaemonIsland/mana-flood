@@ -13,13 +13,13 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'cards', to: 'cards#index'
-
   get 'sets', to: 'card_sets#index'
   get 'sets/:id', to: 'card_sets#show'
 
   post 'update_cards', to: 'cards#update_card_db'
   post 'update_card_sets', to: 'card_sets#update_card_set_db'
+
+  get 'collection', to: 'collected_cards#index'
 
   devise_for :users, 
     path: '', 

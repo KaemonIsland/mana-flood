@@ -8,8 +8,8 @@ import { MobileNavbar } from './MobileNavbar'
 
 const NavContainer = styled('nav')(({ theme }) => ({
   position: 'sticky',
-  backgroundColor: theme.color.purple[2],
   top: 0,
+  backgroundColor: theme.color.purple[2],
   boxShadow: theme.boxShadow.single[2],
   padding: theme.formatSpace(3),
   borderBottom: '1px solid black',

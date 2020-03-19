@@ -12,4 +12,4 @@ type Options = {
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
  */
 export const formatDate = (date: Date, dateOptions: Options): string =>
-  date.toLocaleDateString(undefined, dateOptions)
+  new Date(date).toLocaleDateString(undefined, dateOptions)
