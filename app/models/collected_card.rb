@@ -1,6 +1,6 @@
 class CollectedCard < ApplicationRecord
   belongs_to :card
-  belongs_to :collection
+  belongs_to :collection, touch: true
 
   before_save :set_quantity
 
