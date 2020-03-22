@@ -3,8 +3,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       # Get user collection, and view card sets
       get 'collection', to: 'collected_cards#index'
-      get 'card_sets', to: 'card_sets#index'
-      get 'card_set/:id', to: 'card_sets#show'
+      get 'sets', to: 'card_sets#index'
+      get 'set/:id', to: 'card_sets#show'
+      get 'set_cards/:id', to: 'card_sets#cards'
 
       # Crud operations for users card collection
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'

@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 2020_02_01_190811) do
   create_table "collected_cards", force: :cascade do |t|
     t.bigint "collection_id"
     t.bigint "card_id"
+    t.integer "quantity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["card_id"], name: "index_collected_cards_on_card_id"

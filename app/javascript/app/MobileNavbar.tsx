@@ -18,7 +18,7 @@ const MobileNavContainer = styled.nav(({ theme, isOpen }) => ({
   transition: 'all 300ms ease-in',
   padding: [theme.formatSpace(2), 0].join(' '),
   textAlign: 'left',
-  zIndex: 500,
+  zIndex: 5000,
   overflow: 'hidden',
 }))
 
@@ -66,7 +66,7 @@ const Background = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 450;
+  z-index: 950;
   width: 100vw;
   height: 100vh;
   opacity: 0.6;
@@ -189,20 +189,20 @@ export const MobileNavbar = ({ signedIn, links }) => {
             ))}
             <AuthContainer>
               {signedIn ? (
-                <AuthContainer.Link onClick={() => handleLogout()}>
+                <AuthContainer.Link tabIndex={4} onClick={() => handleLogout()}>
                   <Text size={2}>
                     <a>Logout</a>
                   </Text>
                 </AuthContainer.Link>
               ) : (
                 <>
-                  <AuthContainer.Link>
+                  <AuthContainer.Link tabIndex={5}>
                     <Text size={2}>
                       <a href="/login">Login</a>
                     </Text>
                   </AuthContainer.Link>
                   {' - '}
-                  <AuthContainer.Link>
+                  <AuthContainer.Link tabIndex={6}>
                     <Text size={2}>
                       <a href="/register">Sign Up</a>
                     </Text>

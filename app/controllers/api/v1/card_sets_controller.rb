@@ -1,4 +1,6 @@
 class Api::V1::CardSetsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :load_set, only: [:show, :cards]
   respond_to :json
 
   def index
@@ -7,8 +9,15 @@ class Api::V1::CardSetsController < ApplicationController
   end
 
   def show
-    @card_set = CardSet.find(params[:id])
-    @cards = @card_set.cards
-    render json: { card_set: @card_set, cards: @cards }
+    render json:  @card_set
   end
+
+  def cards
+  end
+
+  private
+
+    def load_set
+      @card_set = CardSet.find(params[:id])
+    end
 end

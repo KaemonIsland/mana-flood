@@ -1,46 +1,63 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Turbolinks from 'turbolinks'
-import { Flex, Text, Button } from 'warlock-ui'
+import { ThemeProvider, Flex, Text, Divider, Button } from 'warlock-ui'
+import { formatDate } from '../utils'
+import { Cards } from './Cards'
 
-const SetContainer = styled.div(({ theme }) => ({
-  padding: theme.formatSpace(2),
-  border: '1px solid black',
-  width: theme.formatSpace(12),
-  boxShadow: theme.boxShadow.single[1],
-  background: `linear-gradient(${theme.color.coolGrey[1]}, ${theme.color.coolGrey[3]})`,
-  borderRadius: theme.formatSpace(1),
-}))
+export const Set = ({
+  id,
+  name,
+  code,
+  release_date,
+  set_type,
+  base_set_size,
+  ...rest
+}) => {
+  const [cards, setCards] = useState([])
 
-export const Set = ({ id, base_set_size, name }) => {
-  const viewSetCards = id => {
-    Turbolinks.visit(`/sets/${id}`)
+  const getSetCards = async () => {
+    fetch(`/api/v1/set_cards/${id}`, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(cardsData => setCards(cardsData))
+      .catch(error => console.log('Unable to get cards: ', error))
   }
 
+  useEffect(() => {
+    if (cards.length === 0) {
+      getSetCards()
+    }
+  }, [])
+
   return (
-    <SetContainer key={id}>
-      <Flex
-        direction="column"
-        justifyContent="space-around"
-        alignItems="center"
+    <ThemeProvider>
+      <Text
+        size={10}
+        style={{
+          textTransform: 'uppercase',
+          textAlign: 'center',
+        }}
       >
-        <Text
-          size={5}
-          style={{
-            textTransform: 'uppercase',
-            textAlign: 'center',
-          }}
-        >
-          {name}
+        {name}
+      </Text>
+      <hr />
+      <Flex justifyContent="space-around" alignItems="center">
+        <Text isBold>{code}</Text>
+        <Text isItalics>
+          {formatDate(release_date, {
+            month: 'long',
+            year: 'numeric',
+            day: 'numeric',
+          })}
         </Text>
-        <Text font>{base_set_size} cards</Text>
-        {/* TODO Fix Container */}
-        <div style={{ marginTop: '1rem', width: '100%' }}>
-          <Flex alignItems="center" justifyContent="center">
-            <Button callback={() => viewSetCards(id)} title="Cards" />
-          </Flex>
-        </div>
+        <Text>
+          {set_type} - {base_set_size} cards
+        </Text>
       </Flex>
-    </SetContainer>
+      <hr />
+      <Cards cards={cards} />
+    </ThemeProvider>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
-import { ThemeProvider, Text, Flex } from 'warlock-ui'
+import { ThemeProvider, Text, Flex, Button } from 'warlock-ui'
 import styled from 'styled-components'
-import { Set } from './Set'
+import Turbolinks from 'turbolinks'
 
 const SetGrid = styled.section(({ theme }) => ({
   maxWidth: '101rem',
@@ -14,6 +14,15 @@ const SetGrid = styled.section(({ theme }) => ({
   justifyContent: 'center',
 }))
 
+const SetContainer = styled.div(({ theme }) => ({
+  padding: theme.formatSpace(2),
+  border: '1px solid black',
+  width: theme.formatSpace(12),
+  boxShadow: theme.boxShadow.single[1],
+  background: `linear-gradient(${theme.color.coolGrey[1]}, ${theme.color.coolGrey[3]})`,
+  borderRadius: theme.formatSpace(1),
+}))
+
 type CardSet = {
   name: string
   release_date: string
@@ -24,7 +33,10 @@ type CardSet = {
 
 export const Sets = ({ sets }) => {
   const filteredSets = sets.filter(({ set_type }) => set_type === 'expansion')
-  console.log(filteredSets[0])
+
+  const viewSetCards = id => {
+    Turbolinks.visit(`/sets/${id}`)
+  }
   return (
     <ThemeProvider>
       <Flex justifyContent="center" alignItems="center">
@@ -32,8 +44,31 @@ export const Sets = ({ sets }) => {
       </Flex>
       <hr />
       <SetGrid>
-        {filteredSets.map((set: CardSet) => (
-          <Set {...set} />
+        {filteredSets.map(({ id, base_set_size, name }: CardSet) => (
+          <SetContainer key={id}>
+            <Flex
+              direction="column"
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Text
+                size={5}
+                style={{
+                  textTransform: 'uppercase',
+                  textAlign: 'center',
+                }}
+              >
+                {name}
+              </Text>
+              <Text font>{base_set_size} cards</Text>
+              {/* TODO Fix Container */}
+              <div style={{ marginTop: '1rem', width: '100%' }}>
+                <Flex alignItems="center" justifyContent="center">
+                  <Button callback={() => viewSetCards(id)} title="Cards" />
+                </Flex>
+              </div>
+            </Flex>
+          </SetContainer>
         ))}
       </SetGrid>
     </ThemeProvider>

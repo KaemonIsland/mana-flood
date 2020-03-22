@@ -6,41 +6,42 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def index
     if current_user
-      @collection = current_user.collection.collected_cards
-      @collection_cards = current_user.collection.cards
-      render json: { collection: @collection, collection_cards: @collection_cards }
+      @collection = current_user.collection
+      render 'api/v1/collected_cards/index.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end
   end
   
     def create
-      if @collection.cards.find(@card.id)
-        render json: { error: 'Unable to add card to collection' }, status: 400
+      if has_card?(current_user, @card)
+        render json: { error: 'Card already exists in collection' }, status: 400
       elsif @collection.cards << @card
         @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
         @collected_card.quantity = 1
         @collected_card.save
 
-        render json: { collection: @collection.collected_cards, collection_cards: @collection.cards }, status: 201
+        render 'api/v1/collected_cards/card.json.jbuilder', status: 201
       else
         render json: { error: 'Unable to add card to collection' }, status: 400
       end
     end
   
     def update
-      if @collected_card.update(collected_card_params)
-        render json: { collection: @collection.collected_cards, collection_cards: @collection.cards }, status: 200
+      if !has_card?(current_user, @card)
+        render json: { error: 'Card not in collection' }, status: 404
+      elsif @collected_card.update(collected_card_params)
+        render 'api/v1/collected_cards/card.json.jbuilder', status: 200
       else
         render json: { error: 'Unable to update card quantity' }, status: 400
       end
     end
   
     def destroy
-      if !@collected_card 
-        render json: { error: 'Card not found' }, status: 404
+      if !has_card?(current_user, @card)
+        render json: { error: 'Card not in collection' }, status: 404
       elsif @collected_card.destroy
-        render json: { collection: @collection.collected_cards, collection_cards: @collection.cards }, status: 200
+        render json: @card, status: 200
       else
         render json: { error: 'Unable to remove card from collection' }, status: 400
       end

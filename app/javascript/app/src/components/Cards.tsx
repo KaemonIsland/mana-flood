@@ -5,7 +5,7 @@ export const Cards = ({ cards }) => {
   return (
     <div>
       {cards.map(card => (
-        <Card {...card} />
+        <Card key={card.id} {...card} />
       ))}
     </div>
   )

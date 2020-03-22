@@ -20,7 +20,7 @@ const NavContainer = styled('nav')(({ theme }) => ({
   },
 }))
 
-NavContainer.Link = styled('li')(({ theme, isActive }) => ({
+NavContainer.Link = styled('a')(({ theme, isActive }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
   padding: [
@@ -35,16 +35,17 @@ NavContainer.Link = styled('li')(({ theme, isActive }) => ({
   borderBottom: isActive
     ? `${theme.formatSpace(1)} solid ${theme.color.purple[7]}`
     : `${theme.formatSpace(1)} solid transparent`,
+  color: 'black',
+  textDecoration: 'none',
   '&:active, &:hover, &:focus': {
     backgroundColor: theme.color.purple[7],
-  },
-  '& a': {
-    color: 'black',
-    textDecoration: 'none',
-  },
-  '&:active a, &:hover a, &:focus a': {
     color: 'white',
   },
+}))
+
+NavContainer.Logo = styled(NavContainer.Link)(({ theme }) => ({
+  fontSize: theme.formatFontSize(5),
+  fontWeight: 'bold',
 }))
 
 const AuthContainer = styled('div')(({ theme }) => ({
@@ -75,16 +76,6 @@ AuthContainer.Link = styled('li')(({ theme }) => ({
 }))
 
 const links = [
-  {
-    path: '/',
-    isExact: true,
-    type: 'logo',
-    title: (
-      <Text size={5} isBold>
-        Mana Flood
-      </Text>
-    ),
-  },
   {
     path: '/collection',
     isExact: false,
@@ -141,14 +132,20 @@ export const Navbar = ({ signedIn }) => {
           <MobileNavbar links={links} signedIn={signedIn} />
         ) : (
           <ul>
+            <li tabIndex={1}>
+              <NavContainer.Logo isActive={isActiveLink('/', true)} href="/">
+                Mana Flood
+              </NavContainer.Logo>
+            </li>
             {links.map(({ path, title, isExact }, i) => (
-              <NavContainer.Link
-                tabIndex={i + 1}
-                key={path}
-                isActive={isActiveLink(path, isExact)}
-              >
-                <a href={path}>{title}</a>
-              </NavContainer.Link>
+              <li tabIndex={i + 1} key={path}>
+                <NavContainer.Link
+                  isActive={isActiveLink(path, isExact)}
+                  href={path}
+                >
+                  {title}
+                </NavContainer.Link>
+              </li>
             ))}
             <AuthContainer>
               {signedIn ? (

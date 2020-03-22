@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider } from 'warlock-ui'
+import { ThemeProvider, Flex, Button } from 'warlock-ui'
+import fetch from 'cross-fetch'
 
 const OuterContainer = styled.div`
-  position: relative;
   width: 22rem;
   margin: 1rem;
 `
@@ -15,30 +15,28 @@ const CardContainer = styled.div(({ theme, color }) => {
       backgroundColor = theme.color['coolGrey'][0]
       break
     case 'U':
-      backgroundColor = theme.color['blue'][4]
+      backgroundColor = theme.color['blue'][3]
       break
     case 'B':
-      backgroundColor = theme.color['grey'][8]
+      backgroundColor = theme.color['grey'][9]
       break
     case 'G':
-      backgroundColor = theme.color['green'][4]
+      backgroundColor = theme.color['green'][3]
       break
     case 'R':
-      backgroundColor = theme.color['red'][4]
+      backgroundColor = theme.color['red'][3]
       break
     default:
-      console.log("Color didn't work: ", color)
-      backgroundColor = theme.color['grey'][3]
+      backgroundColor = theme.color['blueGrey'][2]
       break
   }
   return {
     border: '1px solid black',
     padding: '0.8rem 1.5rem',
     width: '22rem',
-    color: 'black',
+    color: color === 'B' ? 'white' : 'black',
     backgroundColor,
     borderRadius: '2rem',
-    cursor: 'pointer',
     transition: 'all 300ms ease-out',
   }
 })
@@ -98,30 +96,78 @@ const CardText = styled.div`
   font-size: 0.8rem;
 `
 
-export const Card = ({
-  artist,
-  border_color,
-  card_set_id,
-  card_type,
-  card_types,
-  color_identity,
-  converted_mana_cost,
-  flavor_text,
-  id,
-  mana_cost,
-  name,
-  number,
-  original_text,
-  power,
-  prices,
-  rarity,
-  rulings,
-  text,
-  toughness,
-  uuid,
-  ...rest
-}) => {
-  // console.log('Card: ', rest)
+export const Card = cardInfo => {
+  const [card, setCard] = useState(cardInfo)
+
+  const {
+    artist,
+    border_color,
+    card_set_id,
+    card_type,
+    card_types,
+    color_identity,
+    converted_mana_cost,
+    flavor_text,
+    id,
+    mana_cost,
+    name,
+    number,
+    original_text,
+    power,
+    prices,
+    rarity,
+    rulings,
+    text,
+    toughness,
+    uuid,
+    has_card,
+    quantity,
+    ...rest
+  } = card
+
+  const addToCollection = () => {
+    fetch(`/api/v1/add_card/${id}`, {
+      method: 'POST',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          throw new Error(data.error)
+        }
+        setCard(data)
+      })
+      .catch(error => console.log('Cannot add to collection: ', error))
+  }
+
+  const updateCollectionQuantity = newQuantity => {
+    fetch(`/api/v1/add_card/${id}?quantity=${newQuantity}`, {
+      method: 'PUT',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          throw new Error(data)
+        }
+        console.log('Data: ', data)
+        setCard(data)
+      })
+      .catch(error => console.log('Cannot add to collection: ', error))
+  }
+
+  const removeFromCollection = () => {
+    fetch(`/api/v1/remove_card/${id}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          throw new Error(data)
+        }
+        console.log('Data: ', data)
+        setCard(data)
+      })
+      .catch(error => console.log('Cannot add to collection: ', error))
+  }
   return (
     <ThemeProvider>
       <OuterContainer>
@@ -142,10 +188,23 @@ export const Card = ({
           <CardText>{text}</CardText>
           {/* if creature */}
           {power && toughness && (
-            <PowerToughnessBig>
-              {power} / {toughness}
-            </PowerToughnessBig>
+            <Flex alignItems="center" justifyContent="center">
+              <PowerToughnessBig>
+                {power} / {toughness}
+              </PowerToughnessBig>
+            </Flex>
           )}
+          <Button title="+" callback={addToCollection} />
+          <Button
+            title="+ 1"
+            callback={() => updateCollectionQuantity(quantity + 1)}
+          />
+          <Button
+            title="- 1"
+            callback={() => updateCollectionQuantity(quantity - 1)}
+          />
+          {has_card && <Button title="-" callback={removeFromCollection} />}
+          {has_card && <div>In Collection: {quantity}</div>}
         </CardContainer>
       </OuterContainer>
     </ThemeProvider>
