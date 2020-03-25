@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button } from 'warlock-ui'
+import { ThemeProvider, Flex, Button, Image } from 'warlock-ui'
 import fetch from 'cross-fetch'
+import { ManaSymbol } from './ManaSymbol'
 
 const OuterContainer = styled.div`
   width: 22rem;
@@ -32,8 +33,8 @@ const CardContainer = styled.div(({ theme, color }) => {
   }
   return {
     border: '1px solid black',
-    padding: '0.8rem 1.5rem',
-    width: '22rem',
+    padding: theme.formatSpace(3),
+    width: theme.formatSpace(13),
     color: color === 'B' ? 'white' : 'black',
     backgroundColor,
     borderRadius: '2rem',
@@ -49,12 +50,8 @@ const CardInfo = styled.div`
 
 const CardTitle = styled.div`
   font-weight: bold;
+  width: 100%;
 `
-
-// position: absolute;
-// top: 95%;
-// left: 50%;
-// transform: translateX(-50%);
 
 const PowerToughnessBig = styled.div`
   border-radius: 2rem / 4rem;
@@ -96,6 +93,12 @@ const CardText = styled.div`
   font-size: 0.8rem;
 `
 
+const StyledMana = styled.div(({ theme }) => ({
+  width: theme.formatSpace(5),
+  height: theme.formatSpace(5),
+  margin: `${theme.formatSpace(2)} 0`,
+}))
+
 export const Card = cardInfo => {
   const [card, setCard] = useState(cardInfo)
 
@@ -125,49 +128,73 @@ export const Card = cardInfo => {
     ...rest
   } = card
 
-  const addToCollection = () => {
-    fetch(`/api/v1/add_card/${id}`, {
-      method: 'POST',
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          throw new Error(data.error)
-        }
-        setCard(data)
+  const addToCollection = async () => {
+    try {
+      const response = await fetch(`/api/v1/add_card/${id}`, {
+        method: 'POST',
       })
-      .catch(error => console.log('Cannot add to collection: ', error))
+
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setCard(data)
+    } catch (error) {
+      console.log('Unable to add card to collection', console.error)
+    }
   }
 
-  const updateCollectionQuantity = newQuantity => {
-    fetch(`/api/v1/add_card/${id}?quantity=${newQuantity}`, {
-      method: 'PUT',
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          throw new Error(data)
-        }
-        console.log('Data: ', data)
-        setCard(data)
+  const removeFromCollection = async () => {
+    try {
+      const response = await fetch(`/api/v1/remove_card/${id}`, {
+        method: 'DELETE',
       })
-      .catch(error => console.log('Cannot add to collection: ', error))
+
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setCard(data)
+    } catch (error) {
+      console.log('Unable to remove card to collection', console.error)
+    }
   }
 
-  const removeFromCollection = () => {
-    fetch(`/api/v1/remove_card/${id}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          throw new Error(data)
+  const updateCollectionQuantity = async newQuantity => {
+    if (newQuantity === 0) {
+      return removeFromCollection()
+    }
+
+    try {
+      const response = await fetch(
+        `/api/v1/add_card/${id}?quantity=${newQuantity}`,
+        {
+          method: 'PUT',
         }
-        console.log('Data: ', data)
-        setCard(data)
-      })
-      .catch(error => console.log('Cannot add to collection: ', error))
+      )
+
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setCard(data)
+    } catch (error) {
+      console.log('Unable to remove card to collection', console.error)
+    }
   }
+
+  const formatedMana = mana_cost
+    .replace(/[{ | }]/g, ' ')
+    .replace(/\//g, '')
+    .split(' ')
+    .filter(Boolean)
+
   return (
     <ThemeProvider>
       <OuterContainer>
@@ -178,7 +205,14 @@ export const Card = cardInfo => {
         >
           <CardInfo>
             <CardTitle>{name}</CardTitle>
-            <div>{mana_cost}</div>
+            <Flex alignItems="center" justifyContent="end">
+              {formatedMana.length !== 0 &&
+                formatedMana.map(mana => (
+                  <StyledMana>
+                    <ManaSymbol mana={mana} />
+                  </StyledMana>
+                ))}
+            </Flex>
           </CardInfo>
           <CardInfo>
             <CardType>{card_type}</CardType>
@@ -194,17 +228,25 @@ export const Card = cardInfo => {
               </PowerToughnessBig>
             </Flex>
           )}
-          <Button title="+" callback={addToCollection} />
-          <Button
-            title="+ 1"
-            callback={() => updateCollectionQuantity(quantity + 1)}
-          />
-          <Button
-            title="- 1"
-            callback={() => updateCollectionQuantity(quantity - 1)}
-          />
-          {has_card && <Button title="-" callback={removeFromCollection} />}
-          {has_card && <div>In Collection: {quantity}</div>}
+          <hr />
+          <Flex justifyContent="space-between" alignItems="center">
+            {has_card ? (
+              <>
+                <Button
+                  title="-"
+                  callback={() => updateCollectionQuantity(quantity - 1)}
+                />
+                <Button
+                  title="+"
+                  callback={() => updateCollectionQuantity(quantity + 1)}
+                />
+              </>
+            ) : (
+              <Button title="+" callback={addToCollection} />
+            )}
+          </Flex>
+
+          {has_card && <div>{quantity} in collection.</div>}
         </CardContainer>
       </OuterContainer>
     </ThemeProvider>

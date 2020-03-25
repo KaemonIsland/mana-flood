@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Turbolinks from 'turbolinks'
-import { ThemeProvider, Flex, Text, Divider, Button } from 'warlock-ui'
+import { ThemeProvider, Flex, Text, Grid } from 'warlock-ui'
 import { formatDate } from '../utils'
 import { Cards } from './Cards'
 
