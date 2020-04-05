@@ -7,20 +7,20 @@ const SetGrid = styled.section(({ theme }) => ({
   maxWidth: '101rem',
   margin: '0 auto',
   display: 'grid',
-  gridGap: theme.formatSpace(4),
-  gridTemplateColumns: `repeat(auto-fill, minmax(${theme.formatSpace(
+  gridGap: theme.spaceScale(4),
+  gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spaceScale(
     11
-  )}, ${theme.formatSpace(12)}))`,
+  )}, ${theme.spaceScale(12)}))`,
   justifyContent: 'center',
 }))
 
 const SetContainer = styled.div(({ theme }) => ({
-  padding: theme.formatSpace(2),
+  padding: theme.spaceScale(2),
   border: '1px solid black',
-  width: theme.formatSpace(12),
+  width: theme.spaceScale(12),
   boxShadow: theme.boxShadow.single[1],
   background: `linear-gradient(${theme.color.coolGrey[1]}, ${theme.color.coolGrey[3]})`,
-  borderRadius: theme.formatSpace(1),
+  borderRadius: theme.spaceScale(1),
 }))
 
 type CardSet = {
@@ -64,7 +64,13 @@ export const Sets = ({ sets }) => {
               {/* TODO Fix Container */}
               <div style={{ marginTop: '1rem', width: '100%' }}>
                 <Flex alignItems="center" justifyContent="center">
-                  <Button callback={() => viewSetCards(id)} title="Cards" />
+                  <Button
+                    color="coolGrey"
+                    shade={8}
+                    onClick={() => viewSetCards(id)}
+                  >
+                    Cards
+                  </Button>
                 </Flex>
               </div>
             </Flex>

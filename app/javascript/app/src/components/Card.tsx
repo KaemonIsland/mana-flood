@@ -1,46 +1,67 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button, Image } from 'warlock-ui'
+import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
 import fetch from 'cross-fetch'
 import { ManaSymbol } from './ManaSymbol'
 
-const OuterContainer = styled.div`
-  width: 22rem;
-  margin: 1rem;
-`
+const cardColors = {
+  W: { color: 'warmGrey', shade: 2 },
+  U: { color: 'blueVivid', shade: 4 },
+  B: { color: 'grey', shade: 7 },
+  G: { color: 'greenVivid', shade: 3 },
+  R: { color: 'redVivid', shade: 3 },
+  A: { color: 'blueGrey', shade: 2 },
+  M: { color: 'yellowVivid', shade: 4 },
+}
+
+const buildCardColors = (theme, colors) => {
+  let backgroundColor = []
+
+  if (colors.length === 0) {
+    backgroundColor.push(
+      `${theme.color[cardColors['A'].color][cardColors['A'].shade]}`
+    )
+    backgroundColor.push(
+      `${theme.color[cardColors['A'].color][cardColors['A'].shade + 2]}`
+    )
+  } else if (colors.length >= 3) {
+    backgroundColor.push(
+      `${theme.color[cardColors['M'].color][cardColors['M'].shade]}`
+    )
+    backgroundColor.push(
+      `${theme.color[cardColors['M'].color][cardColors['M'].shade + 2]}`
+    )
+  } else {
+    colors.forEach((color, i) => {
+      backgroundColor.push(
+        `${theme.color[cardColors[color].color][cardColors[color].shade]}`
+      )
+      backgroundColor.push(
+        `${theme.color[cardColors[color].color][cardColors[color].shade + 3]}`
+      )
+    })
+  }
+
+  return `linear-gradient(to bottom right, ${backgroundColor.join(', ')})`
+}
 
 const CardContainer = styled.div(({ theme, color }) => {
-  let backgroundColor = theme.color['yellow'][5]
-  switch (color) {
-    case 'W':
-      backgroundColor = theme.color['coolGrey'][0]
-      break
-    case 'U':
-      backgroundColor = theme.color['blue'][3]
-      break
-    case 'B':
-      backgroundColor = theme.color['grey'][9]
-      break
-    case 'G':
-      backgroundColor = theme.color['green'][3]
-      break
-    case 'R':
-      backgroundColor = theme.color['red'][3]
-      break
-    default:
-      backgroundColor = theme.color['blueGrey'][2]
-      break
-  }
+  const backgroundColors = buildCardColors(theme, color)
+
   return {
-    border: '1px solid black',
-    padding: theme.formatSpace(3),
-    width: theme.formatSpace(13),
+    padding: theme.spaceScale(2),
+    width: theme.spaceScale(13),
     color: color === 'B' ? 'white' : 'black',
-    backgroundColor,
-    borderRadius: '2rem',
-    transition: 'all 300ms ease-out',
+    background: backgroundColors,
+    borderRadius: theme.spaceScale(2),
   }
 })
+
+const InnerCard = styled.div`
+  background-color: hsl(0, 100%, 100%, 0.6);
+  border-radius: ${({ theme }) => theme.spaceScale(2)};
+  padding: ${({ theme }) => theme.spaceScale(2)};
+`
 
 const CardInfo = styled.div`
   display: flex;
@@ -48,59 +69,19 @@ const CardInfo = styled.div`
   align-items: center;
 `
 
-const CardTitle = styled.div`
-  font-weight: bold;
+const TitleText = styled(Text)`
   width: 100%;
 `
 
-const PowerToughnessBig = styled.div`
-  border-radius: 2rem / 4rem;
-  padding: 0 0.8rem;
-  font-weight: bold;
-`
-
-const CardSet = styled.div(({ theme, rarity }) => {
-  let color = 'black'
-  switch (rarity) {
-    case 'uncommon':
-      color = 'silver'
-      break
-    case 'rare':
-      color = 'gold'
-      break
-    case 'mythic':
-      color = theme.color['orangeVivid'][6]
-      break
-    default:
-      color = 'black'
-      break
-  }
-  return {
-    backgroundColor: color,
-    borderRadius: '50%',
-    width: '1.3rem',
-    height: '1.3rem',
-    boxShadow: '0 2px 4px black',
-  }
-})
-
-const CardType = styled.div`
-  font-size: 0.8rem;
-  font-style: italic;
-`
-
-const CardText = styled.div`
-  font-size: 0.8rem;
-`
-
 const StyledMana = styled.div(({ theme }) => ({
-  width: theme.formatSpace(5),
-  height: theme.formatSpace(5),
-  margin: `${theme.formatSpace(2)} 0`,
+  width: theme.spaceScale(5),
+  height: theme.spaceScale(5),
+  margin: `${theme.spaceScale(2)} 0`,
 }))
 
 export const Card = cardInfo => {
   const [card, setCard] = useState(cardInfo)
+  const [showOptions, setShowOptions] = useState(false)
 
   const {
     artist,
@@ -195,76 +176,105 @@ export const Card = cardInfo => {
     .split(' ')
     .filter(Boolean)
 
+  // let rarityColor = 'black'
+  // switch (rarity) {
+  //   case 'uncommon':
+  //     rarityColor = 'silver'
+  //     break
+  //   case 'rare':
+  //     rarityColor = 'gold'
+  //     break
+  //   case 'mythic':
+  //     rarityColor = theme.color['orangeVivid'][6]
+  //     break
+  //   default:
+  //     rarityColor = 'black'
+  //     break
+  // }
+
   return (
     <ThemeProvider>
-      <OuterContainer>
-        <CardContainer
-          color={
-            Array.isArray(color_identity) ? color_identity[0] : color_identity
-          }
-        >
-          <CardInfo>
-            <CardTitle>{name}</CardTitle>
-            <Flex alignItems="center" justifyContent="end">
-              {formatedMana.length !== 0 &&
-                formatedMana.map(mana => (
-                  <StyledMana>
-                    <ManaSymbol mana={mana} />
-                  </StyledMana>
-                ))}
-            </Flex>
-          </CardInfo>
-          <CardInfo>
-            <CardType>{card_type}</CardType>
-            <CardSet rarity={rarity} />
-          </CardInfo>
-          <hr />
-          <CardText>{text}</CardText>
-          {/* if creature */}
-          {power && toughness && (
-            <Flex alignItems="center" justifyContent="center">
-              <PowerToughnessBig>
-                {power} / {toughness}
-              </PowerToughnessBig>
-            </Flex>
-          )}
-          <hr />
+      <CardContainer
+        color={color_identity}
+        onClick={() => !showOptions && setShowOptions(true)}
+      >
+        <InnerCard>
           <Flex justifyContent="space-between" alignItems="center">
-            {has_card ? (
-              <>
-                <Button
-                  title="-"
-                  callback={() => updateCollectionQuantity(quantity - 1)}
-                />
-                <Button
-                  title="+"
-                  callback={() => updateCollectionQuantity(quantity + 1)}
-                />
-              </>
-            ) : (
-              <Button title="+" callback={addToCollection} />
+            <Container width="7rem">
+              <Flex alignItems="center" justifyContent="start">
+                {formatedMana.length !== 0 &&
+                  formatedMana.map(mana => <ManaSymbol mana={mana} />)}
+              </Flex>
+            </Container>
+            {power && toughness && (
+              <Text size={4} family="Source Sans" color="black" shade={1}>
+                {power} / {toughness}
+              </Text>
             )}
           </Flex>
-
-          {has_card && <div>{quantity} in collection.</div>}
-        </CardContainer>
-      </OuterContainer>
+          <CardInfo>
+            <TitleText isBold family="Roboto" color="black" shade={1}>
+              {name}
+            </TitleText>
+          </CardInfo>
+          <CardInfo>
+            <Text
+              isItalics
+              size={2}
+              family="Source Sans"
+              shade={1}
+              color="black"
+            >
+              {card_type}
+            </Text>
+          </CardInfo>
+          {showOptions && (
+            <>
+              <hr />
+              <Text size={2} color="black" shade={1} family="Source Sans">
+                {text}
+              </Text>
+            </>
+          )}
+          <Flex justifyContent="space-between" alignItems="center">
+            <Button
+              color="grey"
+              shade={8}
+              size="small"
+              bubble={false}
+              variant="text"
+              onClick={() =>
+                has_card
+                  ? updateCollectionQuantity(quantity + 1)
+                  : addToCollection()
+              }
+            >
+              Add
+            </Button>
+            <Button
+              color="grey"
+              shade={8}
+              size="small"
+              variant="text"
+              bubble={false}
+              isDisabled={!has_card}
+              onClick={() => updateCollectionQuantity(quantity - 1)}
+            >
+              Remove
+            </Button>
+            <Button
+              color="grey"
+              shade={8}
+              size="small"
+              variant="text"
+              bubble={false}
+              onClick={() => setShowOptions(false)}
+            >
+              Hide
+            </Button>
+          </Flex>
+        </InnerCard>
+      </CardContainer>
     </ThemeProvider>
   )
-}
-
-{
-  /* <div>
-    <ul>
-        <% @card_set.cards.each do |card| %>
-        <li><%= card.name %></li>
-        <img src="https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=<%= card.multiverse_id %>&type=card" />
-
-        <% if card.collected_cards.find_by(collection_id: current_user.collection).present? %>
-        <div>Collected: <%= card.collected_cards.find_by(collection_id: current_user.collection).quantity %></div>
-        <% end %>
-
-        <% end %>
-    </ul>
-</div> */
 }

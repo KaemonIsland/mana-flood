@@ -7,16 +7,16 @@ import FocusLock from 'react-focus-lock'
 import { disablePageScroll, enablePageScroll } from 'scroll-lock'
 
 const MobileNavContainer = styled.nav(({ theme, isOpen }) => ({
-  width: theme.formatSpace(12),
+  width: theme.spaceScale(12),
   height: '100vh',
   color: 'white',
   borderRight: '1px solid black',
   backgroundColor: theme.color.purple[2],
   position: 'fixed',
   top: 0,
-  left: isOpen ? '0' : '-' + theme.formatSpace(12),
+  left: isOpen ? '0' : '-' + theme.spaceScale(12),
   transition: 'all 300ms ease-in',
-  padding: [theme.formatSpace(2), 0].join(' '),
+  padding: [theme.spaceScale(2), 0].join(' '),
   textAlign: 'left',
   zIndex: 5000,
   overflow: 'hidden',
@@ -27,16 +27,16 @@ MobileNavContainer.Link = styled('li')(({ theme, isActive, type }) => ({
   transition: 'all 200ms ease-in',
   width: '80%',
   padding: [
-    theme.formatSpace(2),
-    theme.formatSpace(2),
-    theme.formatSpace(1),
-    theme.formatSpace(2),
+    theme.spaceScale(2),
+    theme.spaceScale(2),
+    theme.spaceScale(1),
+    theme.spaceScale(2),
   ].join(' '),
-  marginBottom: type === 'logo' ? theme.formatSpace(4) : 0,
-  borderRadius: `0 ${theme.formatSpace(1)} ${theme.formatSpace(1)} 0`,
+  marginBottom: type === 'logo' ? theme.spaceScale(4) : 0,
+  borderRadius: `0 ${theme.spaceScale(1)} ${theme.spaceScale(1)} 0`,
   borderBottom: isActive
-    ? `${theme.formatSpace(1)} solid ${theme.color.purple[7]}`
-    : `${theme.formatSpace(1)} solid transparent`,
+    ? `${theme.spaceScale(1)} solid ${theme.color.purple[7]}`
+    : `${theme.spaceScale(1)} solid transparent`,
   '&:active, &:hover, &:focus': {
     backgroundColor: theme.color.purple[7],
   },
@@ -76,11 +76,11 @@ const Background = styled.div`
 
 const OuterNavbarLink = styled(MobileNavContainer.Link)(
   ({ theme, isActive }) => ({
-    width: theme.formatSpace(10),
+    width: theme.spaceScale(10),
     textAlign: 'center',
     borderRadius: isActive
-      ? `${theme.formatSpace(1)} ${theme.formatSpace(1)} 0 0`
-      : theme.formatSpace(1),
+      ? `${theme.spaceScale(1)} ${theme.spaceScale(1)} 0 0`
+      : theme.spaceScale(1),
     '&:hover, &:focus, &:active': {
       color: 'white',
     },
@@ -91,17 +91,17 @@ const AuthContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'baseline',
   justifyContent: 'start',
-  marginTop: theme.formatSpace(6),
+  marginTop: theme.spaceScale(6),
   color: 'black',
 }))
 
 AuthContainer.Link = styled('li')(({ theme }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
-  margin: [0, theme.formatSpace(2)].join(' '),
-  borderBottom: `${theme.formatSpace(1)} solid transparent`,
+  margin: [0, theme.spaceScale(2)].join(' '),
+  borderBottom: `${theme.spaceScale(1)} solid transparent`,
   '&:active, &:hover, &:focus': {
-    borderBottom: `${theme.formatSpace(1)} solid ${theme.color.purple[7]}`,
+    borderBottom: `${theme.spaceScale(1)} solid ${theme.color.purple[7]}`,
   },
   '& a': {
     color: 'black',

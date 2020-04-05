@@ -11,7 +11,7 @@ const NavContainer = styled('nav')(({ theme }) => ({
   top: 0,
   backgroundColor: theme.color.purple[2],
   boxShadow: theme.boxShadow.single[2],
-  padding: theme.formatSpace(3),
+  padding: theme.spaceScale(3),
   borderBottom: '1px solid black',
   '& ul': {
     display: 'flex',
@@ -24,17 +24,17 @@ NavContainer.Link = styled('a')(({ theme, isActive }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
   padding: [
-    theme.formatSpace(2),
-    theme.formatSpace(2),
-    theme.formatSpace(1),
-    theme.formatSpace(2),
+    theme.spaceScale(2),
+    theme.spaceScale(2),
+    theme.spaceScale(1),
+    theme.spaceScale(2),
   ].join(' '),
   borderRadius: isActive
-    ? `${theme.formatSpace(1)} ${theme.formatSpace(1)} 0 0`
-    : theme.formatSpace(1),
+    ? `${theme.spaceScale(1)} ${theme.spaceScale(1)} 0 0`
+    : theme.spaceScale(1),
   borderBottom: isActive
-    ? `${theme.formatSpace(1)} solid ${theme.color.purple[7]}`
-    : `${theme.formatSpace(1)} solid transparent`,
+    ? `${theme.spaceScale(1)} solid ${theme.color.purple[7]}`
+    : `${theme.spaceScale(1)} solid transparent`,
   color: 'black',
   textDecoration: 'none',
   '&:active, &:hover, &:focus': {
@@ -44,7 +44,7 @@ NavContainer.Link = styled('a')(({ theme, isActive }) => ({
 }))
 
 NavContainer.Logo = styled(NavContainer.Link)(({ theme }) => ({
-  fontSize: theme.formatFontSize(5),
+  fontSize: theme.fontScale(5),
   fontWeight: 'bold',
 }))
 
@@ -54,20 +54,20 @@ const AuthContainer = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   boxShadow: theme.boxShadow.outset(theme.color.purple[2]),
   padding: [
-    theme.formatSpace(2),
-    theme.formatSpace(2),
-    theme.formatSpace(1),
-    theme.formatSpace(2),
+    theme.spaceScale(2),
+    theme.spaceScale(2),
+    theme.spaceScale(1),
+    theme.spaceScale(2),
   ].join(' '),
 }))
 
 AuthContainer.Link = styled('li')(({ theme }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
-  margin: [0, theme.formatSpace(2)].join(' '),
-  borderBottom: `${theme.formatSpace(1)} solid transparent`,
+  margin: [0, theme.spaceScale(2)].join(' '),
+  borderBottom: `${theme.spaceScale(1)} solid transparent`,
   '&:active, &:hover, &:focus': {
-    borderBottom: `${theme.formatSpace(1)} solid ${theme.color.purple[7]}`,
+    borderBottom: `${theme.spaceScale(1)} solid ${theme.color.purple[7]}`,
   },
   '& a': {
     color: 'black',

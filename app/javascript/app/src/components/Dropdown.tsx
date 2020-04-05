@@ -15,11 +15,11 @@ const StyledMenu = styled('div')(
       if (dropdownRect.height + triggerRect.bottom > window.innerHeight) {
         // Top
         top = -dropdownRect.height + triggerRect.top
-        marginTop = -theme.formatSpace(1)
+        marginTop = -theme.spaceScale(1)
       } else {
         // Bottom
         top = triggerRect.bottom
-        marginTop = theme.formatSpace(1)
+        marginTop = theme.spaceScale(1)
       }
 
       // Sets Left/Right positioning
@@ -37,7 +37,7 @@ const StyledMenu = styled('div')(
       boxShadow: `0 2px 3px rgba(10,10,10,.1),
     0 0 0 1px rgba(10,10,10,.1)`,
       backgroundColor: theme.color.grey[2],
-      padding: isPaddingless ? 0 : theme.formatSpace(2),
+      padding: isPaddingless ? 0 : theme.spaceScale(2),
       maxWidth: '100%',
       marginTop,
       zIndex,
