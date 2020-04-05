@@ -64,7 +64,7 @@ class CreateCards < ActiveRecord::Migration[6.0]
       t.string :variations
       t.string :watermark
 
-      t.belongs_to :card_set, foreign_key: "set_id"
+      t.belongs_to :card_set, foreign_key: true
     end
 
     add_index :cards, :uuid, unique: true

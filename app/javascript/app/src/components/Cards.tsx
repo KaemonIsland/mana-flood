@@ -12,13 +12,14 @@ const StyledGrid = styled.div`
   );
   justify-items: center;
   align-items: center;
+  position: relative;
 `
 
 export const Cards = ({ cards }) => {
   console.log('Cards: ', cards)
   return (
     <StyledGrid>
-      {cards.map(card => (
+      {cards.map((card) => (
         <Card key={card.id} {...card} />
       ))}
     </StyledGrid>

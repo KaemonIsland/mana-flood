@@ -25,7 +25,10 @@ class CardSetsController < ApplicationController
       @set = CardSet.find_by(mcm_id: card_obj[:mcm_id])
       card_obj[:uuids].each do |uuid|
         @card = Card.find_by(uuid: uuid)
-        @set.cards << @card if @card
+        # Add card to set if it doesn't currently belong to one
+        if @card && !@card.card_set
+          @set.cards << @card
+        end
       end
     end
     render body: nil, status: 200

@@ -49,13 +49,35 @@ const CardContainer = styled.div(({ theme, color }) => {
   const backgroundColors = buildCardColors(theme, color)
 
   return {
-    padding: theme.spaceScale(2),
+    padding: theme.spaceScale(1),
     width: theme.spaceScale(13),
-    color: color === 'B' ? 'white' : 'black',
     background: backgroundColors,
     borderRadius: theme.spaceScale(2),
   }
 })
+
+Button.Left = styled(Button)`
+  border-radius: 1rem 0 0 1rem;
+  background-color: transparent;
+`
+Button.Middle = styled.div`
+  border-radius: 0;
+  background-color: transparent;
+  border: 1px solid ${({ theme }) => theme.color['grey'][8]};
+  display: inline-block;
+  text-align: center;
+  padding: ${({ theme }) =>
+    [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
+`
+Button.Right = styled(Button)`
+  border-radius: ${({ theme, hasCard }) =>
+    hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
+  background-color: transparent;
+`
+
+Button.Info = styled(Button)`
+  background-color: transparent;
+`
 
 const InnerCard = styled.div`
   background-color: hsl(0, 100%, 100%, 0.6);
@@ -64,24 +86,18 @@ const InnerCard = styled.div`
 `
 
 const CardInfo = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const TitleText = styled(Text)`
   width: 100%;
 `
 
-const StyledMana = styled.div(({ theme }) => ({
-  width: theme.spaceScale(5),
-  height: theme.spaceScale(5),
-  margin: `${theme.spaceScale(2)} 0`,
-}))
-
-export const Card = cardInfo => {
+export const Card = (cardInfo) => {
   const [card, setCard] = useState(cardInfo)
-  const [showOptions, setShowOptions] = useState(false)
+  const [showText, setShowText] = useState(false)
 
   const {
     artist,
@@ -145,7 +161,7 @@ export const Card = cardInfo => {
     }
   }
 
-  const updateCollectionQuantity = async newQuantity => {
+  const updateCollectionQuantity = async (newQuantity) => {
     if (newQuantity === 0) {
       return removeFromCollection()
     }
@@ -194,26 +210,60 @@ export const Card = cardInfo => {
 
   return (
     <ThemeProvider>
-      <CardContainer
-        color={color_identity}
-        onClick={() => !showOptions && setShowOptions(true)}
-      >
+      <CardContainer color={color_identity} showText={showText}>
         <InnerCard>
           <Flex justifyContent="space-between" alignItems="center">
             <Container width="7rem">
               <Flex alignItems="center" justifyContent="start">
                 {formatedMana.length !== 0 &&
-                  formatedMana.map(mana => <ManaSymbol mana={mana} />)}
+                  formatedMana.map((mana) => <ManaSymbol mana={mana} />)}
               </Flex>
             </Container>
-            {power && toughness && (
-              <Text size={4} family="Source Sans" color="black" shade={1}>
-                {power} / {toughness}
-              </Text>
-            )}
+            <div>
+              {has_card && (
+                <>
+                  <Button.Left
+                    color="grey"
+                    shade={8}
+                    size="small"
+                    variant="outline"
+                    bubble={false}
+                    isDisabled={!has_card}
+                    onClick={() =>
+                      has_card && updateCollectionQuantity(quantity - 1)
+                    }
+                  >
+                    -
+                  </Button.Left>
+                  <Button.Middle
+                    color="grey"
+                    shade={8}
+                    variant="outline"
+                    isDisabled
+                  >
+                    {has_card && quantity}
+                  </Button.Middle>
+                </>
+              )}
+              <Button.Right
+                hasCard={has_card}
+                color="grey"
+                shade={8}
+                size="small"
+                bubble={false}
+                variant="outline"
+                onClick={() =>
+                  has_card
+                    ? updateCollectionQuantity(quantity + 1)
+                    : addToCollection()
+                }
+              >
+                +
+              </Button.Right>
+            </div>
           </Flex>
           <CardInfo>
-            <TitleText isBold family="Roboto" color="black" shade={1}>
+            <TitleText title={name} weight={400} family="Roboto" color="black">
               {name}
             </TitleText>
           </CardInfo>
@@ -224,57 +274,58 @@ export const Card = cardInfo => {
               family="Source Sans"
               shade={1}
               color="black"
+              title={card_type}
             >
               {card_type}
             </Text>
           </CardInfo>
-          {showOptions && (
+          <Flex justifyContent="space-between" alignItems="center">
+            <Text
+              size={1}
+              alignSelf="center"
+              family="Source Sans"
+              color="black"
+              isUpcase
+            >
+              {rarity}
+            </Text>
+            {power && toughness && (
+              <Text
+                size={4}
+                alignSelf="center"
+                family="Source Sans"
+                color="black"
+              >
+                {power} / {toughness}
+              </Text>
+            )}
+            <Button.Info
+              color="grey"
+              shade={10}
+              size="small"
+              variant="outline"
+              bubble={false}
+              onClick={() => setShowText(!showText)}
+            >
+              Info
+            </Button.Info>
+          </Flex>
+          {showText && (
             <>
               <hr />
-              <Text size={2} color="black" shade={1} family="Source Sans">
+              <Text size={1} color="black" shade={1} family="Source Sans">
                 {text}
               </Text>
             </>
           )}
-          <Flex justifyContent="space-between" alignItems="center">
-            <Button
-              color="grey"
-              shade={8}
-              size="small"
-              bubble={false}
-              variant="text"
-              onClick={() =>
-                has_card
-                  ? updateCollectionQuantity(quantity + 1)
-                  : addToCollection()
-              }
-            >
-              Add
-            </Button>
-            <Button
-              color="grey"
-              shade={8}
-              size="small"
-              variant="text"
-              bubble={false}
-              isDisabled={!has_card}
-              onClick={() => updateCollectionQuantity(quantity - 1)}
-            >
-              Remove
-            </Button>
-            <Button
-              color="grey"
-              shade={8}
-              size="small"
-              variant="text"
-              bubble={false}
-              onClick={() => setShowOptions(false)}
-            >
-              Hide
-            </Button>
-          </Flex>
         </InnerCard>
       </CardContainer>
     </ThemeProvider>
   )
 }
+
+// TODO Setup smaller card widths and functionality
+// TODO Fix card buttons
+// TODO find way to add rarity
+// TODO Add more filters
+// TODO Add Card for Land

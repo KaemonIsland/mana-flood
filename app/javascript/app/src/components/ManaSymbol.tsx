@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { manaSvgs } from '../../../packs/application.js'
 
 const Mana = styled.div`
-  height: ${({ theme }) => theme.spaceScale(4)};
-  width: ${({ theme }) => theme.spaceScale(4)};
+  height: ${({ theme }) => theme.spaceScale(5)};
+  width: ${({ theme }) => theme.spaceScale(5)};
   margin-right: ${({ theme }) => theme.spaceScale(1)};
   border: 1px solid black;
   border-radius: 50%;
