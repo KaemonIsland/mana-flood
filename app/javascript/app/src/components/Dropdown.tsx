@@ -1,12 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import PropTypes from 'prop-types'
 import FocusLock from 'react-focus-lock'
 import styled from 'styled-components'
 import { useOnClickOutside } from '../utils'
 
 const StyledMenu = styled('div')(
   ({ isOpen, triggerRect, dropdownRect, theme, isPaddingless, zIndex }) => {
-    let left = '150%'
+    let left: Number | String = '150%'
     let top = '150%'
     let marginTop
 
@@ -113,25 +112,4 @@ export const Dropdown = ({
       <StyledMenu {...menuProps}>{children}</StyledMenu>
     </FocusLock>
   )
-}
-
-Dropdown.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  isPaddingless: PropTypes.bool,
-  children: PropTypes.node,
-  role: PropTypes.string,
-  ariaLabelledby: PropTypes.string,
-  zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  triggerRect: PropTypes.shape({
-    bottom: PropTypes.number,
-    top: PropTypes.number,
-    x: PropTypes.number,
-    left: PropTypes.number,
-    width: PropTypes.number,
-  }),
-  triggerRef: PropTypes.shape({
-    current: PropTypes.object,
-  }),
-  close: PropTypes.func,
-  id: PropTypes.string.isRequired,
 }
