@@ -27,12 +27,12 @@ export const Set = ({
     }
   }
 
-  const filterVariation = cards => {
+  const filterVariation = (cards) => {
     let variants = []
 
-    const filteredCards = cards.filter(card => {
+    const filteredCards = cards.filter((card) => {
       if (card.variations) {
-        card.variations.forEach(variant => variants.push(variant))
+        card.variations.forEach((variant) => variants.push(variant))
       }
 
       return !variants.includes(card.uuid)
@@ -45,15 +45,15 @@ export const Set = ({
     fetch(`/api/v1/set_cards/${id}`, {
       method: 'GET',
     })
-      .then(response => response.json())
-      .then(cardsData => {
+      .then((response) => response.json())
+      .then((cardsData) => {
         const noVariants = filterVariation(cardsData)
 
         const sorted = noVariants.sort(sortAlpha)
 
         return setCards(sorted)
       })
-      .catch(error => console.log('Unable to get cards: ', error))
+      .catch((error) => console.log('Unable to get cards: ', error))
   }
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export const Set = ({
           })}
         </Text>
         <Text>
-          {set_type} - {base_set_size} cards .({cards.length})
+          {set_type} - {base_set_size} cards
         </Text>
       </Flex>
       <hr />

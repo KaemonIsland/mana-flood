@@ -49,7 +49,7 @@ const CardContainer = styled.div(({ theme, color }) => {
   const backgroundColors = buildCardColors(theme, color)
 
   return {
-    padding: theme.spaceScale(1),
+    padding: theme.spaceScale(2),
     width: theme.spaceScale(13),
     background: backgroundColors,
     borderRadius: theme.spaceScale(2),
@@ -80,9 +80,9 @@ Button.Info = styled(Button)`
 `
 
 const InnerCard = styled.div`
-  background-color: hsl(0, 100%, 100%, 0.6);
+  background-color: hsl(0, 100%, 100%, 0.7);
   border-radius: ${({ theme }) => theme.spaceScale(2)};
-  padding: ${({ theme }) => theme.spaceScale(2)};
+  padding: ${({ theme }) => theme.spaceScale(1)};
 `
 
 const CardInfo = styled.div`
@@ -212,8 +212,8 @@ export const Card = (cardInfo) => {
     <ThemeProvider>
       <CardContainer color={color_identity} showText={showText}>
         <InnerCard>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Container width="7rem">
+          <Flex justifyContent="space-between" alignItems="start">
+            <Container width={[7]}>
               <Flex alignItems="center" justifyContent="start">
                 {formatedMana.length !== 0 &&
                   formatedMana.map((mana) => <ManaSymbol mana={mana} />)}
@@ -269,7 +269,6 @@ export const Card = (cardInfo) => {
           </CardInfo>
           <CardInfo>
             <Text
-              isItalics
               size={2}
               family="Source Sans"
               shade={1}
@@ -279,8 +278,9 @@ export const Card = (cardInfo) => {
               {card_type}
             </Text>
           </CardInfo>
-          <Flex justifyContent="space-between" alignItems="center">
+          <Flex justifyContent="space-between" alignItems="end">
             <Text
+              isItalics
               size={1}
               alignSelf="center"
               family="Source Sans"
@@ -307,13 +307,13 @@ export const Card = (cardInfo) => {
               bubble={false}
               onClick={() => setShowText(!showText)}
             >
-              Info
+              More
             </Button.Info>
           </Flex>
           {showText && (
             <>
               <hr />
-              <Text size={1} color="black" shade={1} family="Source Sans">
+              <Text size={2} color="black" shade={1} family="Source Sans">
                 {text}
               </Text>
             </>
@@ -324,8 +324,5 @@ export const Card = (cardInfo) => {
   )
 }
 
-// TODO Setup smaller card widths and functionality
-// TODO Fix card buttons
-// TODO find way to add rarity
 // TODO Add more filters
 // TODO Add Card for Land

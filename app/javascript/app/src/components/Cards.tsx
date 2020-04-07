@@ -12,7 +12,6 @@ const StyledGrid = styled.div`
   );
   justify-items: center;
   align-items: center;
-  position: relative;
 `
 
 export const Cards = ({ cards }) => {
