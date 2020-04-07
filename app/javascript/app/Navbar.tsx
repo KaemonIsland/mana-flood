@@ -86,11 +86,11 @@ const links = [
     isExact: false,
     title: 'Sets',
   },
-  {
-    path: '/search',
-    isExact: false,
-    title: 'Search',
-  },
+  // {
+  //   path: '/search',
+  //   isExact: false,
+  //   title: 'Search',
+  // },
 ]
 
 /**
