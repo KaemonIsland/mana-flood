@@ -1,3 +1,3 @@
 export * from './hooks'
 export * from './redirect'
-export { formatDate } from './formatDate.ts'
+export { formatDate } from './formatDate'
