@@ -7,6 +7,9 @@ Rails.application.routes.draw do
       get 'set/:id', to: 'card_sets#show'
       get 'set_cards/:id', to: 'card_sets#cards'
 
+      # Decks
+      resources :decks
+
       # Crud operations for users card collection
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
