@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
 import fetch from 'cross-fetch'
-import { ManaSymbol } from './ManaSymbol'
+import { ManaSymbol } from '../ManaSymbol'
 
 const cardColors = {
   W: { color: 'warmGrey', shade: 2 },
@@ -95,7 +95,7 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = (cardInfo) => {
+export const Card = cardInfo => {
   const [card, setCard] = useState(cardInfo)
   const [showText, setShowText] = useState(false)
 
@@ -161,7 +161,7 @@ export const Card = (cardInfo) => {
     }
   }
 
-  const updateCollectionQuantity = async (newQuantity) => {
+  const updateCollectionQuantity = async newQuantity => {
     if (newQuantity === 0) {
       return removeFromCollection()
     }
@@ -216,7 +216,7 @@ export const Card = (cardInfo) => {
             <Container width={[7]}>
               <Flex alignItems="center" justifyContent="start">
                 {formatedMana.length !== 0 &&
-                  formatedMana.map((mana) => <ManaSymbol mana={mana} />)}
+                  formatedMana.map(mana => <ManaSymbol mana={mana} />)}
               </Flex>
             </Container>
             <div>

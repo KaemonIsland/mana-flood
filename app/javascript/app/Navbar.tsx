@@ -82,15 +82,20 @@ const links = [
     title: 'Collection',
   },
   {
+    path: '/decks',
+    isExact: true,
+    title: 'Decks',
+  },
+  {
     path: '/sets',
     isExact: false,
     title: 'Sets',
   },
-  // {
-  //   path: '/search',
-  //   isExact: false,
-  //   title: 'Search',
-  // },
+  {
+    path: '/search',
+    isExact: false,
+    title: 'Search',
+  },
 ]
 
 /**

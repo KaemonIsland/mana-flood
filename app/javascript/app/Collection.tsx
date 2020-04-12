@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ThemeProvider, Text } from 'warlock-ui'
-import { Cards } from './src/components/Cards'
+import { Cards } from './src/components/cards/Cards'
 
 export const Collection: React.FC = () => {
   const [cards, setCards] = useState([])

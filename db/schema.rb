@@ -135,7 +135,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_014243) do
     t.bigint "user_id"
     t.string "name"
     t.string "description"
-    t.integer "type"
+    t.string "format"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_decks_on_user_id"

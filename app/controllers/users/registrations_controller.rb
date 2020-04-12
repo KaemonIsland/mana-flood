@@ -14,7 +14,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super
 
     if @user
-      @collection = Collection.create!()
+      @collection = Collection.create!(user_id: @user.id)
       @user.collection = @collection
     end
   end

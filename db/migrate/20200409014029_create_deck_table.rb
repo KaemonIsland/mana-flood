@@ -4,7 +4,7 @@ class CreateDeckTable < ActiveRecord::Migration[6.0]
       t.belongs_to :user
       t.string :name
       t.string :description
-      t.integer :type
+      t.string :format
 
       t.timestamps
     end
