@@ -1,13 +1,18 @@
 import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Button, Container } from 'warlock-ui'
+import { ThemeProvider, Button, Flex, Text } from 'warlock-ui'
 import axios from 'axios'
 import { Deck } from './types'
 import { Form } from './Form'
 
 const StyledDecks = styled.div(({ theme }) => ({
   border: '1px solid black',
+  backgroundColor: 'white',
+  margin: theme.spaceScale(4),
+  boxShadow: theme.boxShadow.single[2],
+  borderRadius: theme.spaceScale(1),
   width: theme.spaceScale(16),
+  padding: theme.spaceScale(2),
 }))
 
 interface Props {
@@ -48,34 +53,49 @@ export const Decks = ({ decks }: Props): ReactElement => {
       {showForm && (
         <Form updateInfo={isUpdating} submitCallback={updateDeckList} />
       )}
-      <div>
+      <Flex direction="column" alignItems="center">
         {deckList.map(deck => (
           <StyledDecks key={deck.id}>
-            <h2>{deck.name}</h2>
-            <h3>{deck.format}</h3>
-            <h4>{deck.description}</h4>
-            <Button
-              color="blue"
-              shade={3}
-              variant="filled"
-              onClick={() => {
-                setIsUpdating(deck)
-                setShowForm(true)
-              }}
-            >
-              Update
-            </Button>
-            <Button
-              onClick={() => destroyDeck(deck.id)}
-              color="red"
-              shade={7}
-              variant="text"
-            >
-              Destroy
-            </Button>
+            <Flex alignItems="flex-start" justifyContent="space-between">
+              <div style={{ width: '80%' }}>
+                <Text family="roboto" weight={300} size={6}>
+                  {deck.name}
+                </Text>
+                <Text display="inline-block" isItalics>
+                  {deck.format}
+                </Text>
+
+                <hr />
+
+                <Text size={3} family="Open Source Sans">
+                  {deck.description}
+                </Text>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Button
+                  color="blue"
+                  shade={3}
+                  variant="filled"
+                  onClick={() => {
+                    setIsUpdating(deck)
+                    setShowForm(true)
+                  }}
+                >
+                  Update
+                </Button>
+                <Button
+                  onClick={() => destroyDeck(deck.id)}
+                  color="red"
+                  shade={7}
+                  variant="text"
+                >
+                  Destroy
+                </Button>
+              </div>
+            </Flex>
           </StyledDecks>
         ))}
-      </div>
+      </Flex>
     </ThemeProvider>
   )
 }

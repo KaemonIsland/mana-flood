@@ -23,7 +23,7 @@ const NavContainer = styled('nav')(({ theme }) => ({
 }))
 
 const NavPadding = styled.div`
-  margin-bottom: ${({ theme }) => theme.spaceScale(6)};
+  margin-bottom: ${({ theme }) => theme.spaceScale(9)};
 `
 
 NavContainer.Link = styled('a')(({ theme, isActive }) => ({
