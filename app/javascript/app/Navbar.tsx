@@ -7,18 +7,24 @@ import { useMediaQuery } from 'react-responsive'
 import { MobileNavbar } from './MobileNavbar'
 
 const NavContainer = styled('nav')(({ theme }) => ({
-  position: 'sticky',
+  position: 'fixed',
   top: 0,
+  width: '100%',
   backgroundColor: theme.color.purple[2],
   boxShadow: theme.boxShadow.single[2],
   padding: theme.spaceScale(3),
   borderBottom: '1px solid black',
+  zIndex: 100000000,
   '& ul': {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
 }))
+
+const NavPadding = styled.div`
+  margin-bottom: ${({ theme }) => theme.spaceScale(6)};
+`
 
 NavContainer.Link = styled('a')(({ theme, isActive }) => ({
   cursor: 'pointer',
@@ -132,6 +138,7 @@ export const Navbar = ({ signedIn }) => {
 
   return (
     <ThemeProvider>
+      <NavPadding />
       <NavContainer>
         {isMobile ? (
           <MobileNavbar links={links} signedIn={signedIn} />

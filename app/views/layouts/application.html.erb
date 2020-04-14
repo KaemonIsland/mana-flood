@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= full_title(yield(:title)) %></title>
-    <%= render 'layouts/rails_default' %>
-    <%= render 'layouts/shim' %>
-  </head>
 
-  <body style='margin: 0; padding: 0;'>
-    <%= react_component 'theme/GlobalStyles' %>
-    <%= react_component 'Navbar.Navbar', { signedIn: user_signed_in? } %>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <%= yield %>
-    <%= debug(params) if Rails.env.development? %>
-  </body>
+<head>
+  <title><%= full_title(yield(:title)) %></title>
+  <%= render 'layouts/rails_default' %>
+  <%= render 'layouts/shim' %>
+</head>
+
+<body>
+  <%= react_component 'theme/GlobalStyles' %>
+  <%= react_component 'Navbar.Navbar', { signedIn: user_signed_in? } %>
+  <p class="notice"><%= notice %></p>
+  <p class="alert"><%= alert %></p>
+  <%= yield %>
+  <%= debug(params) if Rails.env.development? %>
+</body>
+
 </html>

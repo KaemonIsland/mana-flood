@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ThemeProvider, Flex, Text, Grid } from 'warlock-ui'
 import { formatDate } from '../../utils'
-import { Cards } from '../cards/Cards'
+import { Cards } from '../cards'
 
 export const Set = ({
   id,
