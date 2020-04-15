@@ -11,5 +11,11 @@ type Options = {
  *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
  */
-export const formatDate = (date: Date, dateOptions: Options): string =>
-  new Date(date).toLocaleDateString(undefined, dateOptions)
+export const formatDate = (
+  date: Date,
+  { month = 'long', year = 'numeric', day = 'numeric' }: Options
+): string => {
+  const dateOptions = { month, year, day }
+
+  return new Date(date).toLocaleDateString(undefined, dateOptions)
+}

@@ -34,7 +34,6 @@ export const Form = ({ updateInfo, submitCallback }): ReactElement => {
       const response = await axios.post('api/v1/decks', form)
 
       submitCallback(response?.data)
-      console.log('Response: ', response)
     } catch (error) {
       console.log('Unable to create deck: ', error)
     }

@@ -14,7 +14,7 @@ class Api::V1::CollectedCardsController < ApplicationController
   end
   
     def create
-      if has_card?(current_user, @card)
+      if in_collection?(@collection, @card)
         render json: { error: 'Card already exists in collection' }, status: 400
       elsif @collection.cards << @card
         @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
@@ -28,7 +28,7 @@ class Api::V1::CollectedCardsController < ApplicationController
     end
   
     def update
-      if !has_card?(current_user, @card)
+      if !in_collection?(@collection, @card)
         render json: { error: 'Card not in collection' }, status: 404
       elsif @collected_card.update(collected_card_params)
         render 'api/v1/collected_cards/card.json.jbuilder', status: 200
@@ -38,7 +38,7 @@ class Api::V1::CollectedCardsController < ApplicationController
     end
   
     def destroy
-      if !has_card?(current_user, @card)
+      if !in_collection?(@collection, @card)
         render json: { error: 'Card not in collection' }, status: 404
       elsif @collected_card.destroy
         render json: @card, status: 200

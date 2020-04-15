@@ -127,7 +127,10 @@ export const Card = cardInfo => {
 
   const addToCollection = async () => {
     try {
-      const response = await fetch(`/api/v1/add_card/${id}`, {
+      // const response = await fetch(`/api/v1/add_card/${id}`, {
+      //   method: 'POST',
+      // })
+      const response = await fetch(`/api/v1/add_decked_card/2/${id}`, {
         method: 'POST',
       })
 
@@ -145,7 +148,10 @@ export const Card = cardInfo => {
 
   const removeFromCollection = async () => {
     try {
-      const response = await fetch(`/api/v1/remove_card/${id}`, {
+      // const response = await fetch(`/api/v1/remove_card/${id}`, {
+      //   method: 'DELETE',
+      // })
+      const response = await fetch(`/api/v1/remove_decked_card/2/${id}`, {
         method: 'DELETE',
       })
 
@@ -167,8 +173,14 @@ export const Card = cardInfo => {
     }
 
     try {
+      // const response = await fetch(
+      //   `/api/v1/add_card/${id}?quantity=${newQuantity}`,
+      //   {
+      //     method: 'PUT',
+      //   }
+      // )
       const response = await fetch(
-        `/api/v1/add_card/${id}?quantity=${newQuantity}`,
+        `/api/v1/add_decked_card/2/${id}?quantity=${newQuantity}`,
         {
           method: 'PUT',
         }
@@ -263,7 +275,7 @@ export const Card = cardInfo => {
             </div>
           </Flex>
           <CardInfo>
-            <TitleText title={name} weight={400} family="Roboto" color="black">
+            <TitleText title={name} weight="400" family="Roboto" color="black">
               {name}
             </TitleText>
           </CardInfo>

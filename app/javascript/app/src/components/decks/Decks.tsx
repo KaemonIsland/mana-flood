@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components'
+import Turbolinks from 'turbolinks'
 import { ThemeProvider, Button, Flex, Text } from 'warlock-ui'
 import axios from 'axios'
 import { Deck } from './types'
@@ -13,6 +14,13 @@ const StyledDecks = styled.div(({ theme }) => ({
   borderRadius: theme.spaceScale(1),
   width: theme.spaceScale(16),
   padding: theme.spaceScale(2),
+}))
+
+const ButtonOptions = styled.div(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gridTemplateRows: 'repeat(3, 1fr)',
+  gridGap: theme.spaceScale(2),
 }))
 
 interface Props {
@@ -36,18 +44,19 @@ export const Decks = ({ decks }: Props): ReactElement => {
 
   const destroyDeck = async id => {
     try {
-      const response = await axios.delete(`api/v1/decks/${id}`)
+      await axios.delete(`api/v1/decks/${id}`)
 
       const filteredDeckList = deckList.filter(deck => deck.id !== id)
       setDeckList(filteredDeckList)
-      console.log('Response: ', response)
     } catch (error) {
       console.log('Unable to destroy deck: ', error)
     }
   }
   return (
     <ThemeProvider>
-      <h1>My Decks</h1>
+      <Text family="roboto" size={10}>
+        My Decks
+      </Text>
       <Button onClick={() => setShowForm(true)}>New Deck +</Button>
       <hr />
       {showForm && (
@@ -58,7 +67,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
           <StyledDecks key={deck.id}>
             <Flex alignItems="flex-start" justifyContent="space-between">
               <div style={{ width: '80%' }}>
-                <Text family="roboto" weight={300} size={6}>
+                <Text family="roboto" weight="300" size={6}>
                   {deck.name}
                 </Text>
                 <Text display="inline-block" isItalics>
@@ -71,27 +80,41 @@ export const Decks = ({ decks }: Props): ReactElement => {
                   {deck.description}
                 </Text>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <ButtonOptions>
+                <Button
+                  color="green"
+                  shade={7}
+                  variant="outline"
+                  onClick={() => {
+                    Turbolinks.visit(`/deck/${deck.id}`)
+                  }}
+                >
+                  View Cards
+                </Button>
                 <Button
                   color="blue"
-                  shade={3}
-                  variant="filled"
+                  shade={7}
+                  variant="outline"
                   onClick={() => {
                     setIsUpdating(deck)
                     setShowForm(true)
                   }}
                 >
-                  Update
+                  Edit
                 </Button>
                 <Button
-                  onClick={() => destroyDeck(deck.id)}
-                  color="red"
-                  shade={7}
+                  onClick={() => {
+                    if (confirm('Are you sure?')) {
+                      destroyDeck(deck.id)
+                    }
+                  }}
+                  color="grey"
+                  shade={10}
                   variant="text"
                 >
                   Destroy
                 </Button>
-              </div>
+              </ButtonOptions>
             </Flex>
           </StyledDecks>
         ))}
