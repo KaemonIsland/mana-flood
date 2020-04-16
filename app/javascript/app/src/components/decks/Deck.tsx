@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { ThemeProvider, Text, Flex } from 'warlock-ui'
-import styled from 'styled-components'
 import { formatDate } from '../../utils'
 import { Cards } from '../cards'
 
