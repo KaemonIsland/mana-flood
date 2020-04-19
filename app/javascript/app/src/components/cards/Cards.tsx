@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Card } from './Card'
 import styled from 'styled-components'
+import { StatusBar } from '../statusBar'
+import { useCards } from '../../utils'
 
 const StyledGrid = styled.div`
   display: grid;
@@ -15,11 +17,16 @@ const StyledGrid = styled.div`
 `
 
 export const Cards = ({ cards }) => {
+  const { actions, deck, container, updateContainer } = useCards('collection')
+
   return (
-    <StyledGrid>
-      {cards.map(card => (
-        <Card key={card.id} {...card} />
-      ))}
-    </StyledGrid>
+    <>
+      <StyledGrid>
+        {cards.map(card => (
+          <Card actions={actions} deck={deck} key={card.id} {...card} />
+        ))}
+      </StyledGrid>
+      <StatusBar container={container} updateContainer={updateContainer} />
+    </>
   )
 }

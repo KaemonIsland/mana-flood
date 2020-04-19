@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       get 'set_cards/:id', to: 'card_sets#cards'
       
       # Crud operations for users decked_cards
-      resources :decks, except: [:new, :edit, :index]
+      resources :decks, except: [:new, :edit]
       get 'decked_cards/:id', to: 'decked_cards#show'
       post 'add_decked_card/:id/:card_id', to: 'decked_cards#create'
       put 'add_decked_card/:id/:card_id', to: 'decked_cards#update'

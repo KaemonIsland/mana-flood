@@ -52,8 +52,7 @@ export const Deck = ({ name, format, updated_at, id, ...rest }) => {
     if (cards.length === 0) {
       getDeckCards()
     }
-  }, cards)
-  console.log('rest: ', rest)
+  }, [cards])
   return (
     <ThemeProvider>
       <Flex alignItems="start" direction="column">

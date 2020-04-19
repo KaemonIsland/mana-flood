@@ -95,108 +95,43 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = cardInfo => {
-  const [card, setCard] = useState(cardInfo)
+export const Card = ({ actions, deck, ...rest }) => {
+  const [card, setCard] = useState(rest)
   const [showText, setShowText] = useState(false)
+  const deckId = deck && deck.id
+
+  const { add, update, remove } = actions
+
+  const addCard = () => {
+    add(id, setCard, deckId)
+  }
+
+  const removeCard = () => {
+    remove(id, setCard, deckId)
+  }
+
+  const updateCard = newQuantity => {
+    if (newQuantity === 0) {
+      removeCard()
+    } else {
+      update(id, setCard, newQuantity, deckId)
+    }
+  }
 
   const {
-    artist,
-    border_color,
-    card_set_id,
     card_type,
-    card_types,
     color_identity,
-    converted_mana_cost,
-    flavor_text,
     id,
     mana_cost,
     name,
-    number,
-    original_text,
     power,
-    prices,
     rarity,
-    rulings,
     text,
     toughness,
     uuid,
     has_card,
     quantity,
-    ...rest
   } = card
-
-  const addToCollection = async () => {
-    try {
-      // const response = await fetch(`/api/v1/add_card/${id}`, {
-      //   method: 'POST',
-      // })
-      const response = await fetch(`/api/v1/add_decked_card/2/${id}`, {
-        method: 'POST',
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      setCard(data)
-    } catch (error) {
-      console.log('Unable to add card to collection', console.error)
-    }
-  }
-
-  const removeFromCollection = async () => {
-    try {
-      // const response = await fetch(`/api/v1/remove_card/${id}`, {
-      //   method: 'DELETE',
-      // })
-      const response = await fetch(`/api/v1/remove_decked_card/2/${id}`, {
-        method: 'DELETE',
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      setCard(data)
-    } catch (error) {
-      console.log('Unable to remove card to collection', console.error)
-    }
-  }
-
-  const updateCollectionQuantity = async newQuantity => {
-    if (newQuantity === 0) {
-      return removeFromCollection()
-    }
-
-    try {
-      // const response = await fetch(
-      //   `/api/v1/add_card/${id}?quantity=${newQuantity}`,
-      //   {
-      //     method: 'PUT',
-      //   }
-      // )
-      const response = await fetch(
-        `/api/v1/add_decked_card/2/${id}?quantity=${newQuantity}`,
-        {
-          method: 'PUT',
-        }
-      )
-
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      setCard(data)
-    } catch (error) {
-      console.log('Unable to remove card to collection', console.error)
-    }
-  }
 
   const formatedMana = mana_cost
     .replace(/[{ | }]/g, ' ')
@@ -228,7 +163,9 @@ export const Card = cardInfo => {
             <Container width={[7]}>
               <Flex alignItems="center" justifyContent="start">
                 {formatedMana.length !== 0 &&
-                  formatedMana.map(mana => <ManaSymbol mana={mana} />)}
+                  formatedMana.map((mana, i) => (
+                    <ManaSymbol key={i} mana={mana} />
+                  ))}
               </Flex>
             </Container>
             <div>
@@ -241,9 +178,14 @@ export const Card = cardInfo => {
                     variant="outline"
                     bubble={false}
                     isDisabled={!has_card}
-                    onClick={() =>
-                      has_card && updateCollectionQuantity(quantity - 1)
-                    }
+                    onClick={() => {
+                      const newQuantity = quantity - 1
+                      if (newQuantity === 0) {
+                        removeCard()
+                      } else {
+                        updateCard(quantity - 1)
+                      }
+                    }}
                   >
                     -
                   </Button.Left>
@@ -265,9 +207,7 @@ export const Card = cardInfo => {
                 bubble={false}
                 variant="outline"
                 onClick={() =>
-                  has_card
-                    ? updateCollectionQuantity(quantity + 1)
-                    : addToCollection()
+                  has_card ? updateCard(quantity + 1) : addCard()
                 }
               >
                 +
