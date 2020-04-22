@@ -51,7 +51,7 @@ collection.remove = async (id, callback) => {
 
     callback(data)
   } catch (error) {
-    console.log('Unable to remove card to collection', console.error)
+    console.log('Unable to remove card to collection', error)
   }
 }
 
@@ -73,7 +73,7 @@ collection.update = async (id, callback, quantity) => {
 
     callback(data)
   } catch (error) {
-    console.log('Unable to remove card to collection', console.error)
+    console.log('Unable to update card collection quantity', error)
   }
 }
 
@@ -113,7 +113,7 @@ deck.update = async (id, callback, quantity, deckId) => {
 
     callback(data)
   } catch (error) {
-    console.log('Unable to remove card to collection', console.error)
+    console.log('Unable to remove card to collection', error)
   }
 }
 
@@ -131,7 +131,7 @@ deck.remove = async (id, callback, deckId) => {
 
     callback(data)
   } catch (error) {
-    console.log('Unable to remove card to collection', console.error)
+    console.log('Unable to remove card to collection', error)
   }
 }
 

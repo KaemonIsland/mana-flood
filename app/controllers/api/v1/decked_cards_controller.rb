@@ -1,13 +1,23 @@
 class Api::V1::DeckedCardsController < ApplicationController
     skip_before_action :verify_authenticity_token
-    before_action :load_deck, only: [:show, :create, :update, :destroy]
+    before_action :load_deck, :load_collection, only: [:collection, :with_deck, :create, :update, :destroy]
     before_action :load_card, only: [:create, :update, :destroy]
     before_action :load_decked_cards, only: [:update, :destroy]
     respond_to :json
   
-    def show
+    def collection
       if current_user
-        render 'api/v1/decked_cards/index.json.jbuilder', status: 200
+        @cards = @deck.cards
+        render 'api/v1/cards/in_collection.json.jbuilder', status: 200
+      else
+        render json: { error: 'User must be signed in' }, status: 401
+      end
+    end
+
+    def with_deck
+      if current_user
+        @cards = @deck.cards
+        render 'api/v1/cards/in_deck.json.jbuilder', status: 200
       else
         render json: { error: 'User must be signed in' }, status: 401
       end
@@ -21,7 +31,7 @@ class Api::V1::DeckedCardsController < ApplicationController
         @decked_card.quantity = 1
         @decked_card.save
 
-        render 'api/v1/decked_cards/card.json.jbuilder', status: 201
+        render 'api/v1/card/in_deck.json.jbuilder', status: 201
       else
         render json: { error: 'Unable to add card to deck' }, status: 400
       end
@@ -31,7 +41,7 @@ class Api::V1::DeckedCardsController < ApplicationController
       if !in_deck?(@deck, @card)
         render json: { error: 'Card not in deck' }, status: 404
       elsif @decked_card.update(decked_card_params)
-        render 'api/v1/decked_cards/card.json.jbuilder', status: 200
+        render 'api/v1/cards/in_deck.json.jbuilder', status: 200
       else
         render json: { error: 'Unable to update card quantity' }, status: 400
       end
@@ -48,6 +58,12 @@ class Api::V1::DeckedCardsController < ApplicationController
     end
     
       private
+
+      def load_collection
+        return render json: { error: 'User must be signed in' }, status: 401 unless current_user
+
+        @collection = current_user.collection
+      end
     
       def load_card
         @card = Card.find(params[:card_id])

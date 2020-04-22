@@ -5,5 +5,5 @@ if user_signed_in?
 end
 
 if in_collection?(current_user.collection, @card)
-    json.quantity collection_quantity(current_user, @card)
+    json.quantity collection_quantity(current_user.collection, @card)
 end

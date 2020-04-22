@@ -54,7 +54,7 @@ export const StatusBar = ({ container, updateContainer }) => {
       {decks.map(deck => (
         <StyledStatusBar.Item active={container === deck.name}>
           <Button
-            onClick={() => updateContainer('deck', deck)}
+            onClick={() => updateContainer(deck.name, deck)}
             color="purple"
             shade={7}
           >

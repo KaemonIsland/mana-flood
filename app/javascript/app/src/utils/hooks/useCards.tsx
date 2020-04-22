@@ -12,7 +12,7 @@ export const useCards = defaultContainer => {
 
   const updateContainer = (name, deckInfo = {}) => {
     setContainer(name)
-    if (name === 'deck') {
+    if (name !== 'collection') {
       setDeck(deckInfo)
     } else {
       setDeck({})

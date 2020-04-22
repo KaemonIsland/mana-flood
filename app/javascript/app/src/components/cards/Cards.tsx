@@ -19,6 +19,8 @@ const StyledGrid = styled.div`
 export const Cards = ({ cards }) => {
   const { actions, deck, container, updateContainer } = useCards('collection')
 
+  // TODO ADD Views for Decks and Collection scope
+
   return (
     <>
       <StyledGrid>

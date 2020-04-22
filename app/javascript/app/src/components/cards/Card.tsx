@@ -129,9 +129,10 @@ export const Card = ({ actions, deck, ...rest }) => {
     text,
     toughness,
     uuid,
-    has_card,
-    quantity,
+    collection,
   } = card
+
+  const { has_card, quantity } = collection
 
   const formatedMana = mana_cost
     .replace(/[{ | }]/g, ' ')

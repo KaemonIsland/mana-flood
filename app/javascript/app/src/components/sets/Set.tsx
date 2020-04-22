@@ -42,7 +42,7 @@ export const Set = ({
   }
 
   const getSetCards = async () => {
-    fetch(`/api/v1/set_cards/${id}`, {
+    fetch(`/api/v1/sets/${id}/collection`, {
       method: 'GET',
     })
       .then(response => response.json())
