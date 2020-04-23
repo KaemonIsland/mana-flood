@@ -41,7 +41,7 @@ class Api::V1::DeckedCardsController < ApplicationController
       if !in_deck?(@deck, @card)
         render json: { error: 'Card not in deck' }, status: 404
       elsif @decked_card.update(decked_card_params)
-        render 'api/v1/cards/in_deck.json.jbuilder', status: 200
+        render 'api/v1/card/in_deck.json.jbuilder', status: 200
       else
         render json: { error: 'Unable to update card quantity' }, status: 400
       end
@@ -51,7 +51,7 @@ class Api::V1::DeckedCardsController < ApplicationController
       if !in_deck?(@deck, @card)
         render json: { error: 'Card not in deck' }, status: 404
       elsif @decked_card.destroy
-        render json: @card, status: 200
+        render 'api/v1/card/in_deck.json.jbuilder', status: 200
       else
         render json: { error: 'Unable to remove card from deck' }, status: 400
       end

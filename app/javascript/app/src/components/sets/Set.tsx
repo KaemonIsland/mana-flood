@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { ThemeProvider, Flex, Text, Grid } from 'warlock-ui'
+import { ThemeProvider, Flex, Text } from 'warlock-ui'
 import { formatDate } from '../../utils'
 import { Cards } from '../cards'
+import { useCards } from '../../utils'
+import { StatusBar } from '../statusBar'
 
 export const Set = ({
   id,
@@ -12,6 +14,7 @@ export const Set = ({
   base_set_size,
   ...rest
 }) => {
+  const { actions, scope, deck } = useCards('collection')
   const [cards, setCards] = useState([])
 
   const sortAlpha = (a, b) => {
@@ -41,7 +44,7 @@ export const Set = ({
     return filteredCards
   }
 
-  const getSetCards = async () => {
+  const getCardsWithCollection = async () => {
     fetch(`/api/v1/sets/${id}/collection`, {
       method: 'GET',
     })
@@ -56,11 +59,35 @@ export const Set = ({
       .catch(error => console.log('Unable to get cards: ', error))
   }
 
+  const getCardsWithDeck = async () => {
+    fetch(`/api/v1/sets/${id}/deck/${deck.id}`, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(cardsData => {
+        const noVariants = filterVariation(cardsData)
+
+        const sorted = noVariants.sort(sortAlpha)
+
+        console.log('Sorted: ', sorted)
+
+        return setCards(sorted)
+      })
+      .catch(error => console.log('Unable to get cards: ', error))
+  }
+
   useEffect(() => {
     if (cards.length === 0) {
-      getSetCards()
+      getCardsWithCollection()
     }
   }, [])
+
+  useEffect(() => {
+    if (scope.currentScope !== 'collection' && deck && deck.id) {
+      setCards([])
+      getCardsWithDeck()
+    }
+  }, [scope.currentScope])
 
   return (
     <ThemeProvider>
@@ -88,7 +115,8 @@ export const Set = ({
         </Text>
       </Flex>
       <hr />
-      <Cards cards={cards} />
+      <Cards actions={actions} deck={deck} cards={cards} />
+      <StatusBar scope={scope} />
     </ThemeProvider>
   )
 }

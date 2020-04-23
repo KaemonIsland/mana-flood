@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
-import fetch from 'cross-fetch'
 import { ManaSymbol } from '../ManaSymbol'
 
 const cardColors = {
@@ -95,22 +94,25 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = ({ actions, deck, ...rest }) => {
-  const [card, setCard] = useState(rest)
+export const Card = ({ actions, deckScope, ...rest }) => {
+  const [card, setCard] = useState({ ...rest })
   const [showText, setShowText] = useState(false)
-  const deckId = deck && deck.id
+  const deckId = deckScope && deckScope.id
 
   const { add, update, remove } = actions
 
   const addCard = () => {
+    console.log('Add Card: ', id, deckId)
     add(id, setCard, deckId)
   }
 
   const removeCard = () => {
+    console.log('Remove Card: ', id, deckId)
     remove(id, setCard, deckId)
   }
 
   const updateCard = newQuantity => {
+    console.log('Update Card: ', id, deckId)
     if (newQuantity === 0) {
       removeCard()
     } else {
@@ -128,33 +130,17 @@ export const Card = ({ actions, deck, ...rest }) => {
     rarity,
     text,
     toughness,
-    uuid,
-    collection,
   } = card
 
-  const { has_card, quantity } = collection
+  const cardScope = card.deck ? 'deck' : 'collection'
+
+  const { has_card, quantity } = card[cardScope]
 
   const formatedMana = mana_cost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
     .filter(Boolean)
-
-  // let rarityColor = 'black'
-  // switch (rarity) {
-  //   case 'uncommon':
-  //     rarityColor = 'silver'
-  //     break
-  //   case 'rare':
-  //     rarityColor = 'gold'
-  //     break
-  //   case 'mythic':
-  //     rarityColor = theme.color['orangeVivid'][6]
-  //     break
-  //   default:
-  //     rarityColor = 'black'
-  //     break
-  // }
 
   return (
     <ThemeProvider>

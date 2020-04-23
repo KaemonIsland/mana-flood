@@ -18,7 +18,7 @@ class Api::V1::CollectedCardsController < ApplicationController
     if current_user
       @collection = current_user.collection
       @cards = @collection.cards
-      @deck = current_user.decks.find[params[:id]]
+      @deck = current_user.decks.find(params[:id])
       render 'api/v1/cards/in_deck.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
@@ -53,7 +53,7 @@ class Api::V1::CollectedCardsController < ApplicationController
     if !in_collection?(@collection, @card)
       render json: { error: 'Card not in collection' }, status: 404
     elsif @collected_card.destroy
-      render json: @card, status: 200
+      render 'api/v1/card/in_collection.json.jbuilder', status: 200
     else
       render json: { error: 'Unable to remove card from collection' }, status: 400
     end

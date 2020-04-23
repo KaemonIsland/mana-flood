@@ -20,7 +20,8 @@ StyledStatusBar.Item = styled.div(({ active }) => ({
   borderBottom: `2px solid ${active ? 'white' : 'transparent'}`,
 }))
 
-export const StatusBar = ({ container, updateContainer }) => {
+export const StatusBar = ({ scope }) => {
+  const { currentScope, updateScope } = scope
   const [decks, setDecks] = useState([])
   const getUserDecks = async () => {
     try {
@@ -42,9 +43,9 @@ export const StatusBar = ({ container, updateContainer }) => {
 
   return (
     <StyledStatusBar>
-      <StyledStatusBar.Item active={container === 'collection'}>
+      <StyledStatusBar.Item active={currentScope === 'collection'}>
         <Button
-          onClick={() => updateContainer('collection')}
+          onClick={() => updateScope('collection')}
           color="purple"
           shade={7}
         >
@@ -52,9 +53,9 @@ export const StatusBar = ({ container, updateContainer }) => {
         </Button>
       </StyledStatusBar.Item>
       {decks.map(deck => (
-        <StyledStatusBar.Item active={container === deck.name}>
+        <StyledStatusBar.Item active={currentScope === deck.name}>
           <Button
-            onClick={() => updateContainer(deck.name, deck)}
+            onClick={() => updateScope(deck.name, deck)}
             color="purple"
             shade={7}
           >

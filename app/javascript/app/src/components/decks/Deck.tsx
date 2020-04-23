@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { ThemeProvider, Text, Flex } from 'warlock-ui'
 import { formatDate } from '../../utils'
 import { Cards } from '../cards'
+import { useCards } from '../../utils'
+import { StatusBar } from '../statusBar'
 
 export const Deck = ({ name, format, updated_at, id, ...rest }) => {
+  const { actions } = useCards(name)
   const [cards, setCards] = useState([])
 
   const sortAlpha = (a, b) => {
@@ -68,7 +71,7 @@ export const Deck = ({ name, format, updated_at, id, ...rest }) => {
         <Text>{format}</Text>
       </Flex>
       <hr />
-      <Cards cards={cards} />
+      <Cards actions={actions} deck={{ id }} cards={cards} />
     </ThemeProvider>
   )
 }

@@ -1,8 +1,6 @@
 import React, { useContext } from 'react'
 import { Card } from './Card'
 import styled from 'styled-components'
-import { StatusBar } from '../statusBar'
-import { useCards } from '../../utils'
 
 const StyledGrid = styled.div`
   display: grid;
@@ -16,19 +14,14 @@ const StyledGrid = styled.div`
   align-items: center;
 `
 
-export const Cards = ({ cards }) => {
-  const { actions, deck, container, updateContainer } = useCards('collection')
-
+export const Cards = ({ actions, deck, cards }) => {
   // TODO ADD Views for Decks and Collection scope
 
   return (
-    <>
-      <StyledGrid>
-        {cards.map(card => (
-          <Card actions={actions} deck={deck} key={card.id} {...card} />
-        ))}
-      </StyledGrid>
-      <StatusBar container={container} updateContainer={updateContainer} />
-    </>
+    <StyledGrid>
+      {cards.map(card => (
+        <Card actions={actions} deckScope={deck} key={card.id} {...card} />
+      ))}
+    </StyledGrid>
   )
 }
