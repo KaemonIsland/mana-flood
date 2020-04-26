@@ -69,8 +69,6 @@ export const Set = ({
 
         const sorted = noVariants.sort(sortAlpha)
 
-        console.log('Sorted: ', sorted)
-
         return setCards(sorted)
       })
       .catch(error => console.log('Unable to get cards: ', error))

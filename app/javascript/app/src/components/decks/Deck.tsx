@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { ThemeProvider, Text, Flex } from 'warlock-ui'
 import { formatDate } from '../../utils'
 import { Cards } from '../cards'
-import { useCards } from '../../utils'
-import { StatusBar } from '../statusBar'
+import { useCards, useDeckStats } from '../../utils'
 
 export const Deck = ({ name, format, updated_at, id, ...rest }) => {
   const { actions } = useCards(name)
   const [cards, setCards] = useState([])
+  const stats = useDeckStats(cards)
+
+  console.log('Stats: ', stats)
 
   const sortAlpha = (a, b) => {
     const cardA = a.name.toUpperCase()
@@ -55,7 +57,7 @@ export const Deck = ({ name, format, updated_at, id, ...rest }) => {
     if (cards.length === 0) {
       getDeckCards()
     }
-  }, [cards])
+  }, [])
   return (
     <ThemeProvider>
       <Flex alignItems="start" direction="column">

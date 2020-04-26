@@ -102,17 +102,14 @@ export const Card = ({ actions, deckScope, ...rest }) => {
   const { add, update, remove } = actions
 
   const addCard = () => {
-    console.log('Add Card: ', id, deckId)
     add(id, setCard, deckId)
   }
 
   const removeCard = () => {
-    console.log('Remove Card: ', id, deckId)
     remove(id, setCard, deckId)
   }
 
   const updateCard = newQuantity => {
-    console.log('Update Card: ', id, deckId)
     if (newQuantity === 0) {
       removeCard()
     } else {
