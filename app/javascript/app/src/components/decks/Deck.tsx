@@ -9,7 +9,7 @@ export const Deck = ({ name, format, updated_at, id, ...rest }) => {
   const [cards, setCards] = useState([])
   const stats = useDeckStats(cards)
 
-  console.log('Stats: ', stats)
+  console.dir(stats)
 
   const sortAlpha = (a, b) => {
     const cardA = a.name.toUpperCase()
