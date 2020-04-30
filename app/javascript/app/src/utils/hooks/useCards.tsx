@@ -9,15 +9,10 @@ import { cardActions } from '../cardActions'
 export const useCards = defaultScope => {
   const [currentScope, setCurrentScope] = useState(defaultScope || 'collection')
   const [deck, setDeck] = useState({})
-  const [cards, setCards] = useState([])
 
   const updateScope = (name, deckInfo = {}) => {
     setCurrentScope(name)
-    if (name !== 'collection') {
-      setDeck(deckInfo)
-    } else {
-      setDeck({})
-    }
+    name !== 'collection' ? setDeck(deckInfo) : setDeck({})
   }
 
   const actions =

@@ -20,7 +20,7 @@ const SetContainer = styled.div(({ theme }) => ({
   width: theme.spaceScale(12),
   boxShadow: theme.boxShadow.single[1],
   background: `linear-gradient(${theme.color.coolGrey[1]}, ${theme.color.coolGrey[3]})`,
-  borderRadius: theme.spaceScale(1),
+  borderRadius: theme.spaceScale(2),
 }))
 
 type CardSet = {

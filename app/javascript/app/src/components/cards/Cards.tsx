@@ -14,13 +14,11 @@ const StyledGrid = styled.div`
   align-items: center;
 `
 
-export const Cards = ({ actions, deck, cards }) => {
-  // TODO ADD Views for Decks and Collection scope
-
+export const Cards = ({ actions, cards }) => {
   return (
     <StyledGrid>
       {cards.map(card => (
-        <Card actions={actions} deckScope={deck} key={card.id} {...card} />
+        <Card actions={actions} key={card.id} {...card} />
       ))}
     </StyledGrid>
   )

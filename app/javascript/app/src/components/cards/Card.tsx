@@ -95,27 +95,10 @@ const TitleText = styled(Text)`
 `
 
 export const Card = ({ actions, deckScope, ...rest }) => {
-  const [card, setCard] = useState({ ...rest })
+  const card = { ...rest }
   const [showText, setShowText] = useState(false)
-  const deckId = deckScope && deckScope.id
 
-  const { add, update, remove } = actions
-
-  const addCard = () => {
-    add(id, setCard, deckId)
-  }
-
-  const removeCard = () => {
-    remove(id, setCard, deckId)
-  }
-
-  const updateCard = newQuantity => {
-    if (newQuantity === 0) {
-      removeCard()
-    } else {
-      update(id, setCard, newQuantity, deckId)
-    }
-  }
+  const { addCard, updateCard, removeCard } = actions
 
   const {
     card_type,
@@ -133,7 +116,7 @@ export const Card = ({ actions, deckScope, ...rest }) => {
 
   const { has_card, quantity } = card[cardScope]
 
-  const formatedMana = mana_cost
+  const formattedMana = mana_cost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -146,8 +129,8 @@ export const Card = ({ actions, deckScope, ...rest }) => {
           <Flex justifyContent="space-between" alignItems="start">
             <Container width={[7]}>
               <Flex alignItems="center" justifyContent="start">
-                {formatedMana.length !== 0 &&
-                  formatedMana.map((mana, i) => (
+                {formattedMana.length !== 0 &&
+                  formattedMana.map((mana, i) => (
                     <ManaSymbol key={i} mana={mana} />
                   ))}
               </Flex>
@@ -165,9 +148,9 @@ export const Card = ({ actions, deckScope, ...rest }) => {
                     onClick={() => {
                       const newQuantity = quantity - 1
                       if (newQuantity === 0) {
-                        removeCard()
+                        removeCard(id)
                       } else {
-                        updateCard(quantity - 1)
+                        updateCard(id, quantity - 1)
                       }
                     }}
                   >
@@ -191,7 +174,7 @@ export const Card = ({ actions, deckScope, ...rest }) => {
                 bubble={false}
                 variant="outline"
                 onClick={() =>
-                  has_card ? updateCard(quantity + 1) : addCard()
+                  has_card ? updateCard(id, quantity + 1) : addCard(id)
                 }
               >
                 +

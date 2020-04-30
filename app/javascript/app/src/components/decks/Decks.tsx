@@ -11,7 +11,7 @@ const StyledDecks = styled.div(({ theme }) => ({
   backgroundColor: 'white',
   margin: theme.spaceScale(4),
   boxShadow: theme.boxShadow.single[2],
-  borderRadius: theme.spaceScale(1),
+  borderRadius: theme.spaceScale(2),
   width: theme.spaceScale(16),
   padding: theme.spaceScale(2),
 }))

@@ -23,7 +23,7 @@ const { collection, deck, set } = cardActions
 
 collection.get = async () => {}
 
-collection.add = async (id, callback) => {
+collection.add = async id => {
   try {
     const response = await axios.post(`/api/v1/add_card/${id}`)
 
@@ -33,53 +33,63 @@ collection.add = async (id, callback) => {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to add card to collection', error)
   }
 }
 
-collection.remove = async (id, callback) => {
+collection.remove = async id => {
   try {
     const response = await axios.delete(`/api/v1/remove_card/${id}`)
 
-    const { data } = await response
+    const { data } = response
 
     if (data.error) {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to remove card to collection', error)
   }
 }
 
-collection.update = async (id, callback, quantity) => {
-  if (quantity === 0) {
-    return collection.remove(id, callback)
-  }
-
+collection.update = async (id, quantity) => {
   try {
     const response = await axios.put(
       `/api/v1/add_card/${id}?quantity=${quantity}`
     )
 
-    const { data } = await response
+    const { data } = response
 
     if (data.error) {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to update card collection quantity', error)
   }
 }
 
-deck.get = async () => {}
+deck.get = async id => {
+  try {
+    const response = await axios(`/api/v1/decked_cards/${id}`)
 
-deck.add = async (id, callback, deckId) => {
+    const { data } = response
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  } catch (error) {
+    console.log('Unable to get cards: ', error)
+  }
+}
+
+deck.add = async (id, deckId) => {
   try {
     const response = await axios.post(`/api/v1/add_decked_card/${deckId}/${id}`)
 
@@ -89,47 +99,43 @@ deck.add = async (id, callback, deckId) => {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to add card to deck', error)
   }
 }
 
-deck.update = async (id, callback, quantity, deckId) => {
-  if (quantity === 0) {
-    return deck.remove(id, callback)
-  }
-
+deck.update = async (id, quantity, deckId) => {
   try {
     const response = await axios.put(
       `/api/v1/add_decked_card/${deckId}/${id}?quantity=${quantity}`
     )
 
-    const { data } = await response
+    const { data } = response
 
     if (data.error) {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to remove card to collection', error)
   }
 }
 
-deck.remove = async (id, callback, deckId) => {
+deck.remove = async (id, deckId) => {
   try {
     const response = await axios.delete(
       `/api/v1/remove_decked_card/${deckId}/${id}`
     )
 
-    const { data } = await response
+    const { data } = response
 
     if (data.error) {
       throw new Error(data.error)
     }
 
-    callback(data)
+    return data
   } catch (error) {
     console.log('Unable to remove card to collection', error)
   }
