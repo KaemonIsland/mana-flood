@@ -10,21 +10,73 @@ const StatsContainer = styled.section(({ theme }) => ({
   borderBottom: `1px solid ${theme.color.purple[8]}`,
 }))
 
+const StatsTitle = styled.div`
+  padding: 0 ${({ theme }) => theme.spaceScale(4)};
+  border-bottom: 2px solid ${({ theme }) => theme.color.grey[8]};
+  text-transform: uppercase;
+  font-family: Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+const StatsPair = styled.div`
+  padding: 0 ${({ theme }) => theme.spaceScale(4)};
+  margin: ${({ theme }) => theme.spaceScale(1)};
+  text-transform: capitalize;
+  font-family: Roboto, sans-serif;
+  font-size: ${({ theme }) => theme.fontScale(2)};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 const StyledRamp = styled.div(({ theme }) => ({
   display: 'flex',
-  width: '100%',
+  flexDirection: 'column-reverse',
   alignItems: 'center',
-  justifyContent: 'start',
-  margin: theme.spaceScale(1),
+  justifyContent: 'center',
 }))
 
+const RampContainer = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: `0 ${theme.spaceScale(4)}`,
+}))
+
+const ColorBar = styled.div(({ theme, W, U, B, R, G, total }) => {
+  const white = +((W / total) * 100).toFixed(0)
+  const blue = +((U / total) * 100).toFixed(0)
+  const black = +((B / total) * 100).toFixed(0)
+  const red = +((R / total) * 100).toFixed(0)
+  const green = +((G / total) * 100).toFixed(0)
+  return {
+    padding: `0 ${theme.spaceScale(4)}`,
+    height: theme.spaceScale(5),
+    width: '100%',
+    borderRadius: theme.spaceScale(2),
+    backgroundImage: `linear-gradient(90deg,
+    ${theme.color.warmGrey[4]} ${white}%,
+    ${theme.color.blueVivid[6]} ${white}%,
+    ${theme.color.blueVivid[6]} ${blue + white}%,
+    ${theme.color.grey[9]} ${blue + white}%,
+    ${theme.color.grey[9]} ${blue + white + black}%,
+    ${theme.color.redVivid[5]} ${blue + white + black}%,
+    ${theme.color.redVivid[5]} ${blue + white + black + red}%,
+    ${theme.color.greenVivid[5]} ${blue + white + black + red}%,
+    ${theme.color.greenVivid[5]} ${blue + white + black + red + green}%,
+    ${theme.color.blueGrey[4]} ${blue + white + black + red + green}%,
+    ${theme.color.blueGrey[4]} 100%)`,
+  }
+})
+
 const StyledMeter = styled.div(({ theme, value }) => ({
-  width: theme.spaceScale(12),
-  height: theme.spaceScale(5),
+  width: theme.spaceScale(5),
+  height: theme.spaceScale(10),
   border: `1px solid ${theme.color.purple[8]}`,
   margin: theme.spaceScale(1),
   borderRadius: theme.spaceScale(2),
-  backgroundImage: `linear-gradient(90deg,
+  backgroundImage: `linear-gradient(360deg,
     ${theme.color.greenVivid[4]} ${value}%,
     ${theme.color.grey[3]} ${value}%,
     ${theme.color.grey[3]} 100%)`,
@@ -32,8 +84,27 @@ const StyledMeter = styled.div(({ theme, value }) => ({
 
 export const Deck = ({ name, format, updated_at, id }) => {
   const [cards, setCards] = useState([])
-  const stats = useDeckStats(cards)
+  const {
+    average,
+    cmc,
+    colors,
+    counts,
+    types,
+    rarity,
+    isLegal,
+    ...stats
+  } = useDeckStats(cards, format)
   const { actions } = useCards(name)
+
+  console.log(colors)
+
+  // Adds a leading zero if cmc is less than 10
+  const formatNumber = (num: number): string =>
+    num <= 9 ? `0${num}` : `${num}`
+
+  const maxCmcCards = Math.max(...Object.values(cmc))
+
+  // Card Crud actions
 
   const { get, add, update, remove } = actions
 
@@ -53,7 +124,7 @@ export const Deck = ({ name, format, updated_at, id }) => {
     setCards(sortCards([...otherCards, updatedCard]))
   }
 
-  console.dir(stats)
+  // Card Sorting
 
   const sortAlpha = (a, b) => {
     const cardA = a.name.toUpperCase()
@@ -68,6 +139,7 @@ export const Deck = ({ name, format, updated_at, id }) => {
     }
   }
 
+  // Filters out variations
   const filterVariation = cards => {
     let variants = []
 
@@ -98,101 +170,138 @@ export const Deck = ({ name, format, updated_at, id }) => {
     <ThemeProvider>
       <StatsContainer>
         <Grid
-          templateAreas={['info creature count', 'ramp spell land']}
-          templateColumns={Grid.repeat(3, Grid.fr(1))}
+          columnGap={6}
+          templateAreas={[
+            'info ramp color creature',
+            'type land rarity creature',
+          ]}
+          templateColumns={Grid.repeat(4, Grid.fr(1))}
           templateRows={Grid.repeat(2, Grid.fr(1))}
         >
           <Grid.Item area="info">
             <Flex alignItems="start" direction="column">
               <Text family="roboto" size={8}>
-                {name}
+                {name} {stats.cards}
               </Text>
-              <Text>{format}</Text>
+              <Text>
+                {format} {isLegal ? 'Legal' : 'Illegal'}
+              </Text>
+              <p>Mana</p>
+              <ColorBar {...colors} total={colors.total} />
+              <p>Land</p>
+              <ColorBar
+                W={types.land.subtypes['plains'] || 0}
+                U={types.land.subtypes['island'] || 0}
+                B={types.land.subtypes['swamp'] || 0}
+                R={types.land.subtypes['mountain'] || 0}
+                G={types.land.subtypes['forest'] || 0}
+                total={counts.land}
+              />
             </Flex>
           </Grid.Item>
 
           <Grid.Item area="ramp">
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                01
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['1']) / stats.cards) * 100)}
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['1']}
-              </Text>
-            </StyledRamp>
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                02
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['2']) / stats.cards) * 100)}
-                max={stats.cards}
-                title="2 converted mana cost"
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['2']}
-              </Text>
-            </StyledRamp>
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                03
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['3']) / stats.cards) * 100)}
-                max={stats.cards}
-                title="3 converted mana cost"
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['3']}
-              </Text>
-            </StyledRamp>
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                04
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['4']) / stats.cards) * 100)}
-                max={stats.cards}
-                title="4 converted mana cost"
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['4']}
-              </Text>
-            </StyledRamp>
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                05
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['5']) / stats.cards) * 100)}
-                max={stats.cards}
-                title="5 converted mana cost"
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['5']}
-              </Text>
-            </StyledRamp>
-            <StyledRamp>
-              <Text display="inline-block" family="roboto">
-                06
-              </Text>
-              <StyledMeter
-                value={Math.round((Number(stats.cmc['6']) / stats.cards) * 100)}
-                max={stats.cards}
-                title="6 or more converted mana cost"
-              />
-              <Text display="inline-block" family="roboto">
-                {stats.cmc['6']}
-              </Text>
-            </StyledRamp>
+            <StatsTitle>
+              <div>Ramp</div>
+              <div>Avg: {average}</div>
+            </StatsTitle>
+            <RampContainer>
+              {[1, 2, 3, 4, 5, 6].map(manaCost => (
+                <StyledRamp>
+                  <Text size={2} family="roboto">
+                    {manaCost} {manaCost === 1 && '-'} {manaCost === 6 && '+'}
+                  </Text>
+                  <StyledMeter
+                    value={Math.round(
+                      (Number(cmc[manaCost]) / maxCmcCards) * 100
+                    )}
+                  />
+                  <Text size={2} family="roboto">
+                    {formatNumber(cmc[manaCost])}
+                  </Text>
+                </StyledRamp>
+              ))}
+            </RampContainer>
           </Grid.Item>
-          <Grid.Item area="count">Count</Grid.Item>
-          <Grid.Item area="creature">Creature</Grid.Item>
-          <Grid.Item area="spell">Spell</Grid.Item>
-          <Grid.Item area="land">Land</Grid.Item>
+          <Grid.Item area="color">
+            <StatsTitle>
+              <div>Color</div>
+            </StatsTitle>
+            {Object.entries(colors).map(([color, count]) => {
+              const colorNames = {
+                W: 'white',
+                U: 'blue',
+                B: 'black',
+                R: 'red',
+                G: 'green',
+                C: 'colorless',
+                M: 'multi',
+              }
+              return (
+                !!count &&
+                color !== 'total' && (
+                  <StatsPair>
+                    <div>{colorNames[color]}</div>
+                    <div>{((count / colors.total) * 100).toFixed(0)}%</div>
+                  </StatsPair>
+                )
+              )
+            })}
+          </Grid.Item>
+          <Grid.Item area="type">
+            <StatsTitle>
+              <div>Types</div>
+            </StatsTitle>
+            {Object.entries(types).map(
+              ([type, typeObj]) =>
+                !!typeObj.count && (
+                  <StatsPair>
+                    <div>{type}</div>
+                    <div>{typeObj.count}</div>
+                  </StatsPair>
+                )
+            )}
+          </Grid.Item>
+          <Grid.Item area="creature">
+            <StatsTitle>
+              <div>Creatures</div>
+              <div>{types.creature.count}</div>
+            </StatsTitle>
+
+            {types.creature.subtypes &&
+              Object.entries(types.creature.subtypes).map(([type, count]) => (
+                <StatsPair>
+                  <div>{type}</div>
+                  <div>{count}</div>
+                </StatsPair>
+              ))}
+          </Grid.Item>
+          <Grid.Item area="land">
+            <StatsTitle>
+              <div>Land</div>
+              <div>{types.land.count}</div>
+            </StatsTitle>
+
+            {types.land.subtypes &&
+              Object.entries(types.land.subtypes).map(([land, count]) => (
+                <StatsPair>
+                  <div>{land}</div>
+                  <div>{count}</div>
+                </StatsPair>
+              ))}
+          </Grid.Item>
+          <Grid.Item area="rarity">
+            <StatsTitle>
+              <div>Rarity</div>
+            </StatsTitle>
+
+            {Object.entries(rarity).map(([rare, count]) => (
+              <StatsPair>
+                <div>{rare}</div>
+                <div>{count}</div>
+              </StatsPair>
+            ))}
+          </Grid.Item>
         </Grid>
       </StatsContainer>
       <Cards actions={{ addCard, updateCard, removeCard }} cards={cards} />

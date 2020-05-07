@@ -96,10 +96,13 @@ export const Form = ({ updateInfo, submitCallback }): ReactElement => {
           <option value="legacy">Legacy</option>
           <option value="vintage">Vintage</option>
           <option value="brawl">Brawl</option>
-          <option value="block">Block</option>
-          <option value="two-headed-giant">Two Headed Giant</option>
           <option value="pauper">Pauper</option>
+          <option value="casual">Casual</option>
           <option value="pioneer">Pioneer</option>
+          <option value="penny">Penny</option>
+          <option value="duel">Duel</option>
+          <option value="future">Future</option>
+          <option value="historic">Historic</option>
         </select>
       </StyeledLabel>
       <Button type="submit" color="purple" variant="filled" shade={4}>
