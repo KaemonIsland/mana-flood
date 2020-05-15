@@ -44,7 +44,6 @@ export const Form = ({ updateInfo, submitCallback }): ReactElement => {
       const response = await axios.patch(`api/v1/decks/${updateInfo?.id}`, form)
 
       submitCallback(response?.data)
-      console.log('Response: ', response)
     } catch (error) {
       console.log('Unable to update deck: ', error)
     }

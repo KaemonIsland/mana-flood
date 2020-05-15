@@ -7,13 +7,37 @@ import { StatusBar } from '../statusBar'
 export const Collection: React.FC = () => {
   const { actions, scope, deck } = useCards('collection')
   const [cards, setCards] = useState([])
+  const { get, add, update, remove } = actions
+
+  const sortCards = cards => filterVariation(cards).sort(sortAlpha)
+
+  const addCard = async cardId => {
+    const newCard = await add(cardId, deck && deck.id)
+
+    const withoutCard = cards.filter(card => card.id !== cardId)
+
+    setCards(sortCards([...withoutCard, newCard]))
+  }
+
+  const removeCard = async cardId => {
+    const newCard = await remove(cardId, deck && deck.id)
+
+    const withoutCard = cards.filter(card => card.id !== cardId)
+
+    setCards(sortCards([...withoutCard, newCard]))
+  }
+
+  const updateCard = async (cardId, newQuantity) => {
+    const updatedCard = await update(cardId, newQuantity, deck && deck.id)
+
+    const otherCards = cards.filter(card => card.id !== updatedCard.id)
+
+    setCards(sortCards([...otherCards, updatedCard]))
+  }
+
   const getCollectionCards = async () => {
-    fetch(`/api/v1/collection`, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(cardsData => setCards(cardsData))
-      .catch(error => console.log('Unable to get cards: ', error))
+    const cards = await get()
+    setCards(sortCards(cards))
   }
 
   const getCollectionCardsWithDeck = async () => {
@@ -21,12 +45,39 @@ export const Collection: React.FC = () => {
       method: 'GET',
     })
       .then(response => response.json())
-      .then(cardsData => setCards(cardsData))
+      .then(cardsData => setCards(sortCards(cardsData)))
       .catch(error => console.log('Unable to get cards: ', error))
   }
 
+  const sortAlpha = (a, b) => {
+    const cardA = a.name.toUpperCase()
+    const cardB = b.name.toUpperCase()
+
+    if (cardA > cardB) {
+      return 1
+    } else if (cardB > cardA) {
+      return -1
+    } else {
+      return 0
+    }
+  }
+
+  const filterVariation = cards => {
+    let variants = []
+
+    const filteredCards = cards.filter(card => {
+      if (card.variations) {
+        card.variations.forEach(variant => variants.push(variant))
+      }
+
+      return !variants.includes(card.uuid)
+    })
+
+    return filteredCards
+  }
+
   useEffect(() => {
-    if (cards.length === 0) getCollectionCards()
+    getCollectionCards()
   }, [])
 
   useEffect(() => {
@@ -40,7 +91,7 @@ export const Collection: React.FC = () => {
       <Text size={10}>My Collection</Text>
       <hr />
       <Text>{cards.length} different cards</Text>
-      <Cards actions={actions} deck={deck} cards={cards} />
+      <Cards actions={{ addCard, updateCard, removeCard }} cards={cards} />
       <hr />
       <StatusBar scope={scope} />
     </ThemeProvider>

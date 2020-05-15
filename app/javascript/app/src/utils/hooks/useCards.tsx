@@ -18,6 +18,8 @@ export const useCards = defaultScope => {
   const actions =
     cardActions[currentScope === 'collection' ? 'collection' : 'deck']
 
+  actions['set'] = cardActions['set']
+
   return {
     actions,
     deck,

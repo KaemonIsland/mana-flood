@@ -14,8 +14,34 @@ export const Set = ({
   base_set_size,
   ...rest
 }) => {
-  const { actions, scope, deck } = useCards('collection')
   const [cards, setCards] = useState([])
+  const { actions, scope, deck } = useCards('collection')
+  const { add, update, remove, set } = actions
+
+  const sortCards = cards => filterVariation(cards).sort(sortAlpha)
+
+  const addCard = async cardId => {
+    const newCard = await add(cardId, deck && deck.id)
+
+    const withoutCard = cards.filter(card => card.id !== cardId)
+
+    setCards(sortCards([...withoutCard, newCard]))
+  }
+
+  const removeCard = async cardId => {
+    const newCard = await remove(cardId, deck && deck.id)
+
+    const withoutCard = cards.filter(card => card.id !== cardId)
+    setCards(sortCards([...withoutCard, newCard]))
+  }
+
+  const updateCard = async (cardId, newQuantity) => {
+    const updatedCard = await update(cardId, newQuantity, deck && deck.id)
+
+    const otherCards = cards.filter(card => card.id !== updatedCard.id)
+
+    setCards(sortCards([...otherCards, updatedCard]))
+  }
 
   const sortAlpha = (a, b) => {
     const cardA = a.name.toUpperCase()
@@ -44,46 +70,24 @@ export const Set = ({
     return filteredCards
   }
 
-  const getCardsWithCollection = async () => {
-    fetch(`/api/v1/sets/${id}/collection`, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(cardsData => {
-        const noVariants = filterVariation(cardsData)
-
-        const sorted = noVariants.sort(sortAlpha)
-
-        return setCards(sorted)
-      })
-      .catch(error => console.log('Unable to get cards: ', error))
+  const getDeckCards = async () => {
+    const cards = await set.deck(id, deck.id)
+    setCards(sortCards(cards))
   }
 
-  const getCardsWithDeck = async () => {
-    fetch(`/api/v1/sets/${id}/deck/${deck.id}`, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(cardsData => {
-        const noVariants = filterVariation(cardsData)
-
-        const sorted = noVariants.sort(sortAlpha)
-
-        return setCards(sorted)
-      })
-      .catch(error => console.log('Unable to get cards: ', error))
+  const getCollectionCards = async () => {
+    const cards = await set.collection(id)
+    setCards(sortCards(cards))
   }
 
   useEffect(() => {
-    if (cards.length === 0) {
-      getCardsWithCollection()
-    }
+    getCollectionCards()
   }, [])
 
   useEffect(() => {
     if (scope.currentScope !== 'collection' && deck && deck.id) {
       setCards([])
-      getCardsWithDeck()
+      getDeckCards()
     }
   }, [scope.currentScope])
 
@@ -113,7 +117,7 @@ export const Set = ({
         </Text>
       </Flex>
       <hr />
-      <Cards actions={actions} deck={deck} cards={cards} />
+      <Cards actions={{ addCard, updateCard, removeCard }} cards={cards} />
       <StatusBar scope={scope} />
     </ThemeProvider>
   )

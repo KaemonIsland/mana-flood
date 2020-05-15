@@ -44,6 +44,7 @@ export const useDeckStats = (cards, format) => {
       land: { count: 0, subtypes: {} },
       sorcery: { count: 0, subtypes: {} },
       planeswalker: { count: 0, subtypes: {} },
+      artifact: { count: 0, subtypes: {} },
     },
     cmc: {
       1: 0,
@@ -84,7 +85,6 @@ export const useDeckStats = (cards, format) => {
     const { colors, types, cmc, counts, rarity } = newStats
     // Iterates over every card and updates stats object
     cardsArr.forEach(card => {
-      console.log(card)
       const multiplier = card.deck.quantity
 
       if (format !== 'casual' && card.legalities[format] !== 'Legal') {

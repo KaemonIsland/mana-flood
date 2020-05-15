@@ -14,14 +14,28 @@ export const cardActions = {
     remove: () => {},
   },
   set: {
-    getCollection: () => {},
-    getDeck: () => {},
+    collection: () => {},
+    deck: () => {},
   },
 }
 
 const { collection, deck, set } = cardActions
 
-collection.get = async () => {}
+collection.get = async () => {
+  try {
+    const response = await axios('/api/v1/collection')
+
+    const { data } = response
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  } catch (error) {
+    console.log('Unable to get cards: ', error)
+  }
+}
 
 collection.add = async id => {
   try {
@@ -141,5 +155,33 @@ deck.remove = async (id, deckId) => {
   }
 }
 
-set.getCollection = async () => {}
-set.getDeck = async () => {}
+set.collection = async id => {
+  try {
+    const response = await axios(`/api/v1/sets/${id}/collection`)
+
+    const { data } = response
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  } catch (error) {
+    console.log('Unable to get cards: ', error)
+  }
+}
+set.deck = async (id, deckId) => {
+  try {
+    const response = await axios(`/api/v1/sets/${id}/deck/${deckId}`)
+
+    const { data } = response
+
+    if (data.error) {
+      throw new Error(data.error)
+    }
+
+    return data
+  } catch (error) {
+    console.log('Unable to get cards: ', error)
+  }
+}
