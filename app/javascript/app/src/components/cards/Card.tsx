@@ -136,49 +136,51 @@ export const Card = ({ actions, deckScope, ...rest }) => {
               </Flex>
             </Container>
             <div>
-              {has_card && (
-                <>
-                  <Button.Left
-                    color="grey"
-                    shade={8}
-                    size="small"
-                    variant="outline"
-                    bubble={false}
-                    isDisabled={!has_card}
-                    onClick={() => {
-                      const newQuantity = quantity - 1
-                      if (newQuantity === 0) {
-                        removeCard(id)
-                      } else {
-                        updateCard(id, quantity - 1)
-                      }
-                    }}
-                  >
-                    -
-                  </Button.Left>
-                  <Button.Middle
-                    color="grey"
-                    shade={8}
-                    variant="outline"
-                    isDisabled
-                  >
-                    {has_card && quantity}
-                  </Button.Middle>
-                </>
-              )}
-              <Button.Right
-                hasCard={has_card}
-                color="grey"
-                shade={8}
-                size="small"
-                bubble={false}
-                variant="outline"
-                onClick={() =>
-                  has_card ? updateCard(id, quantity + 1) : addCard(id)
-                }
-              >
-                +
-              </Button.Right>
+              <Flex alignItems="center">
+                {has_card && (
+                  <>
+                    <Button.Left
+                      color="grey"
+                      shade={8}
+                      size="small"
+                      variant="outline"
+                      bubble={false}
+                      isDisabled={!has_card}
+                      onClick={() => {
+                        const newQuantity = quantity - 1
+                        if (newQuantity === 0) {
+                          removeCard(id)
+                        } else {
+                          updateCard(id, quantity - 1)
+                        }
+                      }}
+                    >
+                      -
+                    </Button.Left>
+                    <Button.Middle
+                      color="grey"
+                      shade={8}
+                      variant="outline"
+                      isDisabled
+                    >
+                      {has_card && quantity}
+                    </Button.Middle>
+                  </>
+                )}
+                <Button.Right
+                  hasCard={has_card}
+                  color="grey"
+                  shade={8}
+                  size="small"
+                  bubble={false}
+                  variant="outline"
+                  onClick={() =>
+                    has_card ? updateCard(id, quantity + 1) : addCard(id)
+                  }
+                >
+                  +
+                </Button.Right>
+              </Flex>
             </div>
           </Flex>
           <CardInfo>
