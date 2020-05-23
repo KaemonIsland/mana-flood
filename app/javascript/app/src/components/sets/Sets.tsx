@@ -1,7 +1,7 @@
 import React from 'react'
-import { ThemeProvider, Text, Flex, Button } from 'warlock-ui'
+import { ThemeProvider, Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
-import Turbolinks from 'turbolinks'
+import { formatDate } from '../../utils'
 
 const SetGrid = styled.section(({ theme }) => ({
   maxWidth: '101rem',
@@ -14,13 +14,26 @@ const SetGrid = styled.section(({ theme }) => ({
   justifyContent: 'center',
 }))
 
-const SetContainer = styled.div(({ theme }) => ({
+const SetContainer = styled.a(({ theme }) => ({
+  textDecoration: 'none',
   padding: theme.spaceScale(2),
-  border: '1px solid black',
+  border: `1px solid ${theme.color.purple[8]}`,
   width: theme.spaceScale(12),
   boxShadow: theme.boxShadow.single[1],
-  background: `linear-gradient(${theme.color.coolGrey[1]}, ${theme.color.coolGrey[3]})`,
+  backgroundColor: 'white',
   borderRadius: theme.spaceScale(2),
+  transition: 'all 200ms ease-in-out',
+
+  '&:hover, &:focus': {
+    backgroundColor: theme.color.purple[2],
+    transform: 'translateY(-4px)',
+    boxShadow: theme.boxShadow.single[2],
+  },
+  '&:active': {
+    backgroundColor: theme.color.purple[2],
+    transform: 'translateY(-2px)',
+    boxShadow: theme.boxShadow.single[1],
+  },
 }))
 
 type CardSet = {
@@ -34,9 +47,6 @@ type CardSet = {
 export const Sets = ({ sets }) => {
   const filteredSets = sets.filter(({ set_type }) => set_type === 'expansion')
 
-  const viewSetCards = id => {
-    Turbolinks.visit(`/sets/${id}`)
-  }
   return (
     <ThemeProvider>
       <Flex justifyContent="center" alignItems="center">
@@ -44,38 +54,24 @@ export const Sets = ({ sets }) => {
       </Flex>
       <hr />
       <SetGrid>
-        {filteredSets.map(({ id, base_set_size, name }: CardSet) => (
-          <SetContainer key={id}>
-            <Flex
-              direction="column"
-              justifyContent="space-around"
-              alignItems="center"
-            >
-              <Text
-                size={5}
-                style={{
-                  textTransform: 'uppercase',
-                  textAlign: 'center',
-                }}
+        {filteredSets.map(
+          ({ id, base_set_size, name, release_date }: CardSet) => (
+            <SetContainer key={id} href={`/sets/${id}`}>
+              <Flex
+                direction="column"
+                justifyContent="space-around"
+                alignItems="start"
               >
-                {name}
-              </Text>
-              <Text font>{base_set_size} cards</Text>
-              {/* TODO Fix Container */}
-              <div style={{ marginTop: '1rem', width: '100%' }}>
-                <Flex alignItems="center" justifyContent="center">
-                  <Button
-                    color="coolGrey"
-                    shade={8}
-                    onClick={() => viewSetCards(id)}
-                  >
-                    Cards
-                  </Button>
-                </Flex>
-              </div>
-            </Flex>
-          </SetContainer>
-        ))}
+                <Text size={5}>{name}</Text>
+                <br />
+                <Text font="roboto" isItalics>
+                  {formatDate(new Date(release_date), {})}
+                </Text>
+                <Text font="roboto">{base_set_size} cards</Text>
+              </Flex>
+            </SetContainer>
+          )
+        )}
       </SetGrid>
     </ThemeProvider>
   )
