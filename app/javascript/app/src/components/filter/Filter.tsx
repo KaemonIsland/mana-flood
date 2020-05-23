@@ -18,16 +18,16 @@ const FilterContainer = styled.div(({ theme, isMobile, isOpen }) => ({
   ...(isMobile
     ? {
         position: 'fixed',
-        top: theme.spaceScale(8),
+        top: 0,
         left: isOpen ? '0' : '-' + theme.spaceScale(13),
-        zIndex: 5000,
+        zIndex: 2000000000,
         transition: 'all 300ms ease-in',
       }
     : {}),
 }))
 
 const FilterBox = styled.div(({ theme }) => ({
-  backgroundColor: theme.color.warmGrey[2],
+  backgroundColor: 'white',
   borderRadius: theme.spaceScale(2),
   border: '1px solid black',
   padding: theme.spaceScale(1),
@@ -50,7 +50,7 @@ const Background = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 950;
+  z-index: 1500000000;
   width: 100vw;
   height: 100vh;
   opacity: 0.6;
@@ -220,7 +220,7 @@ const FilterContent = ({
 )
 
 export const Filter = ({ stats, updateFilters, filters }) => {
-  const isMobile = useMediaQuery({ maxWidth: 650 })
+  const isMobile = useMediaQuery({ maxWidth: 800 })
   const [isOpen, setIsOpen] = useState(false)
 
   const openFilter = () => {
@@ -266,7 +266,7 @@ export const Filter = ({ stats, updateFilters, filters }) => {
             variant="outline"
             shade={7}
           >
-            Filter
+            Filters
           </Button>
           <FocusLock disabled={!isOpen}>
             <FilterContent {...filterParams} disabled={!isOpen} />

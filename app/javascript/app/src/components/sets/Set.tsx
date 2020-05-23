@@ -103,20 +103,6 @@ export const Set = ({
         {name}
       </Text>
       <hr />
-      <Flex justifyContent="space-around" alignItems="center">
-        <Text isBold>{code}</Text>
-        <Text isItalics>
-          {formatDate(release_date, {
-            month: 'long',
-            year: 'numeric',
-            day: 'numeric',
-          })}
-        </Text>
-        <Text>
-          {set_type} - {base_set_size} cards
-        </Text>
-      </Flex>
-      <hr />
       <Cards
         actions={{ addCard, updateCard, removeCard }}
         cards={cards}

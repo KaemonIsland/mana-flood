@@ -26,7 +26,7 @@ const StyledGrid = styled.div`
 `
 
 export const Cards = ({ actions, cards, scope }) => {
-  const isMobile = useMediaQuery({ maxWidth: 650 })
+  const isMobile = useMediaQuery({ maxWidth: 800 })
   const stats = useCardsStats(cards, scope)
   const { filteredCards, ...rest } = useFilter(cards)
 
