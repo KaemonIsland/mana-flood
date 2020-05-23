@@ -97,6 +97,8 @@ const allowedCardAttributes = {
   uuid: '',
   variations: '',
   watermark: '',
+  asciiName: '',
+  flavorName: '',
 }
 
 const allowedSetAttributes = {

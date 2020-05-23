@@ -60,4 +60,6 @@ export interface Card {
   uuid: string
   variations: string
   watermark: string
+  asciiName: string
+  flavorName: string
 }
