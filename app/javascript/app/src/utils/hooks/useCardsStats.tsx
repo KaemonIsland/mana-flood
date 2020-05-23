@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-export const useDeckStats = (cards, format) => {
+export const useCardsStats = (cards, scope) => {
   /**
    * This is the default object for setting all of the stats.
    *
@@ -26,7 +26,6 @@ export const useDeckStats = (cards, format) => {
    * Rarity keeps track of card rarities
    */
   const defaultStats = {
-    isLegal: true,
     colors: {
       total: 0,
       W: 0,
@@ -85,10 +84,12 @@ export const useDeckStats = (cards, format) => {
     const { colors, types, cmc, counts, rarity } = newStats
     // Iterates over every card and updates stats object
     cardsArr.forEach(card => {
-      const multiplier = card.deck.quantity
+      let multiplier = 1
 
-      if (format !== 'casual' && card.legalities[format] !== 'Legal') {
-        stats.isLegal = false
+      if (scope === 'deck') {
+        multiplier = card.deck.quantity
+      } else if (scope === 'collection') {
+        multiplier = card.collection.quantity
       }
 
       // Increment total cards

@@ -1,5 +1,5 @@
 export * from './useDropdown'
 export * from './useOnClickOutside'
 export * from './useCards'
-export * from './useDeckStats'
+export * from './useCardsStats'
 export * from './useFilter'

@@ -91,7 +91,11 @@ export const Collection: React.FC = () => {
       <Text size={10}>My Collection</Text>
       <hr />
       <Text>{cards.length} different cards</Text>
-      <Cards actions={{ addCard, updateCard, removeCard }} cards={cards} />
+      <Cards
+        actions={{ addCard, updateCard, removeCard }}
+        cards={cards}
+        scope="collection"
+      />
       <hr />
       <StatusBar scope={scope} />
     </ThemeProvider>

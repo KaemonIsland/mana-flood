@@ -117,7 +117,11 @@ export const Set = ({
         </Text>
       </Flex>
       <hr />
-      <Cards actions={{ addCard, updateCard, removeCard }} cards={cards} />
+      <Cards
+        actions={{ addCard, updateCard, removeCard }}
+        cards={cards}
+        scope="set"
+      />
       <StatusBar scope={scope} />
     </ThemeProvider>
   )
