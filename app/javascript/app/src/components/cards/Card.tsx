@@ -6,6 +6,7 @@ import { ManaSymbol } from '../ManaSymbol'
 import { Dropdown } from '../Dropdown'
 import { useDropdown, getCardImage } from '../../utils'
 
+// Card border colors
 const cardColors = {
   W: { color: 'warmGrey', shade: 2 },
   U: { color: 'blueVivid', shade: 4 },
@@ -16,6 +17,14 @@ const cardColors = {
   M: { color: 'yellowVivid', shade: 4 },
 }
 
+/**
+ * Builds a linear gradient based off of the card colors
+ *
+ * @param {object} theme - the theme used for styled-components
+ * @param {set} colors - A set of cards colors. We use a set to prevent duplicates
+ *
+ * @returns formatted linear-gradient string used for a css background
+ */
 const buildCardColors = (theme, colors) => {
   let backgroundColor = []
 
@@ -110,18 +119,18 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = ({ actions, deckScope, ...rest }) => {
+export const Card = ({ actions, deckScope, ...card }) => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
+  // Info used for displaying the card image
+  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
-  // Card information
-  const card = { ...rest }
   const { card_type, id, mana_cost, name, power, toughness, scryfall_id } = card
 
+  // This scope helps us identify if the card will be added to a deck or a collection
   const cardScope = card.deck ? 'deck' : 'collection'
 
   const { has_card, quantity } = card[cardScope]
-  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const { addCard, updateCard, removeCard } = actions
 
@@ -146,12 +155,15 @@ export const Card = ({ actions, deckScope, ...rest }) => {
     close()
   }
 
+  // Formats the cards mana cost for us to easily use mana symbol svgs
   const formattedMana = mana_cost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
     .filter(Boolean)
 
+  // Further changes the formatted mana to generate the cards colors in mana order
+  // A set is used to prevent duplicates
   const cardColors = new Set(
     formattedMana
       .filter(char => isNaN(Number(char)) && char !== 'X')
@@ -190,10 +202,10 @@ export const Card = ({ actions, deckScope, ...rest }) => {
                       isDisabled={!has_card}
                       onClick={() => {
                         const newQuantity = quantity - 1
-                        if (newQuantity === 0) {
-                          removeCard(id)
+                        if (newQuantity) {
+                          updateCard(id, newQuantity)
                         } else {
-                          updateCard(id, quantity - 1)
+                          removeCard(id)
                         }
                       }}
                     >
