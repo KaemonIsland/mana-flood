@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
+import axios from 'axios'
+import { ThemeProvider, Flex, Button, Text, Container, Image } from 'warlock-ui'
 import { ManaSymbol } from '../ManaSymbol'
+import { Dropdown } from '../Dropdown'
+import { useDropdown } from '../../utils'
 
 const cardColors = {
   W: { color: 'warmGrey', shade: 2 },
@@ -45,14 +48,29 @@ const buildCardColors = (theme, colors) => {
   return `linear-gradient(to bottom right, ${backgroundColor.join(', ')})`
 }
 
+const CardImgContainer = styled.div(({ theme }) => ({
+  zIndex: 100,
+  width: '16rem',
+  height: '22rem',
+  borderRadius: theme.spaceScale(4),
+  overflow: 'hidden',
+  boxShadow: theme.boxShadow.single[2],
+}))
+const CardImg = styled.img(({ theme }) => ({
+  maxWidth: '100%',
+  width: '100%',
+  height: '100%',
+}))
+
 const CardContainer = styled.div(({ theme, color }) => {
   const backgroundColors = buildCardColors(theme, color)
 
   return {
-    padding: theme.spaceScale(2),
-    width: theme.spaceScale(13),
+    padding: theme.spaceScale(1),
+    width: '20rem',
     background: backgroundColors,
     borderRadius: theme.spaceScale(2),
+    boxShadow: theme.boxShadow.single[2],
   }
 })
 
@@ -75,20 +93,17 @@ Button.Right = styled(Button)`
   background-color: transparent;
 `
 
-Button.Info = styled(Button)`
-  background-color: transparent;
-`
-
 const InnerCard = styled.div`
   background-color: hsl(0, 100%, 100%, 0.7);
   border-radius: ${({ theme }) => theme.spaceScale(2)};
-  padding: ${({ theme }) => theme.spaceScale(1)};
+  padding: ${({ theme }) => theme.spaceScale(2)};
 `
 
 const CardInfo = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 15rem;
 `
 
 const TitleText = styled(Text)`
@@ -96,21 +111,31 @@ const TitleText = styled(Text)`
 `
 
 export const Card = ({ actions, deckScope, ...rest }) => {
+  const [timeoutId, setTimeoutId] = useState()
+  const [cardImg, setCardImg] = useState('')
   const card = { ...rest }
-  const [showText, setShowText] = useState(false)
+
+  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const { addCard, updateCard, removeCard } = actions
 
-  const {
-    card_type,
-    id,
-    mana_cost,
-    name,
-    power,
-    rarity,
-    text,
-    toughness,
-  } = card
+  const { card_type, id, mana_cost, name, power, toughness, scryfall_id } = card
+
+  const getCardImage = async () => {
+    try {
+      const response = await axios(
+        `https://api.scryfall.com/cards/${scryfall_id}`
+      )
+
+      const { data } = response
+
+      const cardImg = data.image_uris && data.image_uris.normal
+
+      cardImg && setCardImg(cardImg)
+    } catch (error) {
+      console.log('Unable to fetch card', error)
+    }
+  }
 
   const cardScope = card.deck ? 'deck' : 'collection'
 
@@ -131,7 +156,25 @@ export const Card = ({ actions, deckScope, ...rest }) => {
 
   return (
     <ThemeProvider>
-      <CardContainer color={cardColors} showText={showText}>
+      <CardContainer
+        color={cardColors}
+        {...triggerProps}
+        onMouseEnter={() => {
+          if (!isOpen) {
+            const timeoutId = setTimeout(() => {
+              !cardImg && getCardImage()
+              open()
+            }, 300)
+            setTimeoutId(timeoutId)
+          }
+        }}
+        onMouseLeave={() => {
+          if (timeoutId) {
+            clearTimeout(timeoutId)
+          }
+          isOpen && close()
+        }}
+      >
         <InnerCard>
           <Flex justifyContent="space-between" alignItems="start">
             <Container width={[7]}>
@@ -190,63 +233,44 @@ export const Card = ({ actions, deckScope, ...rest }) => {
               </Flex>
             </div>
           </Flex>
-          <CardInfo>
-            <TitleText title={name} weight="400" family="Roboto" color="black">
-              {name}
-            </TitleText>
-          </CardInfo>
-          <CardInfo>
-            <Text
-              size={2}
-              family="Source Sans"
-              shade={1}
-              color="black"
-              title={card_type}
-            >
-              {card_type}
-            </Text>
-          </CardInfo>
-          <Flex justifyContent="space-between" alignItems="end">
-            <Text
-              isItalics
-              size={1}
-              alignSelf="center"
-              family="Source Sans"
-              color="black"
-              isUpcase
-            >
-              {rarity}
-            </Text>
+          <Flex alignItems="flex-end" justifyContent="space-between">
+            <div>
+              <CardInfo>
+                <TitleText
+                  title={name}
+                  weight="400"
+                  family="Roboto"
+                  color="black"
+                >
+                  {name}
+                </TitleText>
+              </CardInfo>
+              <CardInfo>
+                <Text
+                  size={2}
+                  family="Source Sans"
+                  shade={1}
+                  color="black"
+                  title={card_type}
+                >
+                  {card_type}
+                </Text>
+              </CardInfo>
+            </div>
             {power && toughness && (
-              <Text
-                size={4}
-                alignSelf="center"
-                family="Source Sans"
-                color="black"
-              >
-                {power} / {toughness}
-              </Text>
+              <CardInfo>
+                <Text size={4} family="Roboto" color="black">
+                  {power} / {toughness}
+                </Text>
+              </CardInfo>
             )}
-            <Button.Info
-              color="grey"
-              shade={10}
-              size="small"
-              variant="outline"
-              bubble={false}
-              onClick={() => setShowText(!showText)}
-            >
-              More
-            </Button.Info>
           </Flex>
-          {showText && (
-            <>
-              <hr />
-              <Text size={2} color="black" shade={1} family="Source Sans">
-                {text}
-              </Text>
-            </>
-          )}
         </InnerCard>
+        <Dropdown {...dropdownProps}>
+          <CardImgContainer>
+            <CardImg src={cardImg} alt={name} />
+          </CardImgContainer>
+        </Dropdown>
       </CardContainer>
     </ThemeProvider>
   )

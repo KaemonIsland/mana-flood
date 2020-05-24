@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Filter } from '../filter'
 import { Card } from './Card'
 import { useMediaQuery } from 'react-responsive'
@@ -16,11 +16,8 @@ const StyledGrid = styled.div`
   display: grid;
   grid-gap: ${({ theme }) => theme.spaceScale(3)};
   margin: ${({ theme }) => theme.spaceScale(2)};
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(${({ theme }) => theme.spaceScale(13)}, 1fr)
-  );
-  grid-auto-rows: 9rem;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  grid-auto-rows: 7rem;
   justify-items: center;
   align-items: center;
 `

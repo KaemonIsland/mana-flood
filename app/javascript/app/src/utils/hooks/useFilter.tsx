@@ -80,23 +80,15 @@ export const useFilter = cards => {
     }
   }
 
-  // Removes card variations to prevent multiples from being listed
-  const filterVariation = cards => {
-    let variants = []
-
-    const filteredCards = cards.filter(card => {
-      if (card.variations) {
-        card.variations.forEach(variant => variants.push(variant))
-      }
-
-      return !variants.includes(card.uuid)
-    })
-
-    return filteredCards
-  }
-
   const filterCards = () => {
-    let newlyFilteredCards = filterVariation(cards)
+    let newlyFilteredCards = [...cards]
+
+    newlyFilteredCards = newlyFilteredCards.filter(
+      card =>
+        !(card.is_promo || card.is_alternative) ||
+        card.deck ||
+        (card.collection && card.collection.has_card)
+    )
 
     // Filters cards by color
     if (color.length !== 0) {
