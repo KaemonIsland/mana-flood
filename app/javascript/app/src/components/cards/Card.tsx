@@ -4,7 +4,7 @@ import axios from 'axios'
 import { ThemeProvider, Flex, Button, Text, Container, Image } from 'warlock-ui'
 import { ManaSymbol } from '../ManaSymbol'
 import { Dropdown } from '../Dropdown'
-import { useDropdown } from '../../utils'
+import { useDropdown, getCardImage } from '../../utils'
 
 const cardColors = {
   W: { color: 'warmGrey', shade: 2 },
@@ -111,35 +111,40 @@ const TitleText = styled(Text)`
 `
 
 export const Card = ({ actions, deckScope, ...rest }) => {
-  const [timeoutId, setTimeoutId] = useState()
+  const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
+
+  // Card information
   const card = { ...rest }
-
-  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
-
-  const { addCard, updateCard, removeCard } = actions
-
   const { card_type, id, mana_cost, name, power, toughness, scryfall_id } = card
-
-  const getCardImage = async () => {
-    try {
-      const response = await axios(
-        `https://api.scryfall.com/cards/${scryfall_id}`
-      )
-
-      const { data } = response
-
-      const cardImg = data.image_uris && data.image_uris.normal
-
-      cardImg && setCardImg(cardImg)
-    } catch (error) {
-      console.log('Unable to fetch card', error)
-    }
-  }
 
   const cardScope = card.deck ? 'deck' : 'collection'
 
   const { has_card, quantity } = card[cardScope]
+  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
+
+  const { addCard, updateCard, removeCard } = actions
+
+  // Starts a timeout that will fetch the card img after a set time
+  const startTimeout = () => {
+    if (isOpen || cardImg) {
+      return
+    }
+
+    const timeoutId = setTimeout(async () => {
+      const cardUrl = await getCardImage(scryfall_id)
+      setCardImg(cardUrl)
+      open()
+    }, 300)
+
+    setTimeoutId(timeoutId)
+  }
+
+  // Clears the active timeout if it's set
+  const stopTimeout = () => {
+    timeoutId && clearTimeout(timeoutId)
+    close()
+  }
 
   const formattedMana = mana_cost
     .replace(/[{ | }]/g, ' ')
@@ -159,21 +164,8 @@ export const Card = ({ actions, deckScope, ...rest }) => {
       <CardContainer
         color={cardColors}
         {...triggerProps}
-        onMouseEnter={() => {
-          if (!isOpen) {
-            const timeoutId = setTimeout(() => {
-              !cardImg && getCardImage()
-              open()
-            }, 300)
-            setTimeoutId(timeoutId)
-          }
-        }}
-        onMouseLeave={() => {
-          if (timeoutId) {
-            clearTimeout(timeoutId)
-          }
-          isOpen && close()
-        }}
+        onMouseEnter={startTimeout}
+        onMouseLeave={stopTimeout}
       >
         <InnerCard>
           <Flex justifyContent="space-between" alignItems="start">
@@ -266,7 +258,7 @@ export const Card = ({ actions, deckScope, ...rest }) => {
             )}
           </Flex>
         </InnerCard>
-        <Dropdown {...dropdownProps}>
+        <Dropdown isPaddingless {...dropdownProps} isOpen={isOpen && cardImg}>
           <CardImgContainer>
             <CardImg src={cardImg} alt={name} />
           </CardImgContainer>

@@ -37,7 +37,7 @@ collection.get = async () => {
   }
 }
 
-collection.add = async id => {
+collection.add = async (id: number) => {
   try {
     const response = await axios.post(`/api/v1/add_card/${id}`)
 
