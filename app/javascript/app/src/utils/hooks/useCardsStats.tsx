@@ -114,27 +114,28 @@ export const useCardsStats = (cards, scope) => {
         })
       })
 
+      // Counts multicolored cards, we will count them and their individual colors
+      // We will increment multi and whatever individual colors it contains
+      if (card.color_identity.length > 1) {
+        colors.M += multiplier
+      }
+
+      // Artifacts do not have colors, so we increment colorless
+      if (card.color_identity.length === 0) {
+        colors.total += multiplier
+        colors.C += multiplier
+      }
+
+      // Otherwise we update the color identity
+      card.color_identity.forEach(
+        color => (colors[color] += multiplier) && (colors.total += multiplier)
+      )
+
       // if the card is a land we just need to up the land count. Otherwise we set a few more counts
       if (card.card_type.includes('Basic Land')) {
         counts.land += multiplier
       } else {
         counts.nonLand += multiplier
-        // Counts multicolored cards, we will count them and their individual colors
-        // We will increment multi and whatever individual colors it contains
-        if (card.colors.length > 1) {
-          colors.M += multiplier
-        }
-
-        // Artifacts do not have colors, so we increment colorless
-        if (card.colors.length === 0) {
-          colors.total += multiplier
-          colors.C += multiplier
-        }
-
-        // Otherwise we update the color identity
-        card.colors.forEach(
-          color => (colors[color] += multiplier) && (colors.total += multiplier)
-        )
 
         // Updates counts for creatures and nonCreatures
         cardTypes.includes('Creature')

@@ -92,6 +92,7 @@ const FilterContent = ({
           { label: 'black', value: 'B' },
           { label: 'red', value: 'R' },
           { label: 'green', value: 'G' },
+          { label: 'multi', value: 'M' },
           { label: 'colorless', value: 'C' },
         ].map(({ label, value }) => (
           <div>
@@ -102,6 +103,7 @@ const FilterContent = ({
               value={value}
               onChange={updateFilters}
               checked={color.includes(value)}
+              disabled={!stats.colors[value]}
             />
             <label htmlFor={label}>
               {label} <Count>({stats.colors[value]})</Count>
@@ -134,6 +136,7 @@ const FilterContent = ({
           'enchantment',
           'artifact',
           'planeswalker',
+          'land',
         ].map(type => (
           <div>
             <input
@@ -142,6 +145,7 @@ const FilterContent = ({
               id={type}
               value={type}
               onChange={updateFilters}
+              disabled={!stats.types[type].count}
             />
             <label htmlFor={type}>
               {type} <Count>({stats.types[type].count})</Count>

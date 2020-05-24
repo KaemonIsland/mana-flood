@@ -93,10 +93,17 @@ export const useFilter = cards => {
     // Filters cards by color
     if (color.length !== 0) {
       newlyFilteredCards = newlyFilteredCards.filter(card => {
-        if (card.colors.length === 0 && color.includes('C')) {
+        if (card.color_identity.length === 0 && color.includes('C')) {
           return true
         }
-        return card.colors.some(cardColor => color.includes(cardColor))
+
+        if (color.includes('M')) {
+          return (
+            card.color_identity.length >= 2 &&
+            card.color_identity.some(cardColor => color.includes(cardColor))
+          )
+        }
+        return card.color_identity.some(cardColor => color.includes(cardColor))
       })
     }
 

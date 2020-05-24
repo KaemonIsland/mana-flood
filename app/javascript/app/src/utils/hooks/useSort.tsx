@@ -39,12 +39,12 @@ export const useSort = cards => {
       .sort(sortAlpha)
       .sort(sortCmc)
       .forEach(card => {
-        const { colors } = card
+        const { color_identity } = card
 
-        if (colors.length === 0) {
+        if (color_identity.length === 0) {
           cardsByColor.C.push(card)
-        } else if (colors.length === 1) {
-          cardsByColor[colors[0]].push(card)
+        } else if (color_identity.length === 1) {
+          cardsByColor[color_identity[0]].push(card)
         } else {
           cardsByColor.M.push(card)
         }

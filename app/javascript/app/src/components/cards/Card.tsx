@@ -125,7 +125,18 @@ export const Card = ({ actions, deckScope, ...card }) => {
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
-  const { card_type, id, mana_cost, name, power, toughness, scryfall_id } = card
+  const {
+    card_type,
+    id,
+    mana_cost,
+    name,
+    power,
+    toughness,
+    color_identity,
+    scryfall_id,
+  } = card
+
+  const isLand = card_type.includes('Land')
 
   // This scope helps us identify if the card will be added to a deck or a collection
   const cardScope = card.deck ? 'deck' : 'collection'
@@ -136,7 +147,7 @@ export const Card = ({ actions, deckScope, ...card }) => {
 
   // Starts a timeout that will fetch the card img after a set time
   const startTimeout = () => {
-    if (isOpen || cardImg) {
+    if (isOpen) {
       return
     }
 
@@ -173,109 +184,112 @@ export const Card = ({ actions, deckScope, ...card }) => {
 
   return (
     <ThemeProvider>
-      <CardContainer
-        color={cardColors}
-        {...triggerProps}
-        onMouseEnter={startTimeout}
-        onMouseLeave={stopTimeout}
-      >
-        <InnerCard>
-          <Flex justifyContent="space-between" alignItems="start">
-            <Container width={[7]}>
-              <Flex alignItems="center" justifyContent="start">
-                {formattedMana.length !== 0 &&
-                  formattedMana.map((mana, i) => (
-                    <ManaSymbol key={i} mana={mana} />
-                  ))}
-              </Flex>
-            </Container>
-            <div>
-              <Flex alignItems="center">
-                {has_card && (
-                  <>
-                    <Button.Left
-                      color="grey"
-                      shade={8}
-                      size="small"
-                      variant="outline"
-                      bubble={false}
-                      isDisabled={!has_card}
-                      onClick={() => {
-                        const newQuantity = quantity - 1
-                        if (newQuantity) {
-                          updateCard(id, newQuantity)
-                        } else {
-                          removeCard(id)
-                        }
-                      }}
-                    >
-                      -
-                    </Button.Left>
-                    <Button.Middle
-                      color="grey"
-                      shade={8}
-                      variant="outline"
-                      isDisabled
-                    >
-                      {has_card && quantity}
-                    </Button.Middle>
-                  </>
-                )}
-                <Button.Right
-                  hasCard={has_card}
-                  color="grey"
-                  shade={8}
-                  size="small"
-                  bubble={false}
-                  variant="outline"
-                  onClick={() =>
-                    has_card ? updateCard(id, quantity + 1) : addCard(id)
-                  }
-                >
-                  +
-                </Button.Right>
-              </Flex>
-            </div>
-          </Flex>
-          <Flex alignItems="flex-end" justifyContent="space-between">
-            <div>
-              <CardInfo>
-                <TitleText
-                  title={name}
-                  weight="400"
-                  family="Roboto"
-                  color="black"
-                >
-                  {name}
-                </TitleText>
-              </CardInfo>
-              <CardInfo>
-                <Text
-                  size={2}
-                  family="Source Sans"
-                  shade={1}
-                  color="black"
-                  title={card_type}
-                >
-                  {card_type}
-                </Text>
-              </CardInfo>
-            </div>
-            {power && toughness && (
-              <CardInfo>
-                <Text size={4} family="Roboto" color="black">
-                  {power} / {toughness}
-                </Text>
-              </CardInfo>
-            )}
-          </Flex>
-        </InnerCard>
+      <div>
+        <CardContainer
+          color={isLand ? new Set(color_identity) : cardColors}
+          {...triggerProps}
+          onClick={() => {}}
+          onMouseEnter={startTimeout}
+          onMouseLeave={stopTimeout}
+        >
+          <InnerCard>
+            <Flex justifyContent="space-between" alignItems="start">
+              <Container width={[7]}>
+                <Flex alignItems="center" justifyContent="start">
+                  {formattedMana.length !== 0 &&
+                    formattedMana.map((mana, i) => (
+                      <ManaSymbol key={i} mana={mana} />
+                    ))}
+                </Flex>
+              </Container>
+              <div>
+                <Flex alignItems="center">
+                  {has_card && (
+                    <>
+                      <Button.Left
+                        color="grey"
+                        shade={8}
+                        size="small"
+                        variant="outline"
+                        bubble={false}
+                        isDisabled={!has_card}
+                        onClick={() => {
+                          const newQuantity = quantity - 1
+                          if (newQuantity) {
+                            updateCard(id, newQuantity)
+                          } else {
+                            removeCard(id)
+                          }
+                        }}
+                      >
+                        -
+                      </Button.Left>
+                      <Button.Middle
+                        color="grey"
+                        shade={8}
+                        variant="outline"
+                        isDisabled
+                      >
+                        {has_card && quantity}
+                      </Button.Middle>
+                    </>
+                  )}
+                  <Button.Right
+                    hasCard={has_card}
+                    color="grey"
+                    shade={8}
+                    size="small"
+                    bubble={false}
+                    variant="outline"
+                    onClick={() =>
+                      has_card ? updateCard(id, quantity + 1) : addCard(id)
+                    }
+                  >
+                    +
+                  </Button.Right>
+                </Flex>
+              </div>
+            </Flex>
+            <Flex alignItems="flex-end" justifyContent="space-between">
+              <div>
+                <CardInfo>
+                  <TitleText
+                    title={name}
+                    weight="400"
+                    family="Roboto"
+                    color="black"
+                  >
+                    {name}
+                  </TitleText>
+                </CardInfo>
+                <CardInfo>
+                  <Text
+                    size={2}
+                    family="Source Sans"
+                    shade={1}
+                    color="black"
+                    title={card_type}
+                  >
+                    {card_type}
+                  </Text>
+                </CardInfo>
+              </div>
+              {power && toughness && (
+                <CardInfo>
+                  <Text size={4} family="Roboto" color="black">
+                    {power} / {toughness}
+                  </Text>
+                </CardInfo>
+              )}
+            </Flex>
+          </InnerCard>
+        </CardContainer>
         <Dropdown isPaddingless {...dropdownProps} isOpen={isOpen && cardImg}>
           <CardImgContainer>
             <CardImg src={cardImg} alt={name} />
           </CardImgContainer>
         </Dropdown>
-      </CardContainer>
+      </div>
     </ThemeProvider>
   )
 }
