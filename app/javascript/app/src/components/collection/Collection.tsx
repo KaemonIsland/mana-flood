@@ -9,29 +9,12 @@ export const Collection: React.FC = () => {
   const [cards, setCards] = useState([])
   const { get, add, update, remove } = actions
 
-  const addCard = async cardId => {
-    const newCard = await add(cardId, deck && deck.id)
+  const addCard = async cardId => await add(cardId, deck && deck.id)
 
-    const withoutCard = cards.filter(card => card.id !== cardId)
+  const removeCard = async cardId => await remove(cardId, deck && deck.id)
 
-    setCards([...withoutCard, newCard])
-  }
-
-  const removeCard = async cardId => {
-    const newCard = await remove(cardId, deck && deck.id)
-
-    const withoutCard = cards.filter(card => card.id !== cardId)
-
-    setCards([...withoutCard, newCard])
-  }
-
-  const updateCard = async (cardId, newQuantity) => {
-    const updatedCard = await update(cardId, newQuantity, deck && deck.id)
-
-    const otherCards = cards.filter(card => card.id !== updatedCard.id)
-
-    setCards([...otherCards, updatedCard])
-  }
+  const updateCard = async (cardId, newQuantity) =>
+    await update(cardId, newQuantity, deck && deck.id)
 
   const getCollectionCards = async () => {
     const cards = await get()

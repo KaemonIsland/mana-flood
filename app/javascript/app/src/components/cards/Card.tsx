@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import axios from 'axios'
 import { ThemeProvider, Flex, Button, Text, Container, Image } from 'warlock-ui'
 import { ManaSymbol } from '../ManaSymbol'
 import { Dropdown } from '../Dropdown'
@@ -122,6 +121,8 @@ const TitleText = styled(Text)`
 export const Card = ({ actions, deckScope, ...card }) => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
+  const [hasCard, setHasCard] = useState(false)
+  const [quantity, setQuantity] = useState(1)
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
@@ -139,9 +140,7 @@ export const Card = ({ actions, deckScope, ...card }) => {
   const isLand = card_type.includes('Land')
 
   // This scope helps us identify if the card will be added to a deck or a collection
-  const cardScope = card.deck ? 'deck' : 'collection'
-
-  const { has_card, quantity } = card[cardScope]
+  const scope = card.deck ? 'deck' : 'collection'
 
   const { addCard, updateCard, removeCard } = actions
 
@@ -182,6 +181,13 @@ export const Card = ({ actions, deckScope, ...card }) => {
       .flat()
   )
 
+  useEffect(() => {
+    if (card[scope].has_card) {
+      setHasCard(true)
+      setQuantity(card[scope].quantity)
+    }
+  }, [])
+
   return (
     <ThemeProvider>
       <div>
@@ -204,7 +210,7 @@ export const Card = ({ actions, deckScope, ...card }) => {
               </Container>
               <div>
                 <Flex alignItems="center">
-                  {has_card && (
+                  {hasCard && (
                     <>
                       <Button.Left
                         color="grey"
@@ -212,13 +218,16 @@ export const Card = ({ actions, deckScope, ...card }) => {
                         size="small"
                         variant="outline"
                         bubble={false}
-                        isDisabled={!has_card}
+                        isDisabled={!hasCard}
                         onClick={() => {
                           const newQuantity = quantity - 1
                           if (newQuantity) {
                             updateCard(id, newQuantity)
+                            setQuantity(newQuantity)
                           } else {
                             removeCard(id)
+                            setQuantity(0)
+                            setHasCard(false)
                           }
                         }}
                       >
@@ -230,20 +239,27 @@ export const Card = ({ actions, deckScope, ...card }) => {
                         variant="outline"
                         isDisabled
                       >
-                        {has_card && quantity}
+                        {hasCard && quantity}
                       </Button.Middle>
                     </>
                   )}
                   <Button.Right
-                    hasCard={has_card}
+                    hasCard={hasCard}
                     color="grey"
                     shade={8}
                     size="small"
                     bubble={false}
                     variant="outline"
-                    onClick={() =>
-                      has_card ? updateCard(id, quantity + 1) : addCard(id)
-                    }
+                    onClick={() => {
+                      if (hasCard) {
+                        updateCard(id, quantity + 1)
+                        setQuantity(quantity + 1)
+                      } else {
+                        addCard(id)
+                        setHasCard(true)
+                        setQuantity(1)
+                      }
+                    }}
                   >
                     +
                   </Button.Right>

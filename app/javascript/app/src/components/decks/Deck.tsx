@@ -14,19 +14,10 @@ export const Deck = ({ name, format, updated_at, id }) => {
 
   const addCard = cardId => add(cardId, id)
 
-  const removeCard = async cardId => {
-    remove(cardId, id)
+  const removeCard = async cardId => remove(cardId, id)
 
-    setCards(cards.filter(card => card.id !== cardId))
-  }
-
-  const updateCard = async (cardId, newQuantity) => {
-    const updatedCard = await update(cardId, newQuantity, id)
-
-    const otherCards = cards.filter(card => card.id !== updatedCard.id)
-
-    setCards([...otherCards, updatedCard])
-  }
+  const updateCard = async (cardId, newQuantity) =>
+    await update(cardId, newQuantity, id)
 
   const getDeckCards = async () => {
     const cards = await get(id)
