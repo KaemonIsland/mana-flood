@@ -50,7 +50,7 @@ export const Sets = ({ sets }) => {
   return (
     <ThemeProvider>
       <Flex justifyContent="center" alignItems="center">
-        <Text size={10}>All Expansions</Text>
+        <Text size={10}>Sets</Text>
       </Flex>
       <hr />
       <SetGrid>

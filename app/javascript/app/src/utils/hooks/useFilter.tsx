@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 export const useFilter = cards => {
-  let filteredCards = [...cards]
+  const [filteredCards, setFilteredCards] = useState([])
   const [filters, setFilters] = useState({
     color: [],
     rarity: [],
@@ -80,45 +80,70 @@ export const useFilter = cards => {
     }
   }
 
-  // Filters cards by color
-  if (color.length !== 0) {
-    filteredCards = filteredCards.filter(card => {
-      if (card.colors.length === 0 && color.includes('C')) {
-        return true
+  // Removes card variations to prevent multiples from being listed
+  const filterVariation = cards => {
+    let variants = []
+
+    const filteredCards = cards.filter(card => {
+      if (card.variations) {
+        card.variations.forEach(variant => variants.push(variant))
       }
-      return card.colors.some(cardColor => color.includes(cardColor))
+
+      return !variants.includes(card.uuid)
     })
+
+    return filteredCards
   }
 
-  // Filters cards by rarity
-  if (rarity.length !== 0) {
-    filteredCards = filteredCards.filter(card =>
-      rarity.some(rare => card.rarity === rare)
-    )
-  }
+  const filterCards = () => {
+    let newlyFilteredCards = filterVariation(cards)
 
-  // Filters cards by type
-  if (type) {
-    filteredCards = filteredCards.filter(card =>
-      JSON.parse(card.card_types).some(cardType =>
-        type.includes(cardType.toLowerCase())
+    // Filters cards by color
+    if (color.length !== 0) {
+      newlyFilteredCards = newlyFilteredCards.filter(card => {
+        if (card.colors.length === 0 && color.includes('C')) {
+          return true
+        }
+        return card.colors.some(cardColor => color.includes(cardColor))
+      })
+    }
+
+    // Filters cards by rarity
+    if (rarity.length !== 0) {
+      newlyFilteredCards = newlyFilteredCards.filter(card =>
+        rarity.some(rare => card.rarity === rare)
       )
-    )
+    }
+
+    // Filters cards by type
+    if (type) {
+      newlyFilteredCards = newlyFilteredCards.filter(card =>
+        JSON.parse(card.card_types).some(cardType =>
+          type.includes(cardType.toLowerCase())
+        )
+      )
+    }
+
+    // Filters cards by minimum converted mana cost
+    if (min) {
+      newlyFilteredCards = newlyFilteredCards.filter(
+        card => card.converted_mana_cost >= min
+      )
+    }
+
+    // Filters cards by maximum converted mana cost
+    if (max) {
+      newlyFilteredCards = newlyFilteredCards.filter(
+        card => card.converted_mana_cost <= max
+      )
+    }
+
+    setFilteredCards(newlyFilteredCards)
   }
 
-  // Filters cards by minimum converted mana cost
-  if (min) {
-    filteredCards = filteredCards.filter(
-      card => card.converted_mana_cost >= min
-    )
-  }
-
-  // Filters cards by maximum converted mana cost
-  if (max) {
-    filteredCards = filteredCards.filter(
-      card => card.converted_mana_cost <= max
-    )
-  }
+  useEffect(() => {
+    filterCards()
+  }, [cards, filters])
 
   return {
     filteredCards,

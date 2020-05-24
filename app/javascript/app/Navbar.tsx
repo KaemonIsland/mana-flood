@@ -9,11 +9,10 @@ import { MobileNavbar } from './MobileNavbar'
 const NavContainer = styled('nav')(({ theme }) => ({
   position: 'fixed',
   top: 0,
-  height: theme.spaceScale(8),
   width: '100%',
   backgroundColor: theme.color.purple[2],
   boxShadow: theme.boxShadow.single[2],
-  padding: theme.spaceScale(3),
+  padding: theme.spaceScale(2),
   borderBottom: '1px solid black',
   zIndex: 100000000,
   '& ul': {
@@ -24,7 +23,7 @@ const NavContainer = styled('nav')(({ theme }) => ({
 }))
 
 const NavPadding = styled.div`
-  margin-bottom: ${({ theme }) => theme.spaceScale(8)};
+  margin-bottom: ${({ theme }) => theme.spaceScale(7)};
 `
 
 NavContainer.Link = styled('a')(({ theme, isActive }) => ({

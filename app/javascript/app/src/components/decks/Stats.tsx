@@ -7,10 +7,10 @@ const StatsContainer = styled.section(({ theme, showStats }) => ({
   padding: `0 ${theme.spaceScale(4)}`,
   backgroundColor: theme.color.purple[3],
   borderBottom: `1px solid ${theme.color.purple[8]}`,
-  height: '100%',
-  maxHeight: showStats ? '100%' : '6rem',
+  height: showStats ? '100%' : '6rem',
+  maxHeight: '100%',
   overflow: 'hidden',
-  transition: 'max-height 300ms ease-in-out',
+  transition: 'all 300ms ease-in-out',
 }))
 
 const StatsHeader = styled.div(({ theme }) => ({

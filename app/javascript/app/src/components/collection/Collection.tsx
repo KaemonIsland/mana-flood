@@ -9,14 +9,12 @@ export const Collection: React.FC = () => {
   const [cards, setCards] = useState([])
   const { get, add, update, remove } = actions
 
-  const sortCards = cards => filterVariation(cards).sort(sortAlpha)
-
   const addCard = async cardId => {
     const newCard = await add(cardId, deck && deck.id)
 
     const withoutCard = cards.filter(card => card.id !== cardId)
 
-    setCards(sortCards([...withoutCard, newCard]))
+    setCards([...withoutCard, newCard])
   }
 
   const removeCard = async cardId => {
@@ -24,7 +22,7 @@ export const Collection: React.FC = () => {
 
     const withoutCard = cards.filter(card => card.id !== cardId)
 
-    setCards(sortCards([...withoutCard, newCard]))
+    setCards([...withoutCard, newCard])
   }
 
   const updateCard = async (cardId, newQuantity) => {
@@ -32,12 +30,12 @@ export const Collection: React.FC = () => {
 
     const otherCards = cards.filter(card => card.id !== updatedCard.id)
 
-    setCards(sortCards([...otherCards, updatedCard]))
+    setCards([...otherCards, updatedCard])
   }
 
   const getCollectionCards = async () => {
     const cards = await get()
-    setCards(sortCards(cards))
+    setCards(cards)
   }
 
   const getCollectionCardsWithDeck = async () => {
@@ -45,35 +43,8 @@ export const Collection: React.FC = () => {
       method: 'GET',
     })
       .then(response => response.json())
-      .then(cardsData => setCards(sortCards(cardsData)))
+      .then(cardsData => setCards(cardsData))
       .catch(error => console.log('Unable to get cards: ', error))
-  }
-
-  const sortAlpha = (a, b) => {
-    const cardA = a.name.toUpperCase()
-    const cardB = b.name.toUpperCase()
-
-    if (cardA > cardB) {
-      return 1
-    } else if (cardB > cardA) {
-      return -1
-    } else {
-      return 0
-    }
-  }
-
-  const filterVariation = cards => {
-    let variants = []
-
-    const filteredCards = cards.filter(card => {
-      if (card.variations) {
-        card.variations.forEach(variant => variants.push(variant))
-      }
-
-      return !variants.includes(card.uuid)
-    })
-
-    return filteredCards
   }
 
   useEffect(() => {

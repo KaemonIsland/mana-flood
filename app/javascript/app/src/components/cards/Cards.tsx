@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Filter } from '../filter'
 import { Card } from './Card'
 import { useMediaQuery } from 'react-responsive'
-import { useFilter, useCardsStats } from '../../utils'
+import { useFilter, useCardsStats, useSort } from '../../utils'
 import styled from 'styled-components'
 
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
@@ -26,17 +26,21 @@ const StyledGrid = styled.div`
 `
 
 export const Cards = ({ actions, cards, scope }) => {
-  const isMobile = useMediaQuery({ maxWidth: 800 })
-  const stats = useCardsStats(cards, scope)
+  const isLoading = cards.length === 0
+  const isMobile = useMediaQuery({ maxWidth: 1100 })
   const { filteredCards, ...rest } = useFilter(cards)
+  const stats = useCardsStats(filteredCards, scope)
+  const sortedCards = useSort(filteredCards)
 
   return (
     <CardsContainer isMobile={isMobile}>
       <Filter stats={stats} {...rest} />
       <StyledGrid>
-        {filteredCards.map(card => (
-          <Card actions={actions} key={card.id} {...card} />
-        ))}
+        {!isLoading &&
+          sortedCards.map(card => (
+            <Card actions={actions} key={card.id} {...card} />
+          ))}
+        {isLoading && <h1>...Loading!</h1>}
       </StyledGrid>
     </CardsContainer>
   )

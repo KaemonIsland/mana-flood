@@ -220,7 +220,7 @@ const FilterContent = ({
 )
 
 export const Filter = ({ stats, updateFilters, filters }) => {
-  const isMobile = useMediaQuery({ maxWidth: 800 })
+  const isMobile = useMediaQuery({ maxWidth: 1100 })
   const [isOpen, setIsOpen] = useState(false)
 
   const openFilter = () => {

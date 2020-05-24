@@ -16,14 +16,15 @@ const cardColors = {
 const buildCardColors = (theme, colors) => {
   let backgroundColor = []
 
-  if (colors.length === 0) {
+  // We use use size because colors is a set
+  if (colors.size === 0) {
     backgroundColor.push(
       `${theme.color[cardColors['A'].color][cardColors['A'].shade]}`
     )
     backgroundColor.push(
       `${theme.color[cardColors['A'].color][cardColors['A'].shade + 2]}`
     )
-  } else if (colors.length >= 3) {
+  } else if (colors.size >= 3) {
     backgroundColor.push(
       `${theme.color[cardColors['M'].color][cardColors['M'].shade]}`
     )
@@ -31,7 +32,7 @@ const buildCardColors = (theme, colors) => {
       `${theme.color[cardColors['M'].color][cardColors['M'].shade + 2]}`
     )
   } else {
-    colors.forEach((color, i) => {
+    colors.forEach(color => {
       backgroundColor.push(
         `${theme.color[cardColors[color].color][cardColors[color].shade]}`
       )
@@ -102,7 +103,6 @@ export const Card = ({ actions, deckScope, ...rest }) => {
 
   const {
     card_type,
-    color_identity,
     id,
     mana_cost,
     name,
@@ -122,9 +122,16 @@ export const Card = ({ actions, deckScope, ...rest }) => {
     .split(' ')
     .filter(Boolean)
 
+  const cardColors = new Set(
+    formattedMana
+      .filter(char => isNaN(Number(char)) && char !== 'X')
+      .map(char => (char.length >= 2 && char.split('')) || char)
+      .flat()
+  )
+
   return (
     <ThemeProvider>
-      <CardContainer color={color_identity} showText={showText}>
+      <CardContainer color={cardColors} showText={showText}>
         <InnerCard>
           <Flex justifyContent="space-between" alignItems="start">
             <Container width={[7]}>
