@@ -9,6 +9,7 @@ import { useFilter, useCardsStats, useSort, usePagination } from '../../utils'
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
   display: 'grid',
   gridTemplateColumns: isMobile ? `1fr` : `${theme.spaceScale(12)} 1fr`,
+  margin: isMobile && theme.spaceScale(4),
   gridTemplateRows: isMobile ? `${theme.spaceScale(6)} 1fr` : 'auto',
   gridGap: '1rem',
 }))
@@ -26,8 +27,8 @@ const StyledGrid = styled.div`
 export const Cards = ({ actions, cards, scope }) => {
   const isLoading = cards.length === 0
   const isMobile = useMediaQuery({ maxWidth: 1100 })
+  const stats = useCardsStats(cards, scope)
   const { filteredCards, ...rest } = useFilter(cards)
-  const stats = useCardsStats(filteredCards, scope)
   const sortedCards = useSort(filteredCards)
   const { paginatedCards, ...pagination } = usePagination(sortedCards)
 

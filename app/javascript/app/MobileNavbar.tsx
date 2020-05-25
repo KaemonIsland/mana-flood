@@ -25,7 +25,6 @@ const MobileNavContainer = styled.nav(({ theme, isOpen }) => ({
 MobileNavContainer.Link = styled('li')(({ theme, isActive, type }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
-  width: '80%',
   padding: [
     theme.spaceScale(2),
     theme.spaceScale(2),
@@ -76,12 +75,16 @@ const Background = styled.div`
 
 const OuterNavbarLink = styled(MobileNavContainer.Link)(
   ({ theme, isActive }) => ({
-    width: theme.spaceScale(10),
-    textAlign: 'center',
     borderRadius: isActive
       ? `${theme.spaceScale(1)} ${theme.spaceScale(1)} 0 0`
       : theme.spaceScale(1),
     '&:hover, &:focus, &:active': {
+      color: 'white',
+    },
+    '& a': {
+      fontWeight: 'bold',
+    },
+    '&:hover a, &:focus a, &:active a': {
       color: 'white',
     },
   })
@@ -168,11 +171,7 @@ export const MobileNavbar = ({ signedIn, links }) => {
     <ThemeProvider>
       <ul>
         <OuterNavbarLink tabIndex={1} isActive={isActiveLink('/', true)}>
-          <a href="/">
-            <Text size={5} isBold>
-              Mana Flood
-            </Text>
-          </a>
+          <a href="/">Mana Flood</a>
         </OuterNavbarLink>
         <FocusLock disabled={!isOpen}>
           <MobileNavContainer isOpen={isOpen} role="menu" id="navbar-menu">

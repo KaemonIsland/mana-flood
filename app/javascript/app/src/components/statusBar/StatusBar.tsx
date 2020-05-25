@@ -6,17 +6,18 @@ import { Button } from 'warlock-ui'
 const StyledStatusBar = styled.div(({ theme }) => ({
   position: 'fixed',
   bottom: 0,
-  width: '100%',
   backgroundColor: theme.color.purple[6],
   color: 'white',
   borderTop: `1px solid ${theme.color.purple[9]}`,
-  padding: `${theme.spaceScale(1)} 0`,
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-around',
+  justifyContent: 'space-between',
+  width: '100%',
+  maxWidth: '1370px',
 }))
 
-StyledStatusBar.Item = styled.div(({ active }) => ({
+StyledStatusBar.Item = styled.div(({ theme, active }) => ({
+  padding: `${theme.spaceScale(1)}`,
   borderBottom: `2px solid ${active ? 'white' : 'transparent'}`,
 }))
 

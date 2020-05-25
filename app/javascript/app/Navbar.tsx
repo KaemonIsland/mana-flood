@@ -6,13 +6,29 @@ import { ThemeProvider, Text } from 'warlock-ui'
 import { useMediaQuery } from 'react-responsive'
 import { MobileNavbar } from './MobileNavbar'
 
-const NavContainer = styled('nav')(({ theme }) => ({
+const NavContainer = styled.div(({ theme }) => ({
+  position: 'fixed',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  top: 0,
+  width: '100%',
+  height: '54px',
+  backgroundColor: theme.color.purple[2],
+  boxShadow: theme.boxShadow.single[2],
+  borderBottom: '1px solid black',
+  zIndex: 100000000,
+}))
+
+const NavBar = styled.nav(({ theme, isMobile }) => ({
   position: 'fixed',
   top: 0,
   width: '100%',
+  maxWidth: '1400px',
   backgroundColor: theme.color.purple[2],
-  boxShadow: theme.boxShadow.single[2],
-  padding: theme.spaceScale(2),
+  padding: isMobile
+    ? theme.spaceScale(2)
+    : `${theme.spaceScale(2)} ${theme.spaceScale(4)}`,
   borderBottom: '1px solid black',
   zIndex: 100000000,
   '& ul': {
@@ -140,53 +156,55 @@ export const Navbar = ({ signedIn }) => {
     <ThemeProvider>
       <NavPadding />
       <NavContainer>
-        {isMobile ? (
-          <MobileNavbar links={links} signedIn={signedIn} />
-        ) : (
-          <ul>
-            <li tabIndex={1}>
-              <NavContainer.Logo isActive={isActiveLink('/', true)} href="/">
-                Mana Flood
-              </NavContainer.Logo>
-            </li>
-            {links.map(({ path, title, isExact }, i) => (
-              <li tabIndex={i + 1} key={path}>
-                <NavContainer.Link
-                  isActive={isActiveLink(path, isExact)}
-                  href={path}
-                >
-                  {title}
-                </NavContainer.Link>
+        <NavBar isMobile={isMobile}>
+          {isMobile ? (
+            <MobileNavbar links={links} signedIn={signedIn} />
+          ) : (
+            <ul>
+              <li tabIndex={1}>
+                <NavContainer.Logo isActive={isActiveLink('/', true)} href="/">
+                  Mana Flood
+                </NavContainer.Logo>
               </li>
-            ))}
-            <AuthContainer>
-              {signedIn ? (
-                <AuthContainer.Link
-                  tabIndex={10}
-                  onClick={() => handleLogout()}
-                >
-                  <Text size={2}>
-                    <a>Logout</a>
-                  </Text>
-                </AuthContainer.Link>
-              ) : (
-                <>
-                  <AuthContainer.Link tabIndex={11}>
+              {links.map(({ path, title, isExact }, i) => (
+                <li tabIndex={i + 1} key={path}>
+                  <NavContainer.Link
+                    isActive={isActiveLink(path, isExact)}
+                    href={path}
+                  >
+                    {title}
+                  </NavContainer.Link>
+                </li>
+              ))}
+              <AuthContainer>
+                {signedIn ? (
+                  <AuthContainer.Link
+                    tabIndex={10}
+                    onClick={() => handleLogout()}
+                  >
                     <Text size={2}>
-                      <a href="/login">Login</a>
+                      <a>Logout</a>
                     </Text>
                   </AuthContainer.Link>
-                  {' / '}
-                  <AuthContainer.Link tabIndex={12}>
-                    <Text size={2}>
-                      <a href="/register">Sign Up</a>
-                    </Text>
-                  </AuthContainer.Link>
-                </>
-              )}
-            </AuthContainer>
-          </ul>
-        )}
+                ) : (
+                  <>
+                    <AuthContainer.Link tabIndex={11}>
+                      <Text size={2}>
+                        <a href="/login">Login</a>
+                      </Text>
+                    </AuthContainer.Link>
+                    {' / '}
+                    <AuthContainer.Link tabIndex={12}>
+                      <Text size={2}>
+                        <a href="/register">Sign Up</a>
+                      </Text>
+                    </AuthContainer.Link>
+                  </>
+                )}
+              </AuthContainer>
+            </ul>
+          )}
+        </NavBar>
       </NavContainer>
     </ThemeProvider>
   )

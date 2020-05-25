@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Text, Flex, Grid, Button } from 'warlock-ui'
 import { useCardsStats } from '../../utils'
+import { useMediaQuery } from 'react-responsive'
 
 const StatsContainer = styled.section(({ theme, showStats }) => ({
   padding: `0 ${theme.spaceScale(4)}`,
@@ -98,6 +99,7 @@ const StyledGridItem = styled.div(({ theme }) => ({
 
 export const Stats = ({ cards, name, format }) => {
   const [showStats, setShowStats] = useState(false)
+  const isMobile = useMediaQuery({ maxWidth: 950 })
   const {
     average,
     cmc,
@@ -141,12 +143,15 @@ export const Stats = ({ cards, name, format }) => {
         </StatsHeader>
         <Grid
           columnGap={6}
-          templateAreas={[
-            'ramp info color creature',
-            'type land rarity creature',
-          ]}
-          templateColumns={Grid.repeat(4, Grid.fr(1))}
-          templateRows={Grid.repeat(2, Grid.fr(1))}
+          templateAreas={
+            isMobile
+              ? ['ramp', 'info', 'color', 'type', 'land', 'rarity', 'creature']
+              : ['ramp info color creature', 'type land rarity creature']
+          }
+          templateColumns={isMobile ? Grid.fr(1) : Grid.repeat(4, Grid.fr(1))}
+          templateRows={
+            isMobile ? Grid.repeat(7, Grid.fr(1)) : Grid.repeat(2, Grid.fr(1))
+          }
         >
           <Grid.Item area="info">
             <StyledGridItem>

@@ -1,7 +1,8 @@
 import React from 'react'
-import { ThemeProvider, Text, Flex } from 'warlock-ui'
+import { Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import { formatDate } from '../../utils'
+import { Page } from '../page'
 
 const SetGrid = styled.section(({ theme }) => ({
   maxWidth: '101rem',
@@ -48,8 +49,8 @@ export const Sets = ({ sets }) => {
   const filteredSets = sets.filter(({ set_type }) => set_type === 'expansion')
 
   return (
-    <ThemeProvider>
-      <Flex justifyContent="center" alignItems="center">
+    <Page>
+      <Flex justifyContent="start" alignItems="center">
         <Text size={10}>Sets</Text>
       </Flex>
       <hr />
@@ -73,6 +74,6 @@ export const Sets = ({ sets }) => {
           )
         )}
       </SetGrid>
-    </ThemeProvider>
+    </Page>
   )
 }

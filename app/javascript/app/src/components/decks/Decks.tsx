@@ -1,11 +1,12 @@
 import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components'
 import Turbolinks from 'turbolinks'
-import { ThemeProvider, Button, Flex, Text } from 'warlock-ui'
+import { Button, Flex, Text } from 'warlock-ui'
 import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
 import { Deck } from './types'
 import { Form } from './Form'
+import { Page } from '../page'
 
 const StyledDecks = styled.div(({ theme }) => ({
   border: '1px solid black',
@@ -58,7 +59,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
     }
   }
   return (
-    <ThemeProvider>
+    <Page>
       <Text family="roboto" size={10}>
         My Decks
       </Text>
@@ -126,6 +127,6 @@ export const Decks = ({ decks }: Props): ReactElement => {
           </StyledDecks>
         ))}
       </Flex>
-    </ThemeProvider>
+    </Page>
   )
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { ThemeProvider, Text } from 'warlock-ui'
+import { Text } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { StatusBar } from '../statusBar'
+import { Page } from '../page'
 
 export const Set = ({
   id,
@@ -48,12 +49,11 @@ export const Set = ({
   }, [scope.currentScope])
 
   return (
-    <ThemeProvider>
+    <Page>
       <Text
         size={10}
         style={{
           textTransform: 'uppercase',
-          textAlign: 'center',
         }}
       >
         {name}
@@ -65,6 +65,6 @@ export const Set = ({
         scope="set"
       />
       <StatusBar scope={scope} />
-    </ThemeProvider>
+    </Page>
   )
 }

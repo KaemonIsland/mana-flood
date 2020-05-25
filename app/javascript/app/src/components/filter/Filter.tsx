@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { Flex, Button } from 'warlock-ui'
+import { Flex, Button, Container, Text } from 'warlock-ui'
 import { useMediaQuery } from 'react-responsive'
 import styled, { keyframes } from 'styled-components'
 import FocusLock from 'react-focus-lock'
 import { disablePageScroll, enablePageScroll } from 'scroll-lock'
+
+const StyledLabel = styled.label(({ theme, disabled }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  opacity: disabled && 0.5,
+}))
 
 const Count = styled.span(({ theme }) => ({
   color: theme.color.grey[6],
 }))
 
 const FilterContainer = styled.div(({ theme, isMobile, isOpen }) => ({
-  backgroundColor: theme.color.grey[3],
-  borderRight: '1px solid black',
+  backgroundColor: 'white',
+  border: '1px solid black',
+  borderRadius: theme.spaceScale(1),
+  boxShadow: theme.boxShadow.single[1],
   height: '100%',
-  overflowY: 'scroll',
-  padding: theme.spaceScale(4),
   ...(isMobile
     ? {
         position: 'fixed',
@@ -22,16 +29,15 @@ const FilterContainer = styled.div(({ theme, isMobile, isOpen }) => ({
         left: isOpen ? '0' : '-' + theme.spaceScale(13),
         zIndex: 2000000000,
         transition: 'all 300ms ease-in',
+        overflowY: 'scroll',
       }
     : {}),
 }))
 
 const FilterBox = styled.div(({ theme }) => ({
-  backgroundColor: 'white',
-  borderRadius: theme.spaceScale(2),
-  border: '1px solid black',
-  padding: theme.spaceScale(1),
+  padding: theme.spaceScale(2),
   marginBottom: '1rem',
+  lineHeight: 1.5,
 }))
 
 const fadeIn = keyframes`
@@ -71,21 +77,24 @@ const FilterContent = ({
   <FilterContainer isOpen={isOpen} isMobile={isMobile}>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
-        <div>Color</div>
+        <Text family="roboto">COLOR</Text>
       </Flex>
       <hr />
       <Flex direction="column" alignItems="start" justifyContent="start">
-        <div>
-          <input
-            type="checkbox"
-            name="color"
-            id="all"
-            value="all"
-            onChange={updateFilters}
-            checked={color.length === 0}
-          />
-          <label htmlFor="all">All</label>
-        </div>
+        <Container width="100%">
+          <StyledLabel>
+            <span>
+              <input
+                type="checkbox"
+                name="color"
+                value="all"
+                onChange={updateFilters}
+                checked={color.length === 0}
+              />
+              All
+            </span>
+          </StyledLabel>
+        </Container>
         {[
           { label: 'white', value: 'W' },
           { label: 'blue', value: 'U' },
@@ -95,40 +104,45 @@ const FilterContent = ({
           { label: 'multi', value: 'M' },
           { label: 'colorless', value: 'C' },
         ].map(({ label, value }) => (
-          <div>
-            <input
-              type="checkbox"
-              name="color"
-              id={label}
-              value={value}
-              onChange={updateFilters}
-              checked={color.includes(value)}
-              disabled={!stats.colors[value]}
-            />
-            <label htmlFor={label}>
-              {label} <Count>({stats.colors[value]})</Count>
-            </label>
-          </div>
+          <Container width="100%">
+            <StyledLabel disabled={!stats.colors[value]}>
+              <span>
+                <input
+                  type="checkbox"
+                  name="color"
+                  value={value}
+                  onChange={updateFilters}
+                  checked={color.includes(value)}
+                  disabled={!stats.colors[value]}
+                />
+                {label}
+              </span>
+              <Count>({stats.colors[value]})</Count>
+            </StyledLabel>
+          </Container>
         ))}
       </Flex>
     </FilterBox>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
-        <div>Type</div>
+        <Text family="roboto">TYPE</Text>
       </Flex>
       <hr />
       <Flex direction="column" alignItems="start" justifyContent="start">
-        <div>
-          <input
-            type="radio"
-            name="type"
-            id="all"
-            value="all"
-            onChange={updateFilters}
-            defaultChecked
-          />
-          <label htmlFor="all">All</label>
-        </div>
+        <Container width="100%">
+          <StyledLabel>
+            <span>
+              <input
+                type="radio"
+                name="type"
+                value="all"
+                onChange={updateFilters}
+                defaultChecked
+              />
+              All
+            </span>
+          </StyledLabel>
+        </Container>
         {[
           'creature',
           'sorcery',
@@ -138,64 +152,75 @@ const FilterContent = ({
           'planeswalker',
           'land',
         ].map(type => (
-          <div>
-            <input
-              type="radio"
-              name="type"
-              id={type}
-              value={type}
-              onChange={updateFilters}
-              disabled={!stats.types[type].count}
-            />
-            <label htmlFor={type}>
-              {type} <Count>({stats.types[type].count})</Count>
-            </label>
-          </div>
+          <Container width="100%">
+            <StyledLabel disabled={!stats.types[type].count}>
+              <span>
+                <input
+                  type="radio"
+                  name="type"
+                  value={type}
+                  onChange={updateFilters}
+                  disabled={!stats.types[type].count}
+                />
+                {type}
+              </span>
+              <Count>({stats.types[type].count})</Count>
+            </StyledLabel>
+          </Container>
         ))}
       </Flex>
     </FilterBox>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
-        <div>Rarity</div>
+        <Text family="roboto">RARITY</Text>
       </Flex>
       <hr />
       <Flex direction="column" alignItems="start" justifyContent="start">
-        <div>
-          <input
-            type="checkbox"
-            name="rarity"
-            id="all"
-            value="all"
-            onChange={updateFilters}
-            checked={rarity.length === 0}
-          />
-          <label htmlFor="all">All</label>
-        </div>
+        <Container width="100%">
+          <StyledLabel>
+            <span>
+              <input
+                type="checkbox"
+                name="rarity"
+                value="all"
+                onChange={updateFilters}
+                checked={rarity.length === 0}
+              />
+              All
+            </span>
+          </StyledLabel>
+        </Container>
         {['common', 'uncommon', 'rare', 'mythic'].map(rarity => (
-          <div>
-            <input
-              type="checkbox"
-              name="rarity"
-              id={rarity}
-              value={rarity}
-              onChange={updateFilters}
-              checked={filters.rarity.includes(rarity)}
-            />
-            <label htmlFor={rarity}>
-              {rarity} <Count>({stats.rarity[rarity]})</Count>
-            </label>
-          </div>
+          <Container width="100%">
+            <StyledLabel disabled={!stats.rarity[rarity]}>
+              <span>
+                <input
+                  type="checkbox"
+                  name="rarity"
+                  value={rarity}
+                  onChange={updateFilters}
+                  checked={filters.rarity.includes(rarity)}
+                  disabled={!stats.rarity[rarity]}
+                />
+
+                {rarity}
+              </span>
+              <Count>({stats.rarity[rarity]})</Count>
+            </StyledLabel>
+          </Container>
         ))}
       </Flex>
     </FilterBox>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
-        <div>CMC</div>
+        <Text family="roboto">CMC</Text>
       </Flex>
       <hr />
       <Flex direction="column" alignItems="start" justifyContent="start">
-        <div>
-          <label htmlFor="min">Min: {cmc.min}</label>
+        <Container width="100%">
+          <StyledLabel htmlFor="min">
+            <span>Min: {cmc.min}</span>
+          </StyledLabel>
           <input
             type="range"
             name="min"
@@ -205,19 +230,21 @@ const FilterContent = ({
             value={cmc.min}
             onChange={updateFilters}
           />
-        </div>
-        <div>
-          <label htmlFor="max">Max: {cmc.max}</label>
+        </Container>
+        <Container width="100%">
+          <StyledLabel htmlFor="max">
+            <span>Max: {cmc.max}</span>
+          </StyledLabel>
           <input
             type="range"
             name="max"
             min={cmc.min}
             max={20}
-            value={cmc.max}
             id="max"
+            value={cmc.max}
             onChange={updateFilters}
           />
-        </div>
+        </Container>
       </Flex>
     </FilterBox>
   </FilterContainer>

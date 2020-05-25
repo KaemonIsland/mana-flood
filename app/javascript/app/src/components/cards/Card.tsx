@@ -252,6 +252,7 @@ export const Card = ({ actions, ...card }) => {
                       } else {
                         addCard(id)
                         setHasCard(true)
+                        setQuantity(1)
                       }
                     }}
                   >

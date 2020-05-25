@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { types } from '@babel/core'
 
 export const useFilter = cards => {
   const [filteredCards, setFilteredCards] = useState([])
@@ -83,11 +84,17 @@ export const useFilter = cards => {
   const filterCards = () => {
     let newlyFilteredCards = [...cards]
 
+    // Removes promo/alternative cards from general results unless it's within a collection or deck
     newlyFilteredCards = newlyFilteredCards.filter(
       card =>
         !(card.is_promo || card.is_alternative) ||
         (card.deck && card.deck.has_card) ||
         (card.collection && card.collection.has_card)
+    )
+
+    // Removes land from results unless specified
+    newlyFilteredCards = newlyFilteredCards.filter(
+      card => type === 'land' || !card.card_type.includes('Land')
     )
 
     // Filters cards by color

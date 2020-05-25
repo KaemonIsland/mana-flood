@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { ThemeProvider } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { Stats } from './Stats'
+import { Page } from '../page'
 
 export const Deck = ({ name, format, id }) => {
   const [cards, setCards] = useState([])
@@ -29,13 +29,13 @@ export const Deck = ({ name, format, id }) => {
   }, [])
 
   return (
-    <ThemeProvider>
+    <Page>
       <Stats name={name} format={format} cards={cards} />
       <Cards
         actions={{ addCard, updateCard, removeCard }}
         cards={cards}
         scope="deck"
       />
-    </ThemeProvider>
+    </Page>
   )
 }

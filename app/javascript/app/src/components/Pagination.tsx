@@ -91,16 +91,18 @@ export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
             ...
           </PageButton>
         )}
-        <PageButton
-          type="button"
-          color="grey"
-          shade={8}
-          onClick={() => setPage(totalPages)}
-          variant="outline"
-          isDisabled={page === totalPages}
-        >
-          {totalPages + 1}
-        </PageButton>
+        {totalPages !== 0 && (
+          <PageButton
+            type="button"
+            color="grey"
+            shade={8}
+            onClick={() => setPage(totalPages)}
+            variant="outline"
+            isDisabled={page === totalPages}
+          >
+            {totalPages + 1}
+          </PageButton>
+        )}
         <PageButton.Right
           type="button"
           color="grey"

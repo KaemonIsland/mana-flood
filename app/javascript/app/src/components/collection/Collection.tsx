@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { ThemeProvider, Text } from 'warlock-ui'
+import { Text } from 'warlock-ui'
 import { Cards } from '../cards/Cards'
 import { useCards } from '../../utils'
 import { StatusBar } from '../statusBar'
+import { Page } from '../page'
 
 export const Collection: React.FC = () => {
   const { actions, scope, deck } = useCards('collection')
@@ -43,7 +44,7 @@ export const Collection: React.FC = () => {
     }
   }, [scope.currentScope])
   return (
-    <ThemeProvider>
+    <Page>
       <Text size={10}>My Collection</Text>
       <Text>{cards.length} different cards</Text>
       <hr />
@@ -53,6 +54,6 @@ export const Collection: React.FC = () => {
         scope={scope.currentScope}
       />
       <StatusBar scope={scope} />
-    </ThemeProvider>
+    </Page>
   )
 }
