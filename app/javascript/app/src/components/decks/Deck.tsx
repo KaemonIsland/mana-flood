@@ -4,7 +4,7 @@ import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { Stats } from './Stats'
 
-export const Deck = ({ name, format, updated_at, id }) => {
+export const Deck = ({ name, format, id }) => {
   const [cards, setCards] = useState([])
   const { actions } = useCards(name)
 

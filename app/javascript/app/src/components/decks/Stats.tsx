@@ -106,7 +106,7 @@ export const Stats = ({ cards, name, format }) => {
     types,
     rarity,
     ...stats
-  } = useCardsStats(cards)
+  } = useCardsStats(cards, 'deck')
 
   // Adds a leading zero if cmc is less than 10
   const formatNumber = (num: number): string =>

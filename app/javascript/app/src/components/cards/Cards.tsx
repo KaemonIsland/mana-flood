@@ -1,9 +1,10 @@
 import React from 'react'
+import styled from 'styled-components'
 import { Filter } from '../filter'
 import { Card } from './Card'
+import { Pagination } from '../Pagination'
 import { useMediaQuery } from 'react-responsive'
-import { useFilter, useCardsStats, useSort } from '../../utils'
-import styled from 'styled-components'
+import { useFilter, useCardsStats, useSort, usePagination } from '../../utils'
 
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
   display: 'grid',
@@ -28,17 +29,24 @@ export const Cards = ({ actions, cards, scope }) => {
   const { filteredCards, ...rest } = useFilter(cards)
   const stats = useCardsStats(filteredCards, scope)
   const sortedCards = useSort(filteredCards)
+  const { paginatedCards, ...pagination } = usePagination(sortedCards)
 
   return (
-    <CardsContainer isMobile={isMobile}>
-      <Filter stats={stats} {...rest} />
-      <StyledGrid>
-        {!isLoading &&
-          sortedCards.map(card => (
-            <Card actions={actions} key={card.id} {...card} />
-          ))}
-        {isLoading && <h1>...Loading!</h1>}
-      </StyledGrid>
-    </CardsContainer>
+    <>
+      <CardsContainer isMobile={isMobile}>
+        <div />
+        <Pagination {...pagination} />
+        <Filter stats={stats} {...rest} />
+        <StyledGrid>
+          {!isLoading &&
+            paginatedCards.map(card => (
+              <Card actions={actions} key={card.id} {...card} scope={scope} />
+            ))}
+          {isLoading && <h1>...Loading!</h1>}
+        </StyledGrid>
+        <div />
+        <Pagination {...pagination} />
+      </CardsContainer>
+    </>
   )
 }

@@ -17,8 +17,8 @@ export const Collection: React.FC = () => {
     await update(cardId, newQuantity, deck && deck.id)
 
   const getCollectionCards = async () => {
-    const cards = await get()
-    setCards(cards)
+    const newCards = await get()
+    setCards(newCards)
   }
 
   const getCollectionCardsWithDeck = async () => {
@@ -35,22 +35,23 @@ export const Collection: React.FC = () => {
   }, [])
 
   useEffect(() => {
+    setCards([])
     if (scope.currentScope !== 'collection' && deck && deck.id) {
-      setCards([])
       getCollectionCardsWithDeck()
+    } else {
+      getCollectionCards()
     }
   }, [scope.currentScope])
   return (
     <ThemeProvider>
       <Text size={10}>My Collection</Text>
-      <hr />
       <Text>{cards.length} different cards</Text>
+      <hr />
       <Cards
         actions={{ addCard, updateCard, removeCard }}
         cards={cards}
-        scope="collection"
+        scope={scope.currentScope}
       />
-      <hr />
       <StatusBar scope={scope} />
     </ThemeProvider>
   )

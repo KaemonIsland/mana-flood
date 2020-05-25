@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ThemeProvider, Flex, Text } from 'warlock-ui'
+import { ThemeProvider, Text } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { StatusBar } from '../statusBar'
@@ -24,13 +24,13 @@ export const Set = ({
     await update(cardId, newQuantity, deck && deck.id)
 
   const getDeckCards = async () => {
-    const cards = await set.deck(id, deck.id)
-    setCards(cards)
+    const newCards = await set.deck(id, deck.id)
+    setCards(newCards)
   }
 
   const getCollectionCards = async () => {
-    const cards = await set.collection(id)
-    setCards(cards)
+    const newCards = await set.collection(id)
+    setCards(newCards)
   }
 
   useEffect(() => {
@@ -41,6 +41,9 @@ export const Set = ({
     if (scope.currentScope !== 'collection' && deck && deck.id) {
       setCards([])
       getDeckCards()
+    } else {
+      setCards([])
+      getCollectionCards()
     }
   }, [scope.currentScope])
 

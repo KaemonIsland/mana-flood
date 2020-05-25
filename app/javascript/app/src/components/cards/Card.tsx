@@ -118,11 +118,12 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = ({ actions, deckScope, ...card }) => {
+export const Card = ({ actions, ...card }) => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const [hasCard, setHasCard] = useState(false)
-  const [quantity, setQuantity] = useState(1)
+  const scope = card.deck ? 'deck' : 'collection'
+  const [hasCard, setHasCard] = useState(card[scope].has_card)
+  const [quantity, setQuantity] = useState(card[scope].quantity)
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
@@ -138,9 +139,6 @@ export const Card = ({ actions, deckScope, ...card }) => {
   } = card
 
   const isLand = card_type.includes('Land')
-
-  // This scope helps us identify if the card will be added to a deck or a collection
-  const scope = card.deck ? 'deck' : 'collection'
 
   const { addCard, updateCard, removeCard } = actions
 
@@ -182,11 +180,9 @@ export const Card = ({ actions, deckScope, ...card }) => {
   )
 
   useEffect(() => {
-    if (card[scope].has_card) {
-      setHasCard(true)
-      setQuantity(card[scope].quantity)
-    }
-  }, [])
+    setHasCard(card[scope].has_card)
+    setQuantity(card[scope].quantity)
+  }, [card[scope]])
 
   return (
     <ThemeProvider>
@@ -226,7 +222,6 @@ export const Card = ({ actions, deckScope, ...card }) => {
                             setQuantity(newQuantity)
                           } else {
                             removeCard(id)
-                            setQuantity(0)
                             setHasCard(false)
                           }
                         }}
@@ -257,7 +252,6 @@ export const Card = ({ actions, deckScope, ...card }) => {
                       } else {
                         addCard(id)
                         setHasCard(true)
-                        setQuantity(1)
                       }
                     }}
                   >
@@ -309,6 +303,3 @@ export const Card = ({ actions, deckScope, ...card }) => {
     </ThemeProvider>
   )
 }
-
-// TODO Add more filters
-// TODO Add Card for Land

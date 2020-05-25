@@ -86,7 +86,7 @@ export const useFilter = cards => {
     newlyFilteredCards = newlyFilteredCards.filter(
       card =>
         !(card.is_promo || card.is_alternative) ||
-        card.deck ||
+        (card.deck && card.deck.has_card) ||
         (card.collection && card.collection.has_card)
     )
 
