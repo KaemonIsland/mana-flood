@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Filter } from '../filter'
-import { Card } from './Card'
+import { Minimal } from './card'
 import { Pagination } from '../Pagination'
 import { useMediaQuery } from 'react-responsive'
 import { useFilter, useCardsStats, useSort, usePagination } from '../../utils'
@@ -27,8 +27,8 @@ const StyledGrid = styled.div`
 export const Cards = ({ actions, cards, scope }) => {
   const isLoading = cards.length === 0
   const isMobile = useMediaQuery({ maxWidth: 1100 })
-  const stats = useCardsStats(cards, scope)
   const { filteredCards, ...rest } = useFilter(cards)
+  const stats = useCardsStats(cards, scope)
   const sortedCards = useSort(filteredCards)
   const { paginatedCards, ...pagination } = usePagination(sortedCards)
 
@@ -41,7 +41,7 @@ export const Cards = ({ actions, cards, scope }) => {
         <StyledGrid>
           {!isLoading &&
             paginatedCards.map(card => (
-              <Card actions={actions} key={card.id} {...card} scope={scope} />
+              <Minimal actions={actions} key={card.id} {...card} />
             ))}
           {isLoading && <h1>...Loading!</h1>}
         </StyledGrid>

@@ -21,6 +21,9 @@ Rails.application.routes.draw do
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
+
+      # Methods for single cards
+      get 'card/:id', to: 'cards#show'
     end
   end
 
@@ -38,6 +41,9 @@ Rails.application.routes.draw do
   # Routes to update cards database
   post 'update_cards', to: 'cards#update_card_db'
   post 'update_card_sets', to: 'card_sets#update_card_set_db'
+
+  # Methods for single cards
+  get 'card/:id', to: 'cards#show'
 
 
   # Revised routes for auth

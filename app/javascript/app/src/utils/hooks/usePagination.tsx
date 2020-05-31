@@ -7,7 +7,9 @@ export const usePagination = cards => {
   const cardsPerPage = 16
 
   const totalPages =
-    cards.length === cardsPerPage ? 0 : Math.floor(cards.length / cardsPerPage)
+    cards.length === cardsPerPage * page
+      ? 0
+      : Math.floor(cards.length / cardsPerPage)
 
   const min = cardsPerPage * page
   const max = Math.min(min + cardsPerPage, cards.length)
@@ -31,6 +33,10 @@ export const usePagination = cards => {
       setPaginatedCards(cards.slice(min, max))
     }
   }, [page, cards])
+
+  useEffect(() => {
+    setPage(0)
+  }, [cards])
 
   return {
     paginatedCards,

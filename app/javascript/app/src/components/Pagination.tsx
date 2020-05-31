@@ -38,13 +38,11 @@ export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
       newPageRange = [page - 2, page - 1]
     }
 
-    return newPageRange.filter(page => page !== 0 && page !== totalPages)
+    return newPageRange.filter(page => page > 0 && page < totalPages)
   }
 
   useEffect(() => {
-    if (totalPages > 2) {
-      setPageRange(buildPageRange())
-    }
+    setPageRange(buildPageRange())
   }, [page, totalPages])
   return (
     <PaginationContainer>

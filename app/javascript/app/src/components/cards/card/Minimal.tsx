@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button, Text, Container, Image } from 'warlock-ui'
-import { ManaSymbol } from '../ManaSymbol'
-import { Dropdown } from '../Dropdown'
-import { useDropdown, getCardImage } from '../../utils'
+import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
+import { ManaSymbol } from '../../ManaSymbol'
+import { Dropdown } from '../../Dropdown'
+import { useDropdown, getCardImage } from '../../../utils'
 
 // Card border colors
 const cardColors = {
@@ -118,7 +118,7 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Card = ({ actions, ...card }) => {
+export const Minimal = ({ actions, ...card }) => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
   const scope = card.deck ? 'deck' : 'collection'
@@ -149,7 +149,7 @@ export const Card = ({ actions, ...card }) => {
     }
 
     const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfall_id)
+      const cardUrl = await getCardImage(scryfall_id, 'normal')
       setCardImg(cardUrl)
       open()
     }, 300)
@@ -200,7 +200,7 @@ export const Card = ({ actions, ...card }) => {
                 <Flex alignItems="center" justifyContent="start">
                   {formattedMana.length !== 0 &&
                     formattedMana.map((mana, i) => (
-                      <ManaSymbol key={i} mana={mana} />
+                      <ManaSymbol size="small" key={i} mana={mana} />
                     ))}
                 </Flex>
               </Container>
@@ -262,7 +262,7 @@ export const Card = ({ actions, ...card }) => {
               </div>
             </Flex>
             <Flex alignItems="flex-end" justifyContent="space-between">
-              <div>
+              <a href={`/card/${id}`}>
                 <CardInfo>
                   <TitleText
                     title={name}
@@ -284,7 +284,7 @@ export const Card = ({ actions, ...card }) => {
                     {card_type}
                   </Text>
                 </CardInfo>
-              </div>
+              </a>
               {power && toughness && (
                 <CardInfo>
                   <Text size={4} family="Roboto" color="black">

@@ -84,6 +84,14 @@ export const useCardsStats = (cards, scope) => {
     const { colors, types, cmc, counts, rarity } = newStats
     // Iterates over every card and updates stats object
     cardsArr.forEach(card => {
+      if (
+        card.is_promo ||
+        card.is_alternative ||
+        (card.deck && card.deck.has_card) ||
+        (card.collection && card.collection.has_card)
+      ) {
+        return
+      }
       let multiplier = 1
 
       if (scope === 'deck') {

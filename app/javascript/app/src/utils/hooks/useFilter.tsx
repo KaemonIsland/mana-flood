@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { types } from '@babel/core'
 
 export const useFilter = cards => {
   const [filteredCards, setFilteredCards] = useState([])

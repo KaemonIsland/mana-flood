@@ -10,13 +10,13 @@ import axios from 'axios'
  *
  * @returns card image url
  */
-export const getCardImage = async id => {
+export const getCardImage = async (id, size = 'medium') => {
   try {
     const response = await axios(`https://api.scryfall.com/cards/${id}`)
 
     const { data } = response
 
-    const cardUrl = data.image_uris && data.image_uris.normal
+    const cardUrl = data.image_uris && data.image_uris[size]
 
     return cardUrl
   } catch (error) {

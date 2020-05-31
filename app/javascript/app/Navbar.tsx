@@ -39,7 +39,7 @@ const NavBar = styled.nav(({ theme, isMobile }) => ({
 }))
 
 const NavPadding = styled.div`
-  margin-bottom: ${({ theme }) => theme.spaceScale(7)};
+  margin-bottom: ${({ theme }) => theme.spaceScale(8)};
 `
 
 NavContainer.Link = styled('a')(({ theme, isActive }) => ({
