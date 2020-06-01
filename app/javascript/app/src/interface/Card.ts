@@ -1,16 +1,19 @@
 import { Deck } from './Deck'
 
-interface Ruling {
+export interface Ruling {
   date: Date
   text: string
 }
 
-interface Collection {
+export interface Collection {
   hasCard: boolean
   quantity: number
 }
 
 export interface Card {
+  id: number
+  name: string
+  colorIdentity: string
   scryfallId: string
   manaCost: string
   power: number

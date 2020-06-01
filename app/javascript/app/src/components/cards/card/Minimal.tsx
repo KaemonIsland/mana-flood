@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
 import { Dropdown } from '../../Dropdown'
 import { useDropdown, getCardImage } from '../../../utils'
+import { Card } from '../../../interface'
 
 // Card border colors
 const cardColors = {
@@ -24,8 +25,8 @@ const cardColors = {
  *
  * @returns formatted linear-gradient string used for a css background
  */
-const buildCardColors = (theme, colors) => {
-  let backgroundColor = []
+const buildCardColors = (theme, colors: Set<string>): string => {
+  const backgroundColor = []
 
   // We use use size because colors is a set
   if (colors.size === 0) {
@@ -118,38 +119,59 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Minimal = ({ actions, ...card }) => {
+interface AddCard {
+  (id: number): Card
+}
+interface UpdateCard {
+  (id: number, quantity: number): Card
+}
+interface RemoveCard {
+  (id: number): Card
+}
+
+interface CardActions {
+  addCard: AddCard
+  updateCard: UpdateCard
+  removeCard: RemoveCard
+}
+
+interface Props {
+  actions: CardActions
+  card: Card
+}
+
+export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card.deck ? 'deck' : 'collection'
+  const scope = card.decks ? 'deck' : 'collection'
   const [hasCard, setHasCard] = useState(card[scope].has_card)
   const [quantity, setQuantity] = useState(card[scope].quantity)
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const {
-    card_type,
+    cardType,
     id,
-    mana_cost,
+    manaCost,
     name,
     power,
     toughness,
-    color_identity,
-    scryfall_id,
+    colorIdentity,
+    scryfallId,
   } = card
 
-  const isLand = card_type.includes('Land')
+  const isLand = cardType.includes('Land')
 
   const { addCard, updateCard, removeCard } = actions
 
   // Starts a timeout that will fetch the card img after a set time
-  const startTimeout = () => {
+  const startTimeout = (): void => {
     if (isOpen) {
       return
     }
 
     const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfall_id, 'normal')
+      const cardUrl = await getCardImage(scryfallId, 'normal')
       setCardImg(cardUrl)
       open()
     }, 300)
@@ -158,13 +180,13 @@ export const Minimal = ({ actions, ...card }) => {
   }
 
   // Clears the active timeout if it's set
-  const stopTimeout = () => {
+  const stopTimeout = (): void => {
     timeoutId && clearTimeout(timeoutId)
     close()
   }
 
   // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana = mana_cost
+  const formattedMana: Array<string> = manaCost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -172,11 +194,11 @@ export const Minimal = ({ actions, ...card }) => {
 
   // Further changes the formatted mana to generate the cards colors in mana order
   // A set is used to prevent duplicates
-  const cardColors = new Set(
+  const cardColors: Set<string> = new Set(
     formattedMana
       .filter(char => isNaN(Number(char)) && char !== 'X')
-      .map(char => (char.length >= 2 && char.split('')) || char)
-      .flat()
+      .map(char => (char.length >= 2 && char.split('').join(' ')) || char)
+      .filter(Boolean)
   )
 
   useEffect(() => {
@@ -188,9 +210,11 @@ export const Minimal = ({ actions, ...card }) => {
     <ThemeProvider>
       <div>
         <CardContainer
-          color={isLand ? new Set(color_identity) : cardColors}
+          color={isLand ? new Set(colorIdentity) : cardColors}
           {...triggerProps}
-          onClick={() => {}}
+          onClick={(): void => {
+            // TODO Add functionality here
+          }}
           onMouseEnter={startTimeout}
           onMouseLeave={stopTimeout}
         >
@@ -215,7 +239,7 @@ export const Minimal = ({ actions, ...card }) => {
                         variant="outline"
                         bubble={false}
                         isDisabled={!hasCard}
-                        onClick={() => {
+                        onClick={(): void => {
                           const newQuantity = quantity - 1
                           if (newQuantity) {
                             updateCard(id, newQuantity)
@@ -245,7 +269,7 @@ export const Minimal = ({ actions, ...card }) => {
                     size="small"
                     bubble={false}
                     variant="outline"
-                    onClick={() => {
+                    onClick={(): void => {
                       if (hasCard) {
                         updateCard(id, quantity + 1)
                         setQuantity(quantity + 1)
@@ -279,9 +303,9 @@ export const Minimal = ({ actions, ...card }) => {
                     family="Source Sans"
                     shade={1}
                     color="black"
-                    title={card_type}
+                    title={cardType}
                   >
-                    {card_type}
+                    {cardType}
                   </Text>
                 </CardInfo>
               </a>

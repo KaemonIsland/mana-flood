@@ -5,7 +5,7 @@ import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
 import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
 import { Page } from '../../page'
-import { Card } from '../../../interface'
+import { Ruling, Card } from '../../../interface'
 
 Button.Left = styled(Button)`
   border-radius: 1rem 0 0 1rem;
@@ -92,6 +92,9 @@ interface Props {
 }
 
 const defaultCard: Card = {
+  id: 0,
+  name: '',
+  colorIdentity: '',
   scryfallId: '',
   manaCost: '',
   power: 0,
