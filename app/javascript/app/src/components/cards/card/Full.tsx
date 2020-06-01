@@ -134,7 +134,7 @@ export const Full = ({ id }) => {
       const { data } = response
 
       if (data) {
-        return data
+        return camelcaseKeys(data)
       } else {
         throw new Error(data)
       }
