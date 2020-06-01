@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { cardActions } from '../cardActions'
 import { Deck, Card } from '../../interface'
 
@@ -12,21 +12,36 @@ interface Scope {
 }
 
 interface Get {
-  (id: number, deckId?: number): Array<Card>
+  (id: number, deckId?: number): Promise<Array<Card>>
 }
 
 interface Add {
-  (id: number, deckId?: number): Card
+  (id: number, deckId?: number): Promise<Card>
 }
 
 interface Update {
-  (id: number, quantity: number, deckId?: number): Card
-}
-interface Remove {
-  (id: number, deckId?: number): Card
+  (id: number, quantity: number, deckId?: number): Promise<Card>
 }
 
-interface CardActions {
+interface Remove {
+  (id: number, deckId?: number): Promise<Card>
+}
+
+interface CollectionFunc {
+  (id: number): Promise<Array<Card> | Card>
+}
+
+interface DeckFunc {
+  (id: number, deckId: number): Promise<Array<Card> | Card>
+}
+
+interface Set {
+  collection: CollectionFunc
+  deck: DeckFunc
+}
+
+interface CardActionFunc {
+  set: Set
   get: Get
   add: Add
   update: Update
@@ -34,7 +49,7 @@ interface CardActions {
 }
 
 interface Actions {
-  actions: CardActions
+  actions: CardActionFunc
   deck: Deck
   scope: Scope
 }
@@ -53,10 +68,10 @@ export const useCards = (defaultScope = 'collection'): Actions => {
     name !== 'collection' ? setDeck(deckInfo) : setDeck(defaultDeck)
   }
 
-  const actions =
-    cardActions[currentScope === 'collection' ? 'collection' : 'deck']
-
-  actions['set'] = cardActions['set']
+  const actions = {
+    ...cardActions[currentScope === 'collection' ? 'collection' : 'deck'],
+    set: cardActions.set,
+  }
 
   return {
     actions,

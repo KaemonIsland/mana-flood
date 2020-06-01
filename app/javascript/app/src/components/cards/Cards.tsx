@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { Filter } from '../filter'
 import { Minimal } from './card'
 import { Pagination } from '../Pagination'
 import { useMediaQuery } from 'react-responsive'
 import { useFilter, useCardsStats, useSort, usePagination } from '../../utils'
+import { Card } from '../../interface'
 
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
   display: 'grid',
@@ -23,8 +24,54 @@ const StyledGrid = styled.div`
   justify-items: center;
   align-items: center;
 `
+interface Scope {
+  currentScope: string
+  updateScope
+}
 
-export const Cards = ({ actions, cards, scope }) => {
+interface Get {
+  (id: number, deckId?: number): Promise<Array<Card>>
+}
+
+interface Add {
+  (id: number, deckId?: number): Promise<Card>
+}
+
+interface Update {
+  (id: number, quantity: number, deckId?: number): Promise<Card>
+}
+
+interface Remove {
+  (id: number, deckId?: number): Promise<Card>
+}
+
+interface CollectionFunc {
+  (id: number): Promise<Array<Card> | Card>
+}
+
+interface DeckFunc {
+  (id: number, deckId: number): Promise<Array<Card> | Card>
+}
+
+interface Set {
+  collection: CollectionFunc
+  deck: DeckFunc
+}
+
+interface CardActionFunc {
+  set: Set
+  get: Get
+  add: Add
+  update: Update
+  remove: Remove
+}
+
+interface Props {
+  actions: CardActionFunc
+  cards: Array<Card>
+  scope: Scope
+}
+export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
   const isLoading = cards.length === 0
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const { filteredCards, ...rest } = useFilter(cards)
