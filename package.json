@@ -28,7 +28,6 @@
     "turbolinks": "^5.2.0",
     "typescript": "^3.8.3",
     "uuid": "^7.0.2",
-    "warlock-config": "^1.1.0",
     "warlock-ui": "^0.3.0"
   },
   "scripts": {
@@ -37,6 +36,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "react-is": "^16.13.1",
+    "warlock-config": "^1.2.0",
     "webpack-dev-server": "^3.10.2"
   }
 }

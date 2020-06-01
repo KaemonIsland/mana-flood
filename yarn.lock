@@ -4489,16 +4489,15 @@ eslint-config-react-app@^5.2.1:
   dependencies:
     confusing-browser-globals "^1.0.9"
 
-eslint-config-warlock@^2.0.0:
+eslint-config-warlock-typescript@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-warlock/-/eslint-config-warlock-2.0.0.tgz#824027e2c84b6b3a3bdc09187a3453a6f2503a77"
-  integrity sha512-1p9Ccxl70Np/2UndztozTi6MKYXIJr4605009jQYdMrReWhzDmYmDWvLEMEwp0mwfx63gD9Uz8h/6ZGMX1nxlQ==
-  dependencies:
-    eslint "^6.5.1"
-    eslint-plugin-import "^2.18.2"
-    eslint-plugin-jsx-a11y "^6.2.3"
-    eslint-plugin-react "^7.16.0"
-    eslint-plugin-react-hooks "^2.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-warlock-typescript/-/eslint-config-warlock-typescript-2.0.0.tgz#bf95e90914187c7971c2f1061b1bb101b55636d9"
+  integrity sha512-wBL1rYq7HAvMtSoOjrM1Q9kdPN7M82hIu2i4jDJp96V2lRckHRfHWScuPG340bfUnQ4KtmKtABL+8b7Hq0kelg==
+
+eslint-config-warlock@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-warlock/-/eslint-config-warlock-2.0.1.tgz#60420f48c30edd4f47bc9d4d110ac8ec1dfa225e"
+  integrity sha512-Q0yS/rg67pbaXxGSfUhqzUIWUebJFxBZqy7QsQdcuInKJ8HvLQ9RdPGJjJdcuSeCXfevgGkCiGnHrni+ZlBeyQ==
 
 eslint-import-resolver-node@^0.3.2:
   version "0.3.3"
@@ -4552,25 +4551,7 @@ eslint-plugin-import@2.20.1:
     read-pkg-up "^2.0.0"
     resolve "^1.12.0"
 
-eslint-plugin-import@^2.18.2:
-  version "2.20.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.20.2.tgz#91fc3807ce08be4837141272c8b99073906e588d"
-  integrity sha512-FObidqpXrR8OnCh4iNsxy+WACztJLXAHBO5hK79T1Hc77PgQZkyDGA5Ag9xAvRpglvLNxhH/zSmZ70/pZ31dHg==
-  dependencies:
-    array-includes "^3.0.3"
-    array.prototype.flat "^1.2.1"
-    contains-path "^0.1.0"
-    debug "^2.6.9"
-    doctrine "1.5.0"
-    eslint-import-resolver-node "^0.3.2"
-    eslint-module-utils "^2.4.1"
-    has "^1.0.3"
-    minimatch "^3.0.4"
-    object.values "^1.1.0"
-    read-pkg-up "^2.0.0"
-    resolve "^1.12.0"
-
-eslint-plugin-jsx-a11y@6.2.3, eslint-plugin-jsx-a11y@^6.2.3:
+eslint-plugin-jsx-a11y@6.2.3:
   version "6.2.3"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.2.3.tgz#b872a09d5de51af70a97db1eea7dc933043708aa"
   integrity sha512-CawzfGt9w83tyuVekn0GDPU9ytYtxyxyFZ3aSWROmnRRFQFT2BiPJd7jvRdzNDi6oLWaS2asMeYSNMjWTV4eNg==
@@ -4590,11 +4571,6 @@ eslint-plugin-react-hooks@^1.6.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.7.0.tgz#6210b6d5a37205f0b92858f895a4e827020a7d04"
   integrity sha512-iXTCFcOmlWvw4+TOE8CLWj6yX1GwzT0Y6cUfHHZqWnSk144VmVIRcVGtUAzrLES7C798lmvnt02C7rxaOX1HNA==
 
-eslint-plugin-react-hooks@^2.2.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-2.5.1.tgz#4ef5930592588ce171abeb26f400c7fbcbc23cd0"
-  integrity sha512-Y2c4b55R+6ZzwtTppKwSmK/Kar8AdLiC2f9NADCuxbcTgPPg41Gyqa6b9GppgXSvCtkRw43ZE86CT5sejKC6/g==
-
 eslint-plugin-react@7.19.0:
   version "7.19.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.19.0.tgz#6d08f9673628aa69c5559d33489e855d83551666"
@@ -4610,23 +4586,6 @@ eslint-plugin-react@7.19.0:
     prop-types "^15.7.2"
     resolve "^1.15.1"
     semver "^6.3.0"
-    string.prototype.matchall "^4.0.2"
-    xregexp "^4.3.0"
-
-eslint-plugin-react@^7.16.0:
-  version "7.20.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.20.0.tgz#f98712f0a5e57dfd3e5542ef0604b8739cd47be3"
-  integrity sha512-rqe1abd0vxMjmbPngo4NaYxTcR3Y4Hrmc/jg4T+sYz63yqlmJRknpEQfmWY+eDWPuMmix6iUIK+mv0zExjeLgA==
-  dependencies:
-    array-includes "^3.1.1"
-    doctrine "^2.1.0"
-    has "^1.0.3"
-    jsx-ast-utils "^2.2.3"
-    object.entries "^1.1.1"
-    object.fromentries "^2.0.2"
-    object.values "^1.1.1"
-    prop-types "^15.7.2"
-    resolve "^1.15.1"
     string.prototype.matchall "^4.0.2"
     xregexp "^4.3.0"
 
@@ -4665,7 +4624,7 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
   integrity sha512-8y9YjtM1JBJU/A9Kc+SbaOV4y29sSWckBwMHa+FGtVj5gN/sbnKDf6xJUl+8g7FAij9LVaP8C24DUiH/f/2Z9A==
 
-eslint@^6.5.1, eslint@^6.6.0:
+eslint@^6.6.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
   integrity sha512-K+Iayyo2LtyYhDSYwz5D5QdWw0hCacNzyq1Y821Xna2xSJj7cijoLLYmLxTQgcgZ9mC61nryMy9S7GRbYpI5Ig==
@@ -5949,9 +5908,9 @@ ignore@^4.0.6:
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
 ignore@^5.1.1:
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.6.tgz#643194ad4bf2712f37852e386b6998eff0db2106"
-  integrity sha512-cgXgkypZBcCnOgSihyeqbo6gjIaIyDqPQB7Ra4vhE9m6kigdGoQDMHjviFhRZo3IMlRy6yElosoviMs5YxZXUA==
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
+  integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
 
 immer@1.10.0:
   version "1.10.0"
@@ -11915,12 +11874,13 @@ walker@^1.0.7, walker@~1.0.5:
   dependencies:
     makeerror "1.0.x"
 
-warlock-config@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/warlock-config/-/warlock-config-1.1.0.tgz#d50b5e46c120fac10d2347e23edf116e1321a67c"
-  integrity sha512-gfUS1WAfhZ8e6heF5aN5NTmcMWWBWcWGgk/2HqUIl8LpyVYVs+0vqA+TEVollixTdtRqG1R2E1v95+axppZdtw==
+warlock-config@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/warlock-config/-/warlock-config-1.2.0.tgz#c65468a3a3703473910f12227c27e59420f2a904"
+  integrity sha512-/LPjZhMb5deel+9DNg5PIFja8vBMrDNy9nH0+U3UpmthC0wMwU4t4uRRxyKvBTWBQHsMRpdVk/dgYaF2j7c9IQ==
   dependencies:
-    eslint-config-warlock "^2.0.0"
+    eslint-config-warlock "^2.0.1"
+    eslint-config-warlock-typescript "^2.0.0"
     husky "^3.1.0"
     lint-staged "^9.5.0"
     prettier "^1.19.1"
