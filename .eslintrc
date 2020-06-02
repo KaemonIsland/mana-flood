@@ -3,5 +3,11 @@
   "rules": {
     "@typescript-eslint/member-delimiter-style": 0,
     "import/no-unresolved": 0
-  }
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "es2020": true,
+  },
 }

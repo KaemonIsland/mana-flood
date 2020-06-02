@@ -120,13 +120,13 @@ const TitleText = styled(Text)`
 `
 
 interface AddCard {
-  (id: number): Card
+  (id: number): Promise<Card>
 }
 interface UpdateCard {
-  (id: number, quantity: number): Card
+  (id: number, quantity: number): Promise<Card>
 }
 interface RemoveCard {
-  (id: number): Card
+  (id: number): Promise<Card>
 }
 
 interface CardActions {
@@ -143,24 +143,24 @@ interface Props {
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card.decks ? 'deck' : 'collection'
+  const scope = card && card.deck ? 'deck' : 'collection'
   const [hasCard, setHasCard] = useState(card[scope].has_card)
   const [quantity, setQuantity] = useState(card[scope].quantity)
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const {
-    cardType,
+    card_type,
     id,
-    manaCost,
+    mana_cost,
     name,
     power,
     toughness,
-    colorIdentity,
-    scryfallId,
+    color_identity,
+    scryfall_id,
   } = card
 
-  const isLand = cardType.includes('Land')
+  const isLand = card_type.includes('Land')
 
   const { addCard, updateCard, removeCard } = actions
 
@@ -171,7 +171,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     }
 
     const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfallId, 'normal')
+      const cardUrl = await getCardImage(scryfall_id, 'normal')
       setCardImg(cardUrl)
       open()
     }, 300)
@@ -186,7 +186,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   }
 
   // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana: Array<string> = manaCost
+  const formattedMana: Array<string> = mana_cost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -210,7 +210,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     <ThemeProvider>
       <div>
         <CardContainer
-          color={isLand ? new Set(colorIdentity) : cardColors}
+          color={isLand ? new Set(color_identity) : cardColors}
           {...triggerProps}
           onClick={(): void => {
             // TODO Add functionality here
@@ -303,9 +303,9 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                     family="Source Sans"
                     shade={1}
                     color="black"
-                    title={cardType}
+                    title={card_type}
                   >
-                    {cardType}
+                    {card_type}
                   </Text>
                 </CardInfo>
               </a>

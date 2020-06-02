@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import { Text } from 'warlock-ui'
 import { Cards } from '../cards/Cards'
-import { useCards, toCamelcase } from '../../utils'
+import { useCards, camelcase } from '../../utils'
 import { StatusBar } from '../statusBar'
 import { Page } from '../page'
 import { Card } from '../../interface'
 
-export const Collection: React.FC = () => {
+export const Collection = (): ReactElement => {
   const { actions, scope, deck } = useCards('collection')
   const [cards, setCards] = useState([])
   const { get, add, update, remove } = actions
@@ -36,7 +36,7 @@ export const Collection: React.FC = () => {
         throw new Error(data.error)
       }
 
-      setCards(toCamelcase(data))
+      setCards(data)
     } catch (error) {
       console.log('Unable to get collection cards: ', error)
     }

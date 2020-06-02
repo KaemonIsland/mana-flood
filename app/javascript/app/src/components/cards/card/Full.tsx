@@ -3,7 +3,7 @@ import axios from 'axios'
 import styled from 'styled-components'
 import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
-import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
+import { getCardImage, useCards, formatDate } from '../../../utils'
 import { Page } from '../../page'
 import { Ruling, Card } from '../../../interface'
 
@@ -173,7 +173,7 @@ export const Full = ({ id }: Props): ReactElement => {
       const cardData: Card = response.data
 
       if (cardData) {
-        return toCamelcase(cardData)
+        return cardData
       } else {
         throw new Error()
       }

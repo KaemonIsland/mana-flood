@@ -63,7 +63,7 @@ export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
         <StyledGrid>
           {!isLoading &&
             paginatedCards.map(card => (
-              <Minimal actions={actions} key={card.id} {...card} />
+              <Minimal actions={actions} key={card.id} card={card} />
             ))}
           {isLoading && <h1>...Loading!</h1>}
         </StyledGrid>
