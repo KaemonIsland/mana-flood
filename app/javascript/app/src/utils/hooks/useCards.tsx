@@ -12,7 +12,7 @@ interface Scope {
 }
 
 interface Get {
-  (id: number, deckId?: number): Promise<Array<Card>>
+  (id?: number, deckId?: number): Promise<Array<Card>>
 }
 
 interface Add {

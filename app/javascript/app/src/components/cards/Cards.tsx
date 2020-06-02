@@ -24,52 +24,27 @@ const StyledGrid = styled.div`
   justify-items: center;
   align-items: center;
 `
-interface Scope {
-  currentScope: string
-  updateScope
+
+interface AddCard {
+  (id: number): Promise<Card>
+}
+interface UpdateCard {
+  (id: number, quantity: number): Promise<Card>
+}
+interface RemoveCard {
+  (id: number): Promise<Card>
 }
 
-interface Get {
-  (id: number, deckId?: number): Promise<Array<Card>>
-}
-
-interface Add {
-  (id: number, deckId?: number): Promise<Card>
-}
-
-interface Update {
-  (id: number, quantity: number, deckId?: number): Promise<Card>
-}
-
-interface Remove {
-  (id: number, deckId?: number): Promise<Card>
-}
-
-interface CollectionFunc {
-  (id: number): Promise<Array<Card> | Card>
-}
-
-interface DeckFunc {
-  (id: number, deckId: number): Promise<Array<Card> | Card>
-}
-
-interface Set {
-  collection: CollectionFunc
-  deck: DeckFunc
-}
-
-interface CardActionFunc {
-  set: Set
-  get: Get
-  add: Add
-  update: Update
-  remove: Remove
+interface CardActions {
+  addCard: AddCard
+  updateCard: UpdateCard
+  removeCard: RemoveCard
 }
 
 interface Props {
-  actions: CardActionFunc
+  actions: CardActions
   cards: Array<Card>
-  scope: Scope
+  scope: string
 }
 export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
   const isLoading = cards.length === 0
