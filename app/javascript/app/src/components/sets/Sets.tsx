@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import { formatDate } from '../../utils'
@@ -39,14 +39,19 @@ const SetContainer = styled.a(({ theme }) => ({
 
 type CardSet = {
   name: string
-  release_date: string
+  releaseDate: string
   id: number
   code: string
-  base_set_size: number
+  baseSetSize: number
+  setType: string
 }
 
-export const Sets = ({ sets }) => {
-  const filteredSets = sets.filter(({ set_type }) => set_type === 'expansion')
+interface SetsProps {
+  sets: Array<CardSet>
+}
+
+export const Sets = ({ sets }: SetsProps): ReactElement => {
+  const filteredSets = sets.filter(({ setType }) => setType === 'expansion')
 
   return (
     <Page>
@@ -55,24 +60,22 @@ export const Sets = ({ sets }) => {
       </Flex>
       <hr />
       <SetGrid>
-        {filteredSets.map(
-          ({ id, base_set_size, name, release_date }: CardSet) => (
-            <SetContainer key={id} href={`/sets/${id}`}>
-              <Flex
-                direction="column"
-                justifyContent="space-around"
-                alignItems="start"
-              >
-                <Text size={5}>{name}</Text>
-                <br />
-                <Text font="roboto" isItalics>
-                  {formatDate(new Date(release_date), {})}
-                </Text>
-                <Text font="roboto">{base_set_size} cards</Text>
-              </Flex>
-            </SetContainer>
-          )
-        )}
+        {filteredSets.map(({ id, baseSetSize, name, releaseDate }: CardSet) => (
+          <SetContainer key={id} href={`/sets/${id}`}>
+            <Flex
+              direction="column"
+              justifyContent="space-around"
+              alignItems="start"
+            >
+              <Text size={5}>{name}</Text>
+              <br />
+              <Text font="roboto" isItalics>
+                {formatDate(new Date(releaseDate), {})}
+              </Text>
+              <Text font="roboto">{baseSetSize} cards</Text>
+            </Flex>
+          </SetContainer>
+        ))}
       </SetGrid>
     </Page>
   )

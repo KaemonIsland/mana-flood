@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Card } from '../interface'
+import { toCamelcase } from '../utils'
 
 export const cardActions = {
   collection: {
@@ -13,7 +14,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to get cards: ', error)
       }
@@ -28,7 +29,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to add card to collection', error)
       }
@@ -45,7 +46,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to update card collection quantity', error)
       }
@@ -60,7 +61,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to remove card to collection', error)
       }
@@ -77,7 +78,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to get cards: ', error)
       }
@@ -94,7 +95,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to add card to deck', error)
       }
@@ -115,7 +116,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to remove card to collection', error)
       }
@@ -132,7 +133,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to remove card to collection', error)
       }
@@ -149,7 +150,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to get cards: ', error)
       }
@@ -164,7 +165,7 @@ export const cardActions = {
           throw new Error(data.error)
         }
 
-        return data
+        return toCamelcase(data)
       } catch (error) {
         console.log('Unable to get cards: ', error)
       }

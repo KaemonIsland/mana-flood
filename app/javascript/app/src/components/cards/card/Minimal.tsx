@@ -65,7 +65,7 @@ const CardImgContainer = styled.div(({ theme }) => ({
   overflow: 'hidden',
   boxShadow: theme.boxShadow.single[2],
 }))
-const CardImg = styled.img(({ theme }) => ({
+const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
   height: '100%',
@@ -90,22 +90,22 @@ Button.Left = styled(Button)`
 Button.Middle = styled.div`
   border-radius: 0;
   background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.color['grey'][8]};
+  border: 1px solid ${({ theme }): string => theme.color['grey'][8]};
   display: inline-block;
   text-align: center;
-  padding: ${({ theme }) =>
+  padding: ${({ theme }): string =>
     [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
 `
 Button.Right = styled(Button)`
-  border-radius: ${({ theme, hasCard }) =>
+  border-radius: ${({ theme, hasCard }): string =>
     hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
   background-color: transparent;
 `
 
 const InnerCard = styled.div`
   background-color: hsl(0, 100%, 100%, 0.7);
-  border-radius: ${({ theme }) => theme.spaceScale(2)};
-  padding: ${({ theme }) => theme.spaceScale(2)};
+  border-radius: ${({ theme }): string => theme.spaceScale(2)};
+  padding: ${({ theme }): string => theme.spaceScale(2)};
 `
 
 const CardInfo = styled.div`
@@ -143,24 +143,24 @@ interface Props {
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card && card.deck ? 'deck' : 'collection'
-  const [hasCard, setHasCard] = useState(card[scope].has_card)
-  const [quantity, setQuantity] = useState(card[scope].quantity)
+  const scope = card[card && card.deck ? 'deck' : 'collection']
+  const [hasCard, setHasCard] = useState(scope.hasCard)
+  const [quantity, setQuantity] = useState(scope.quantity)
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const {
-    card_type,
+    cardType,
     id,
-    mana_cost,
+    manaCost,
     name,
     power,
     toughness,
-    color_identity,
-    scryfall_id,
+    colorIdentity,
+    scryfallId,
   } = card
 
-  const isLand = card_type.includes('Land')
+  const isLand = cardType.includes('Land')
 
   const { addCard, updateCard, removeCard } = actions
 
@@ -171,7 +171,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     }
 
     const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfall_id, 'normal')
+      const cardUrl = await getCardImage(scryfallId, 'normal')
       setCardImg(cardUrl)
       open()
     }, 300)
@@ -185,8 +185,8 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     close()
   }
 
-  // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana: Array<string> = mana_cost
+  // Formats the cards mana cost for us to easily use mana symbol SVGs
+  const formattedMana: Array<string> = manaCost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -197,20 +197,21 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   const cardColors: Set<string> = new Set(
     formattedMana
       .filter(char => isNaN(Number(char)) && char !== 'X')
-      .map(char => (char.length >= 2 && char.split('').join(' ')) || char)
+      .map(char => (char.length >= 2 && char.split('')) || char)
+      .flat()
       .filter(Boolean)
   )
 
   useEffect(() => {
-    setHasCard(card[scope].has_card)
-    setQuantity(card[scope].quantity)
-  }, [card[scope]])
+    setHasCard(scope.hasCard)
+    setQuantity(scope.quantity)
+  }, [scope])
 
   return (
     <ThemeProvider>
       <div>
         <CardContainer
-          color={isLand ? new Set(color_identity) : cardColors}
+          color={isLand ? new Set(colorIdentity) : cardColors}
           {...triggerProps}
           onClick={(): void => {
             // TODO Add functionality here
@@ -303,9 +304,9 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                     family="Source Sans"
                     shade={1}
                     color="black"
-                    title={card_type}
+                    title={cardType}
                   >
-                    {card_type}
+                    {cardType}
                   </Text>
                 </CardInfo>
               </a>

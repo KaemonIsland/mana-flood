@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import { Text } from 'warlock-ui'
 import { Cards } from '../cards/Cards'
-import { useCards, camelcase } from '../../utils'
+import { useCards, toCamelcase } from '../../utils'
 import { StatusBar } from '../statusBar'
 import { Page } from '../page'
 import { Card } from '../../interface'
@@ -36,7 +36,7 @@ export const Collection = (): ReactElement => {
         throw new Error(data.error)
       }
 
-      setCards(data)
+      setCards(toCamelcase(data))
     } catch (error) {
       console.log('Unable to get collection cards: ', error)
     }
@@ -57,7 +57,7 @@ export const Collection = (): ReactElement => {
   return (
     <Page>
       <Text size={10}>My Collection</Text>
-      <Text>{cards.length} different cards</Text>
+      <Text>{cards.length} unique cards</Text>
       <hr />
       <Cards
         actions={{ addCard, updateCard, removeCard }}

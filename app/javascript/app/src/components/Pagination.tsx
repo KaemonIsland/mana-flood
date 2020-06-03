@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, ReactElement } from 'react'
 import { Flex, Button } from 'warlock-ui'
 import styled from 'styled-components'
 
@@ -24,24 +24,48 @@ PageButton.Right = styled(Button)(({ theme, isDisabled }) => ({
   borderRadius: `0 ${theme.spaceScale(2)} ${theme.spaceScale(2)} 0`,
 }))
 
-export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
+interface Prev {
+  (): void
+}
+interface Next {
+  (): void
+}
+
+interface SetPage {
+  (page: number): void
+}
+
+interface PaginationProps {
+  prev: Prev
+  next: Next
+  page: number
+  totalPages: number
+  setPage: SetPage
+}
+
+export const Pagination = ({
+  prev,
+  next,
+  page,
+  totalPages,
+  setPage,
+}: PaginationProps): ReactElement => {
   const [pageRange, setPageRange] = useState([])
 
-  const buildPageRange = () => {
-    let newPageRange = [page - 1, page, page + 1]
-
-    if (page === 0) {
-      newPageRange = [page + 1, page + 2]
-    }
-
-    if (page === totalPages) {
-      newPageRange = [page - 2, page - 1]
-    }
-
-    return newPageRange.filter(page => page > 0 && page < totalPages)
-  }
-
   useEffect(() => {
+    const buildPageRange = (): Array<number> => {
+      let newPageRange = [page - 1, page, page + 1]
+
+      if (page === 0) {
+        newPageRange = [page + 1, page + 2]
+      }
+
+      if (page === totalPages) {
+        newPageRange = [page - 2, page - 1]
+      }
+
+      return newPageRange.filter(page => page > 0 && page < totalPages)
+    }
     setPageRange(buildPageRange())
   }, [page, totalPages])
   return (
@@ -61,7 +85,7 @@ export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
           type="button"
           color="grey"
           shade={8}
-          onClick={() => setPage(0)}
+          onClick={(): void => setPage(0)}
           variant="outline"
           isDisabled={page === 0}
         >
@@ -74,10 +98,11 @@ export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
         )}
         {pageRange.map(pageNumber => (
           <PageButton
+            key={pageNumber}
             type="button"
             color="grey"
             shade={8}
-            onClick={() => setPage(pageNumber)}
+            onClick={(): void => setPage(pageNumber)}
             variant="outline"
             isDisabled={page === pageNumber}
           >
@@ -94,7 +119,7 @@ export const Pagination = ({ prev, next, page, totalPages, setPage }) => {
             type="button"
             color="grey"
             shade={8}
-            onClick={() => setPage(totalPages)}
+            onClick={(): void => setPage(totalPages)}
             variant="outline"
             isDisabled={page === totalPages}
           >

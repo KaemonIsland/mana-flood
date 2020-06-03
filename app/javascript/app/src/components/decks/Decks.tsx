@@ -4,7 +4,7 @@ import Turbolinks from 'turbolinks'
 import { Button, Flex, Text } from 'warlock-ui'
 import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
-import { Deck } from './types'
+import { Deck } from '../../interface'
 import { Form } from './Form'
 import { Page } from '../page'
 
@@ -38,7 +38,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
   const [showForm, setShowForm] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 650 })
 
-  const updateDeckList = newDeck => {
+  const updateDeckList = (newDeck): void => {
     if (newDeck?.id) {
       const filteredDeckList = deckList.filter(deck => deck.id !== newDeck.id)
       setDeckList([newDeck, ...filteredDeckList])
@@ -48,7 +48,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
     setShowForm(false)
   }
 
-  const destroyDeck = async id => {
+  const destroyDeck = async (id: number): Promise<void> => {
     try {
       await axios.delete(`api/v1/decks/${id}`)
 
@@ -63,7 +63,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
       <Text family="roboto" size={10}>
         My Decks
       </Text>
-      <Button onClick={() => setShowForm(true)}>New Deck +</Button>
+      <Button onClick={(): void => setShowForm(true)}>New Deck +</Button>
       <hr />
       {showForm && (
         <Form updateInfo={isUpdating} submitCallback={updateDeckList} />
@@ -93,7 +93,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
                   color="green"
                   shade={7}
                   variant="outline"
-                  onClick={() => {
+                  onClick={(): void => {
                     Turbolinks.visit(`/deck/${deck.id}`)
                   }}
                 >
@@ -103,7 +103,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
                   color="blue"
                   shade={7}
                   variant="outline"
-                  onClick={() => {
+                  onClick={(): void => {
                     setIsUpdating(deck)
                     setShowForm(true)
                   }}
@@ -111,7 +111,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
                   Edit
                 </Button>
                 <Button
-                  onClick={() => {
+                  onClick={(): void => {
                     if (confirm('Are you sure?')) {
                       destroyDeck(deck.id)
                     }

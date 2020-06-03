@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement, ReactChildren } from 'react'
 import { ThemeProvider } from 'warlock-ui'
 import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
@@ -14,8 +14,11 @@ const StyledPage = styled.div(({ theme, isMobile }) => ({
   maxWidth: '1400px',
   padding: isMobile ? `0 ${theme.spaceScale(2)}` : `0 ${theme.spaceScale(4)}`,
 }))
+interface PageProps {
+  children: Array<ReactElement> | ReactChildren
+}
 
-export const Page = ({ children }) => {
+export const Page = ({ children }: PageProps): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 650 })
   return (
     <ThemeProvider>

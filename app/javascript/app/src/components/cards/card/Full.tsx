@@ -3,7 +3,7 @@ import axios from 'axios'
 import styled from 'styled-components'
 import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
-import { getCardImage, useCards, formatDate } from '../../../utils'
+import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
 import { Page } from '../../page'
 import { Ruling, Card } from '../../../interface'
 
@@ -111,6 +111,7 @@ const defaultCard: Card = {
     hasCard: false,
     quantity: 0,
   },
+  variations: [],
 }
 
 export const Full = ({ id }: Props): ReactElement => {
@@ -139,17 +140,18 @@ export const Full = ({ id }: Props): ReactElement => {
   const { hasCard, quantity } = collection
   const { add, update, remove } = actions
 
-  const getVariationInfo = async card => {
-    if (card.variations) {
-      card.variations = await Promise.all(
+  const getVariationInfo = async (card: Card): Promise<void> => {
+    let newVariations = card.variations
+    if (newVariations) {
+      newVariations = await Promise.all(
         card.variations.map(async variant => ({
           ...variant,
-          imgUrl: await getCardImage(variant.scryfall_id, 'large'),
+          imgUrl: await getCardImage(variant.scryfallId, 'large'),
         }))
       )
     }
 
-    setVariations(card)
+    setVariations(newVariations)
   }
 
   const addCard = async (): Promise<void> => {
@@ -170,7 +172,7 @@ export const Full = ({ id }: Props): ReactElement => {
     try {
       const response = await axios(`/api/v1/card/${id}`)
 
-      const cardData: Card = response.data
+      const cardData: Card = toCamelcase(response.data)
 
       if (cardData) {
         return cardData
@@ -203,7 +205,7 @@ export const Full = ({ id }: Props): ReactElement => {
 
   useEffect(() => {
     initialize()
-  }, [])
+  })
 
   return (
     <Page>
@@ -255,7 +257,7 @@ export const Full = ({ id }: Props): ReactElement => {
                         variant="outline"
                         bubble={false}
                         isDisabled={!hasCard}
-                        onClick={() => {
+                        onClick={(): void => {
                           const newQuantity = quantity - 1
                           if (newQuantity) {
                             updateCard(newQuantity)
@@ -283,7 +285,7 @@ export const Full = ({ id }: Props): ReactElement => {
                     size="small"
                     bubble={false}
                     variant="outline"
-                    onClick={() => {
+                    onClick={(): void => {
                       if (hasCard) {
                         updateCard(quantity + 1)
                       } else {

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import { Flex, Button, Container, Text } from 'warlock-ui'
 import { useMediaQuery } from 'react-responsive'
 import styled, { keyframes } from 'styled-components'
 import FocusLock from 'react-focus-lock'
 import { disablePageScroll, enablePageScroll } from 'scroll-lock'
+import { CardStats, Filter as CardFilter } from '../../interface'
 
-const StyledLabel = styled.label(({ theme, disabled }) => ({
+const StyledLabel = styled.label(({ disabled }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -64,6 +65,25 @@ const Background = styled.div`
   animation-duration: 300ms;
 `
 
+interface UpdateFilters {
+  (e: any): void
+}
+
+interface Cmc {
+  min: number
+  max: number
+}
+
+interface FilterContentProps {
+  color: Array<string>
+  rarity: Array<string>
+  cmc: Cmc
+  isMobile: boolean
+  isOpen: boolean
+  stats: CardStats
+  updateFilters: UpdateFilters
+}
+
 const FilterContent = ({
   color,
   rarity,
@@ -72,8 +92,7 @@ const FilterContent = ({
   updateFilters,
   isMobile,
   isOpen,
-  filters,
-}) => (
+}: FilterContentProps): ReactElement => (
   <FilterContainer isOpen={isOpen} isMobile={isMobile}>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
@@ -104,7 +123,7 @@ const FilterContent = ({
           { label: 'multi', value: 'M' },
           { label: 'colorless', value: 'C' },
         ].map(({ label, value }) => (
-          <Container width="100%">
+          <Container width="100%" key={label}>
             <StyledLabel disabled={!stats.colors[value]}>
               <span>
                 <input
@@ -152,7 +171,7 @@ const FilterContent = ({
           'planeswalker',
           'land',
         ].map(type => (
-          <Container width="100%">
+          <Container width="100%" key={type}>
             <StyledLabel disabled={!stats.types[type].count}>
               <span>
                 <input
@@ -191,7 +210,7 @@ const FilterContent = ({
           </StyledLabel>
         </Container>
         {['common', 'uncommon', 'rare', 'mythic'].map(rarity => (
-          <Container width="100%">
+          <Container width="100%" key={rarity}>
             <StyledLabel disabled={!stats.rarity[rarity]}>
               <span>
                 <input
@@ -199,7 +218,7 @@ const FilterContent = ({
                   name="rarity"
                   value={rarity}
                   onChange={updateFilters}
-                  checked={filters.rarity.includes(rarity)}
+                  checked={rarity.includes(rarity)}
                   disabled={!stats.rarity[rarity]}
                 />
 
@@ -250,28 +269,38 @@ const FilterContent = ({
   </FilterContainer>
 )
 
-export const Filter = ({ stats, updateFilters, filters }) => {
+interface FilterProps {
+  stats: CardStats
+  updateFilters: UpdateFilters
+  filters: CardFilter
+}
+
+export const Filter = ({
+  stats,
+  updateFilters,
+  filters,
+}: FilterProps): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const [isOpen, setIsOpen] = useState(false)
 
-  const openFilter = () => {
+  const openFilter = (): void => {
     setIsOpen(true)
     disablePageScroll()
   }
 
-  const closeFilter = () => {
+  const closeFilter = (): void => {
     setIsOpen(false)
     enablePageScroll()
   }
 
-  // Closes the mobile navbar when escape key is pressed
-  const closeOnEscape = e => {
-    if (e.key === 'Escape') {
-      closeFilter()
-    }
-  }
-
   useEffect(() => {
+    // Closes the mobile navbar when escape key is pressed
+    const closeOnEscape = (e): void => {
+      if (e.key === 'Escape') {
+        closeFilter()
+      }
+    }
+
     isOpen
       ? addEventListener('keydown', closeOnEscape)
       : removeEventListener('keydown', closeOnEscape)
@@ -281,7 +310,6 @@ export const Filter = ({ stats, updateFilters, filters }) => {
     ...filters,
     stats,
     updateFilters,
-    filters,
     isMobile,
     isOpen,
   }
@@ -300,7 +328,7 @@ export const Filter = ({ stats, updateFilters, filters }) => {
             Filters
           </Button>
           <FocusLock disabled={!isOpen}>
-            <FilterContent {...filterParams} disabled={!isOpen} />
+            <FilterContent {...filterParams} />
           </FocusLock>
         </>
       ) : (

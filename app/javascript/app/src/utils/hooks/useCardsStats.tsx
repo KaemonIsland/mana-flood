@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export const useCardsStats = (cards, scope) => {
   /**
@@ -85,10 +85,10 @@ export const useCardsStats = (cards, scope) => {
     // Iterates over every card and updates stats object
     cardsArr.forEach(card => {
       if (
-        card.is_promo ||
-        card.is_alternative ||
-        (card.deck && card.deck.has_card) ||
-        (card.collection && card.collection.has_card)
+        card.isPromo ||
+        card.isAlternative ||
+        (card.deck && card.deck.hasCard) ||
+        (card.collection && card.collection.hasCard)
       ) {
         return
       }
@@ -103,7 +103,7 @@ export const useCardsStats = (cards, scope) => {
       // Increment total cards
       newStats.cards += multiplier
       // Card types, they have been stringified so we must parse them
-      const cardTypes = JSON.parse(card.card_types)
+      const cardTypes = JSON.parse(card.cardTypes)
 
       // Counts the card types
       cardTypes.forEach(type => {
@@ -124,23 +124,23 @@ export const useCardsStats = (cards, scope) => {
 
       // Counts multicolored cards, we will count them and their individual colors
       // We will increment multi and whatever individual colors it contains
-      if (card.color_identity.length > 1) {
+      if (card.colorIdentity.length > 1) {
         colors.M += multiplier
       }
 
       // Artifacts do not have colors, so we increment colorless
-      if (card.color_identity.length === 0) {
+      if (card.colorIdentity.length === 0) {
         colors.total += multiplier
         colors.C += multiplier
       }
 
       // Otherwise we update the color identity
-      card.color_identity.forEach(
+      card.colorIdentity.forEach(
         color => (colors[color] += multiplier) && (colors.total += multiplier)
       )
 
       // if the card is a land we just need to up the land count. Otherwise we set a few more counts
-      if (card.card_type.includes('Basic Land')) {
+      if (card.cardType.includes('Basic Land')) {
         counts.land += multiplier
       } else {
         counts.nonLand += multiplier
@@ -151,7 +151,7 @@ export const useCardsStats = (cards, scope) => {
           : (counts.nonCreature += multiplier)
 
         // Gets converted mana cost counts
-        const cardCmc = card.converted_mana_cost
+        const cardCmc = card.convertedManaCost
 
         // Increments 1 mana for 1 or 0 cmc
         if (cardCmc <= 1) {

@@ -1,5 +1,3 @@
-import { Deck } from './Deck'
-
 export interface Ruling {
   date: Date
   text: string
@@ -10,10 +8,25 @@ export interface Collection {
   quantity: number
 }
 
+export interface Variation {
+  id: number
+  uuid: string
+  imgUri?: string
+  scryfallId?: string
+}
+
+interface Deck {
+  id: number
+  hasCard: boolean
+  quantity: number
+}
+
 export interface Card {
+  isAlternative: boolean
+  isPromo: boolean
   id: number
   name: string
-  colorIdentity: string
+  colorIdentity: string | Array<string>
   scryfallId: string
   manaCost: string
   power: number
@@ -27,5 +40,6 @@ export interface Card {
   rarity: string
   number: number
   collection?: Collection
-  decks?: Array<Deck> | Array<[]>
+  deck?: Deck
+  variations: Array<Variation>
 }

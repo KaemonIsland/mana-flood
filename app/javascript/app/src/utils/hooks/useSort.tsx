@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // Sorts by card name alphabetically
 const sortAlpha = (a, b) => {
@@ -39,12 +39,12 @@ export const useSort = cards => {
       .sort(sortAlpha)
       .sort(sortCmc)
       .forEach(card => {
-        const { color_identity } = card
+        const { colorIdentity } = card
 
-        if (color_identity.length === 0) {
+        if (colorIdentity.length === 0) {
           cardsByColor.C.push(card)
-        } else if (color_identity.length === 1) {
-          cardsByColor[color_identity[0]].push(card)
+        } else if (colorIdentity.length === 1) {
+          cardsByColor[colorIdentity[0]].push(card)
         } else {
           cardsByColor.M.push(card)
         }

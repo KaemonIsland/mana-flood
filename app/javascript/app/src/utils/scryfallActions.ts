@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toCamelcase } from '../utils'
 
 /**
  * Gets a card img url from Scryfall
@@ -16,7 +17,9 @@ export const getCardImage = async (id, size = 'medium') => {
 
     const { data } = response
 
-    const cardUrl = data.image_uris && data.image_uris[size]
+    const formatted = toCamelcase(data)
+
+    const cardUrl = formatted.imageUris && formatted.imageUris[size]
 
     return cardUrl
   } catch (error) {

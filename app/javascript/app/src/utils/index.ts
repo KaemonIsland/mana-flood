@@ -1,4 +1,6 @@
 export * from './hooks'
 export { formatDate } from './formatDate'
 export * from './scryfallActions'
-export * from './camelcase'
+export * from './toCamelcase'
+export * from './isObject'
+export * from './isArray'
