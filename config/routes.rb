@@ -16,8 +16,9 @@ Rails.application.routes.draw do
       delete 'remove_decked_card/:id/:card_id', to: 'decked_cards#destroy'
       
       # Crud operations for users card collection
-      get 'collection', to: 'collected_cards#collection'
-      get 'collection/deck/:id', to: 'collected_cards#deck'
+      get 'collection', to: 'collection#index'
+      get 'collection/set/:id', to: 'collected_cards#collection'
+      get 'collection/set/:id/deck/:deck_id', to: 'collected_cards#deck'
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
 
   # Collection Routes
   get 'collection', to: 'collection#index'
+  get 'collection/set/:id', to: 'collection#show'
 
   # Routes to update cards database
   post 'update_cards', to: 'cards#update_card_db'

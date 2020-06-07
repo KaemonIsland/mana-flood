@@ -24,14 +24,6 @@ export const Page = ({ children }: PageProps): ReactElement => {
   return (
     <ThemeProvider>
       <PageContainer>
-        <Toast
-          toastList={[
-            { id: 1, title: 'Test', message: 'This is a test!' },
-            { id: 2, title: 'Test', message: 'This is a test!' },
-            { id: 3, title: 'Test', message: 'This is a test!' },
-            { id: 4, title: 'Test', message: 'This is a test!' },
-          ]}
-        />
         <StyledPage isMobile={isMobile}>{children}</StyledPage>
       </PageContainer>
     </ThemeProvider>

@@ -18,11 +18,16 @@ class Collection < ApplicationRecord
   end
 
   # Lists each card set id
-  def collected_sets
+  def sets
     set_arr = []
 
     self.cards.each { |card| set_arr << card.card_set_id }
 
     set_arr.uniq
+  end
+
+  # Returns number of unique cards in set
+  def sets_unique(card_set_id)
+    self.cards.filter{ |card| card.card_set_id === card_set_id }.count
   end
 end

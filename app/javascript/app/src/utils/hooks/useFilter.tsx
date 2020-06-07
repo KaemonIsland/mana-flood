@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { Card } from '../../interface'
 
-export const useFilter = cards => {
+export const useFilter = (cards: Array<Card>): Array<Card> => {
   const [filteredCards, setFilteredCards] = useState([])
   const [filters, setFilters] = useState({
     color: [],
@@ -87,13 +88,8 @@ export const useFilter = cards => {
     newlyFilteredCards = newlyFilteredCards.filter(
       card =>
         !(card.isPromo || card.isAlternative) ||
-        (card.deck && card.deck.hasCard) ||
-        (card.collection && card.collection.hasCard)
-    )
-
-    // Removes land from results unless specified
-    newlyFilteredCards = newlyFilteredCards.filter(
-      card => type === 'land' || !card.cardType.includes('Land')
+        !!card.deck ||
+        !!card.collection
     )
 
     // Filters cards by color

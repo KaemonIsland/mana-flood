@@ -1,23 +1,12 @@
 class Api::V1::CollectedCardsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :load_card, :load_collection, only: [:create, :update, :destroy]
+  before_action :load_card, :load_collection, only: [:collection, :create, :update, :destroy]
   before_action :load_collected_card, only: [:update, :destroy]
   respond_to :json
 
   def collection
     if current_user
-      @collection = current_user.collection
-      @cards = @collection.cards
-      render 'api/v1/cards/collection.json.jbuilder', status: 200
-    else
-      render json: { error: 'User must be signed in' }, status: 401
-    end
-  end
-
-  def sets
-    if current_user
-      @collection = current_user.collection
-      @cards = @collection.cards
+      @cards = @collection.cards.filter{ |card| card.card_set_id === params[:id].to_i }
       render 'api/v1/cards/collection.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401

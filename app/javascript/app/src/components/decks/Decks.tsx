@@ -6,7 +6,6 @@ import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
 import { Deck } from '../../interface'
 import { Form } from './Form'
-import { Page } from '../page'
 
 const StyledDecks = styled.div(({ theme }) => ({
   border: '1px solid black',
@@ -59,74 +58,64 @@ export const Decks = ({ decks }: Props): ReactElement => {
     }
   }
   return (
-    <Page>
-      <Text family="roboto" size={10}>
-        My Decks
-      </Text>
-      <Button onClick={(): void => setShowForm(true)}>New Deck +</Button>
-      <hr />
-      {showForm && (
-        <Form updateInfo={isUpdating} submitCallback={updateDeckList} />
-      )}
-      <Flex direction="column" alignItems="center">
-        {deckList.map(deck => (
-          <StyledDecks key={deck.id}>
-            <Flex
-              direction={isMobile ? 'column' : 'row'}
-              alignItems={isMobile ? 'space-between' : 'flex-start'}
-              justifyContent="space-between"
-            >
-              <div style={{ width: '100%' }}>
-                <Text family="roboto" weight="300" size={6}>
-                  {deck.name}
-                </Text>
-                <Text display="inline-block" isItalics>
-                  {deck.format}
-                </Text>
-                <br />
-                <Text size={3} family="Open Source Sans">
-                  {deck.description}
-                </Text>
-              </div>
-              <ButtonOptions isMobile={isMobile}>
-                <Button
-                  color="green"
-                  shade={7}
-                  variant="outline"
-                  onClick={(): void => {
-                    Turbolinks.visit(`/deck/${deck.id}`)
-                  }}
-                >
-                  Cards
-                </Button>
-                <Button
-                  color="blue"
-                  shade={7}
-                  variant="outline"
-                  onClick={(): void => {
-                    setIsUpdating(deck)
-                    setShowForm(true)
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  onClick={(): void => {
-                    if (confirm('Are you sure?')) {
-                      destroyDeck(deck.id)
-                    }
-                  }}
-                  color="grey"
-                  shade={10}
-                  variant="text"
-                >
-                  Remove
-                </Button>
-              </ButtonOptions>
-            </Flex>
-          </StyledDecks>
-        ))}
-      </Flex>
-    </Page>
+    <Flex direction="column" alignItems="center">
+      {deckList.map(deck => (
+        <StyledDecks key={deck.id}>
+          <Flex
+            direction={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? 'space-between' : 'flex-start'}
+            justifyContent="space-between"
+          >
+            <div style={{ width: '100%' }}>
+              <Text family="roboto" weight="300" size={6}>
+                {deck.name}
+              </Text>
+              <Text display="inline-block" isItalics>
+                {deck.format}
+              </Text>
+              <br />
+              <Text size={3} family="Open Source Sans">
+                {deck.description}
+              </Text>
+            </div>
+            <ButtonOptions isMobile={isMobile}>
+              <Button
+                color="green"
+                shade={7}
+                variant="outline"
+                onClick={(): void => {
+                  Turbolinks.visit(`/deck/${deck.id}`)
+                }}
+              >
+                Cards
+              </Button>
+              <Button
+                color="blue"
+                shade={7}
+                variant="outline"
+                onClick={(): void => {
+                  setIsUpdating(deck)
+                  setShowForm(true)
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                onClick={(): void => {
+                  if (confirm('Are you sure?')) {
+                    destroyDeck(deck.id)
+                  }
+                }}
+                color="grey"
+                shade={10}
+                variant="text"
+              >
+                Remove
+              </Button>
+            </ButtonOptions>
+          </Flex>
+        </StyledDecks>
+      ))}
+    </Flex>
   )
 }

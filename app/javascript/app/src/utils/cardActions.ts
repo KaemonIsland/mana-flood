@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { Card } from '../interface'
+import { Card, CardSet } from '../interface'
 import { toCamelcase } from '../utils'
 
 export const cardActions = {
   collection: {
-    get: async (): Promise<Array<Card>> => {
+    get: async (): Promise<Array<CardSet>> => {
       try {
         const response = await axios('/api/v1/collection')
 

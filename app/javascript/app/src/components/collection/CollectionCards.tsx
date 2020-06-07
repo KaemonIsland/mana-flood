@@ -3,11 +3,16 @@ import axios from 'axios'
 import { Text } from 'warlock-ui'
 import { Cards } from '../cards/Cards'
 import { useCards, toCamelcase } from '../../utils'
-import { StatusBar } from '../statusBar'
 import { Page } from '../page'
 import { Card } from '../../interface'
 
-export const Collection = (): ReactElement => {
+interface CollectionCardsProps {
+  setId: number
+}
+
+export const CollectionCards = ({
+  setId,
+}: CollectionCardsProps): ReactElement => {
   const { actions, scope, deck } = useCards('collection')
   const [cards, setCards] = useState([])
   const { get, add, update, remove } = actions
@@ -22,13 +27,26 @@ export const Collection = (): ReactElement => {
     await update(id, quantity, deck && deck.id)
 
   const getCollectionCards = async (): Promise<void> => {
-    const newCards = await get()
-    setCards(newCards)
+    try {
+      const response = await axios(`/api/v1/collection/set/${setId}`)
+
+      const { data } = response
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setCards(toCamelcase(data))
+    } catch (error) {
+      console.log('Unable to get cards from collection', error)
+    }
   }
 
   const getCollectionCardsWithDeck = async (): Promise<void> => {
     try {
-      const response = await axios(`/api/v1/collection/deck/${deck.id}`)
+      const response = await axios(
+        `/api/v1/collection/set/${setId}/deck/${deck.id}`
+      )
 
       const { data } = response
 
@@ -64,7 +82,6 @@ export const Collection = (): ReactElement => {
         cards={cards}
         scope={scope.currentScope}
       />
-      <StatusBar scope={scope} />
     </Page>
   )
 }

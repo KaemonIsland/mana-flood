@@ -16,6 +16,7 @@ export interface Card {
   id: number
   name: string
   colorIdentity: string | Array<string>
+  convertedManaCost: number
   scryfallId: string
   manaCost: string
   power: number

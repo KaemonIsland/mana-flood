@@ -92,16 +92,9 @@ export const useCardsStats = (cards, scope) => {
       ) {
         return
       }
-      let multiplier = 1
-
-      if (scope === 'deck') {
-        multiplier = card.deck.quantity
-      } else if (scope === 'collection') {
-        multiplier = card.collection.quantity
-      }
 
       // Increment total cards
-      newStats.cards += multiplier
+      newStats.cards++
       // Card types, they have been stringified so we must parse them
       const cardTypes = JSON.parse(card.cardTypes)
 
@@ -109,15 +102,15 @@ export const useCardsStats = (cards, scope) => {
       cardTypes.forEach(type => {
         const lowerType = type.toLowerCase()
 
-        if (types[lowerType]) types[lowerType].count += multiplier
+        if (types[lowerType]) types[lowerType].count++
 
         // Counts the card subTypes
         card.subtypes.forEach(subtype => {
           const lowerSubtype = subtype.toLowerCase()
           if (types[lowerType].subtypes[lowerSubtype]) {
-            types[lowerType].subtypes[lowerSubtype] += multiplier
+            types[lowerType].subtypes[lowerSubtype]++
           } else {
-            types[lowerType].subtypes[lowerSubtype] = multiplier
+            types[lowerType].subtypes[lowerSubtype] = 1
           }
         })
       })
@@ -125,49 +118,47 @@ export const useCardsStats = (cards, scope) => {
       // Counts multicolored cards, we will count them and their individual colors
       // We will increment multi and whatever individual colors it contains
       if (card.colorIdentity.length > 1) {
-        colors.M += multiplier
+        colors.M++
       }
 
       // Artifacts do not have colors, so we increment colorless
       if (card.colorIdentity.length === 0) {
-        colors.total += multiplier
-        colors.C += multiplier
+        colors.total++
+        colors.C++
       }
 
       // Otherwise we update the color identity
-      card.colorIdentity.forEach(
-        color => (colors[color] += multiplier) && (colors.total += multiplier)
-      )
+      card.colorIdentity.forEach(color => colors[color]++ && colors.total++)
 
       // if the card is a land we just need to up the land count. Otherwise we set a few more counts
       if (card.cardType.includes('Basic Land')) {
-        counts.land += multiplier
+        counts.land++
       } else {
-        counts.nonLand += multiplier
+        counts.nonLand++
 
         // Updates counts for creatures and nonCreatures
         cardTypes.includes('Creature')
-          ? (counts.creature += multiplier)
-          : (counts.nonCreature += multiplier)
+          ? counts.creature++
+          : counts.nonCreature++
 
         // Gets converted mana cost counts
         const cardCmc = card.convertedManaCost
 
         // Increments 1 mana for 1 or 0 cmc
         if (cardCmc <= 1) {
-          cmc[1] += multiplier
+          cmc[1]++
 
           // Increments 6 mana for 6 or more cmc
         } else if (cardCmc >= 6) {
-          cmc[6] += multiplier
+          cmc[6]++
 
           // Otherwise we increment what's in-between as long as it's not a land
         } else {
-          cmc[cardCmc] += multiplier
+          cmc[cardCmc]++
         }
 
         // counts card rarity, doesn't include basic lands
-        rarity[card.rarity] += multiplier
+        rarity[card.rarity]++
       }
     })
 

@@ -36,7 +36,6 @@ export const Deck = ({ name, format, id }: DeckType): ReactElement => {
   return (
     <Page>
       <Stats name={name} format={format} cards={cards} />
-      <Button onClick={() => {}}>Add Cards +</Button>
       <Cards
         actions={{ addCard, updateCard, removeCard }}
         cards={cards}
