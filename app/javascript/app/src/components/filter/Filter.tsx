@@ -209,22 +209,22 @@ const FilterContent = ({
             </span>
           </StyledLabel>
         </Container>
-        {['common', 'uncommon', 'rare', 'mythic'].map(rarity => (
-          <Container width="100%" key={rarity}>
-            <StyledLabel disabled={!stats.rarity[rarity]}>
+        {['common', 'uncommon', 'rare', 'mythic'].map(cardRarity => (
+          <Container width="100%" key={cardRarity}>
+            <StyledLabel disabled={!stats.rarity[cardRarity]}>
               <span>
                 <input
                   type="checkbox"
                   name="rarity"
-                  value={rarity}
+                  value={cardRarity}
                   onChange={updateFilters}
-                  checked={rarity.includes(rarity)}
-                  disabled={!stats.rarity[rarity]}
+                  checked={rarity.includes(cardRarity)}
+                  disabled={!stats.rarity[cardRarity]}
                 />
 
-                {rarity}
+                {cardRarity}
               </span>
-              <Count>({stats.rarity[rarity]})</Count>
+              <Count>({stats.rarity[cardRarity]})</Count>
             </StyledLabel>
           </Container>
         ))}

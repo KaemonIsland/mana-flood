@@ -16,8 +16,8 @@ const sortAlpha = (a, b) => {
 
 // Sorts cards by converted mana cost smallest to largest
 const sortCmc = (a, b) => {
-  const cardA = Number(a.converted_mana_cost)
-  const cardB = Number(b.converted_mana_cost)
+  const cardA = Number(a.convertedManaCost)
+  const cardB = Number(b.convertedManaCost)
 
   return cardA - cardB
 }
