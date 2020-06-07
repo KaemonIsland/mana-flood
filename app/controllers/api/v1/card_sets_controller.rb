@@ -16,18 +16,18 @@ class Api::V1::CardSetsController < ApplicationController
     if current_user
       @collection = current_user.collection
       @cards = @card_set.cards
-      render 'api/v1/cards/in_collection.json.jbuilder', status: 200
+      render 'api/v1/cards/collection.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end
   end
 
-  def with_deck
+  def deck
     if current_user
       @collection = current_user.collection
       @deck = current_user.decks.find(params[:deck_id])
       @cards = @card_set.cards
-      render 'api/v1/cards/in_deck.json.jbuilder', status: 200
+      render 'api/v1/cards/deck.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end

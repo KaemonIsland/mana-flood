@@ -92,6 +92,8 @@ interface Props {
 }
 
 const defaultCard: Card = {
+  isAlternative: false,
+  isPromo: false,
   id: 0,
   name: '',
   colorIdentity: '',
@@ -107,10 +109,7 @@ const defaultCard: Card = {
   text: '',
   number: 0,
   rarity: '',
-  collection: {
-    hasCard: false,
-    quantity: 0,
-  },
+  collection: 0,
   variations: [],
 }
 
@@ -133,11 +132,13 @@ export const Full = ({ id }: Props): ReactElement => {
       rulings,
       rarity,
       number,
+      name,
     },
     setCard,
   ] = useState(defaultCard)
 
-  const { hasCard, quantity } = collection
+  const quantity = collection
+  const hasCard = collection
   const { add, update, remove } = actions
 
   const getVariationInfo = async (card: Card): Promise<void> => {
@@ -205,7 +206,7 @@ export const Full = ({ id }: Props): ReactElement => {
 
   useEffect(() => {
     initialize()
-  })
+  }, [])
 
   return (
     <Page>
@@ -228,9 +229,9 @@ export const Full = ({ id }: Props): ReactElement => {
               {name}
             </Text>
           </Grid.Item>
-          <Grid.Item area="cmc" justifySelf="end">
-            <Container width="7rem">
-              <Flex alignItems="center" justifyContent="start">
+          <Grid.Item area="cmc" alignSelf="center" justifySelf="end">
+            <Container width="20rem">
+              <Flex alignItems="center" justifyContent="end">
                 {formattedMana.length !== 0 &&
                   formattedMana.map((mana, i) => (
                     <ManaSymbol size="large" key={i} mana={mana} />
@@ -248,7 +249,7 @@ export const Full = ({ id }: Props): ReactElement => {
               <Flex alignItems="center" justifyContent="space-between">
                 Collection:
                 <Flex alignItems="center" justifyContent="end">
-                  {hasCard && (
+                  {!!hasCard && (
                     <>
                       <Button.Left
                         color="grey"

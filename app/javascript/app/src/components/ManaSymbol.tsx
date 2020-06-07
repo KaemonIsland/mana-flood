@@ -18,7 +18,7 @@ const Img = styled.img`
 
 interface ManaSymbolProps {
   mana: string
-  size: number
+  size: string
 }
 
 export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {

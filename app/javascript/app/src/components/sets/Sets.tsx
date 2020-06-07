@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
 import { Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
-import { formatDate } from '../../utils'
+import { formatDate, toCamelcase } from '../../utils'
 import { Page } from '../page'
 
 const SetGrid = styled.section(({ theme }) => ({
@@ -51,7 +51,9 @@ interface SetsProps {
 }
 
 export const Sets = ({ sets }: SetsProps): ReactElement => {
-  const filteredSets = sets.filter(({ setType }) => setType === 'expansion')
+  const filteredSets = toCamelcase(sets).filter(
+    ({ setType }) => setType === 'expansion'
+  )
 
   return (
     <Page>

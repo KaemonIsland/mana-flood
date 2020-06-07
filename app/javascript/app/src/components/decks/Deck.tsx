@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ReactElement } from 'react'
+import { Button } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { Stats } from './Stats'
@@ -30,11 +31,12 @@ export const Deck = ({ name, format, id }: DeckType): ReactElement => {
 
   useEffect(() => {
     getDeckCards()
-  })
+  }, [])
 
   return (
     <Page>
       <Stats name={name} format={format} cards={cards} />
+      <Button onClick={() => {}}>Add Cards +</Button>
       <Cards
         actions={{ addCard, updateCard, removeCard }}
         cards={cards}

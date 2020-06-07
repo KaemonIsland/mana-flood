@@ -143,9 +143,8 @@ interface Props {
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card[card && card.deck ? 'deck' : 'collection']
-  const [hasCard, setHasCard] = useState(scope.hasCard)
-  const [quantity, setQuantity] = useState(scope.quantity)
+  const scope = card && card.deck ? 'deck' : 'collection'
+  const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
@@ -203,9 +202,8 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   )
 
   useEffect(() => {
-    setHasCard(scope.hasCard)
-    setQuantity(scope.quantity)
-  }, [scope])
+    setQuantity(card[scope])
+  }, [card[scope]])
 
   return (
     <ThemeProvider>
@@ -231,7 +229,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
               </Container>
               <div>
                 <Flex alignItems="center">
-                  {hasCard && (
+                  {!!quantity && (
                     <>
                       <Button.Left
                         color="grey"
@@ -239,7 +237,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                         size="small"
                         variant="outline"
                         bubble={false}
-                        isDisabled={!hasCard}
+                        isDisabled={!quantity}
                         onClick={(): void => {
                           const newQuantity = quantity - 1
                           if (newQuantity) {
@@ -247,7 +245,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                             setQuantity(newQuantity)
                           } else {
                             removeCard(id)
-                            setHasCard(false)
+                            setQuantity(0)
                           }
                         }}
                       >
@@ -259,24 +257,23 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                         variant="outline"
                         isDisabled
                       >
-                        {hasCard && quantity}
+                        {quantity}
                       </Button.Middle>
                     </>
                   )}
                   <Button.Right
-                    hasCard={hasCard}
+                    hasCard={quantity}
                     color="grey"
                     shade={8}
                     size="small"
                     bubble={false}
                     variant="outline"
                     onClick={(): void => {
-                      if (hasCard) {
+                      if (quantity) {
                         updateCard(id, quantity + 1)
                         setQuantity(quantity + 1)
                       } else {
                         addCard(id)
-                        setHasCard(true)
                         setQuantity(1)
                       }
                     }}
@@ -320,7 +317,11 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
             </Flex>
           </InnerCard>
         </CardContainer>
-        <Dropdown isPaddingless {...dropdownProps} isOpen={isOpen && cardImg}>
+        <Dropdown
+          isPaddingless
+          isOpen={Boolean(isOpen && cardImg)}
+          {...dropdownProps}
+        >
           <CardImgContainer>
             <CardImg src={cardImg} alt={name} />
           </CardImgContainer>

@@ -3,22 +3,11 @@ export interface Ruling {
   text: string
 }
 
-export interface Collection {
-  hasCard: boolean
-  quantity: number
-}
-
 export interface Variation {
   id: number
   uuid: string
   imgUri?: string
   scryfallId?: string
-}
-
-interface Deck {
-  id: number
-  hasCard: boolean
-  quantity: number
 }
 
 export interface Card {
@@ -39,7 +28,7 @@ export interface Card {
   text: string
   rarity: string
   number: number
-  collection?: Collection
-  deck?: Deck
+  collection: number
+  deck?: number
   variations: Array<Variation>
 }

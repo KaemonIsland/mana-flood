@@ -2,6 +2,8 @@ class Card < ApplicationRecord
   belongs_to :card_set, optional: true
   has_many :collected_cards, dependent: :destroy
   has_many :collections, through: :collected_cards
+  has_many :decked_cards, dependent: :destroy
+  has_many :decks, through: :decked_cards
 
   validates :uuid, presence: true, uniqueness: { case_sensitive: false }
 
@@ -22,4 +24,20 @@ class Card < ApplicationRecord
   serialize :subtypes, JSON
   serialize :supertypes, JSON
   serialize :variations, JSON
+
+  def collection_quantity(collection_id)
+    return 0 unless collection_id
+
+    collected = self.collected_cards.select { |col| col.collection_id === collection_id }
+
+    collected.empty? ? 0 : collected.first.quantity
+  end
+
+  def deck_quantity(deck_id)
+    return 0 unless deck_id
+
+    decked = self.decked_cards.select { |deck| deck.deck_id === deck_id }
+
+    decked.empty? ? 0 : decked.first.quantity
+  end
 end
