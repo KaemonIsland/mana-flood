@@ -2,7 +2,6 @@ import React, { useState, useEffect, ReactElement } from 'react'
 import { Text } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
-import { StatusBar } from '../statusBar'
 import { Page } from '../page'
 import { Card } from '../../interface'
 
@@ -71,7 +70,6 @@ export const Set = ({ id, name }: SetProps): ReactElement => {
         cards={cards}
         scope="set"
       />
-      <StatusBar scope={scope} />
     </Page>
   )
 }

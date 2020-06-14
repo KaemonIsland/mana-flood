@@ -59,6 +59,12 @@ export const Decks = ({ decks }: Props): ReactElement => {
   }
   return (
     <Flex direction="column" alignItems="center">
+      <Button onClick={() => setShowForm(true)} color="purple" shade={7}>
+        New Deck
+      </Button>
+      {showForm && (
+        <Form updateInfo={isUpdating} submitCallback={updateDeckList} />
+      )}
       {deckList.map(deck => (
         <StyledDecks key={deck.id}>
           <Flex

@@ -18,11 +18,18 @@ const StyledLabel = styled.label(() => ({
 }))
 
 interface SubmitCallback {
-  (a: any): Deck
+  (a: Deck): void
+}
+
+interface DeckInfo {
+  id?: number
+  name?: string
+  format?: string
+  description?: string
 }
 
 interface FormProps {
-  updateInfo: Deck
+  updateInfo: DeckInfo
   submitCallback: SubmitCallback
 }
 

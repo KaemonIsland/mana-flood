@@ -14,6 +14,7 @@ const cardColors = {
   G: { color: 'greenVivid', shade: 3 },
   R: { color: 'redVivid', shade: 3 },
   A: { color: 'blueGrey', shade: 2 },
+  C: { color: 'blueGrey', shade: 2 },
   M: { color: 'yellowVivid', shade: 4 },
 }
 
