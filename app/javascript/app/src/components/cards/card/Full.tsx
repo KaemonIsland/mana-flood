@@ -65,24 +65,30 @@ const CardImg = styled.img(() => ({
 }))
 
 const StyledLegal = styled.div(({ theme }) => ({
-  width: '100%',
+  fontFamily: 'Roboto',
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'start',
   alignItems: 'start',
   padding: theme.spaceScale(2),
+  width: theme.spaceScale(11),
 }))
 
-StyledLegal.Title = styled.p(() => ({
-  fontFamily: 'Open Sans',
+StyledLegal.Title = styled.p(({ theme, isLegal }) => ({
+  display: 'inline-block',
   textTransform: 'uppercase',
+  width: '100%',
+  fontSize: theme.fontScale(2),
+  border: `1px solid ${theme.color[isLegal ? 'green' : 'red'][6]}`,
+  borderRadius: `${theme.spaceScale(1)} 0 0 ${theme.spaceScale(1)}`,
+  padding: `${theme.spaceScale(1)} ${theme.spaceScale(2)}`,
 }))
 
 StyledLegal.Status = styled.p(({ theme, isLegal }) => ({
-  fontFamily: 'Roboto',
   fontWeight: 'bold',
   fontSize: theme.fontScale(2),
   backgroundColor: theme.color[isLegal ? 'green' : 'red'][6],
-  borderRadius: theme.spaceScale(1),
+  border: `1px solid ${theme.color[isLegal ? 'green' : 'red'][6]}`,
+  borderRadius: `0 ${theme.spaceScale(1)} ${theme.spaceScale(1)} 0`,
   padding: `${theme.spaceScale(1)} ${theme.spaceScale(2)}`,
   color: 'white',
 }))
@@ -111,6 +117,7 @@ const defaultCard: Card = {
   rarity: '',
   collection: 0,
   variations: [],
+  convertedManaCost: 0,
 }
 
 export const Full = ({ id }: Props): ReactElement => {
@@ -345,16 +352,19 @@ export const Full = ({ id }: Props): ReactElement => {
           <Grid.Item area="legal">
             <CardInfo>
               <Flex flexWrap="wrap" alignItems="center" justifyContent="start">
-                {Object.entries(legalities).map(([title, legal], i) => (
-                  <Container key={i} width="12rem">
-                    <StyledLegal>
-                      <StyledLegal.Title>{title}</StyledLegal.Title>
-                      <StyledLegal.Status isLegal={legal === 'Legal'}>
+                {Object.entries(legalities).map(([title, legal], i) => {
+                  const isLegal = legal === 'Legal'
+                  return (
+                    <StyledLegal key={i}>
+                      <StyledLegal.Title isLegal={isLegal}>
+                        {title}
+                      </StyledLegal.Title>
+                      <StyledLegal.Status isLegal={isLegal}>
                         {legal}
                       </StyledLegal.Status>
                     </StyledLegal>
-                  </Container>
-                ))}
+                  )
+                })}
               </Flex>
             </CardInfo>
           </Grid.Item>
