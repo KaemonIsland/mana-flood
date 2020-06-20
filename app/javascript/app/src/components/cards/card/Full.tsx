@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import { useMediaQuery } from 'react-responsive'
 import { Text, Container, Flex, Grid } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
 import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
@@ -46,6 +47,11 @@ const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
   height: '100%',
+}))
+
+const LegalContainer = styled.div(({ theme }) => ({
+  height: theme.spaceScale(9),
+  overflowY: 'scroll',
 }))
 
 const StyledLegal = styled.div(({ theme }) => ({
@@ -109,6 +115,8 @@ export const Full = ({ id }: Props): ReactElement => {
   const [img, setImg] = useState('')
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const isMobile = useMediaQuery({ maxWidth: 650 })
+  const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const [
     {
       power,
@@ -198,39 +206,82 @@ export const Full = ({ id }: Props): ReactElement => {
     initialize()
   }, [])
 
+  const tabletGrid = {
+    templateColumns: Grid.repeat(2, Grid.fr(1)),
+    templateAreas: [
+      'name cmc',
+      'mainImage info',
+      'actions actions',
+      'legal legal',
+      'variations variations',
+      'rules rules',
+    ],
+  }
+
+  const mobileGrid = {
+    templateColumns: Grid.fr(1),
+    alignItems: 'center',
+    rowGap: 4,
+    templateAreas: [
+      'cmc',
+      'name',
+      'mainImage',
+      'actions',
+      'info',
+      'legal',
+      'variations',
+      'rules',
+    ],
+  }
+
   return (
     <Page>
       {!isLoading ? (
         <Grid
-          alignItems="start"
           justifyContent="center"
+          alignItems="start"
           templateColumns={Grid.repeat(4, Grid.fr(1))}
           templateRows="auto"
           rowGap={7}
           templateAreas={[
             'name name name cmc',
             'mainImage actions info info',
-            'mainImage legal legal legal',
+            'legal legal legal legal',
             'variations variations variations variations',
             'rules rules rules rules',
           ]}
+          {...(isMobile && mobileGrid)}
+          {...(isTablet && tabletGrid)}
         >
+          <Grid.Item area="cmc" justifySelf={isMobile ? 'start' : 'end'}>
+            <Flex alignItems="center" justifyContent="end">
+              {formattedMana.length !== 0 &&
+                formattedMana.map((mana, i) => (
+                  <ManaSymbol
+                    size={
+                      (isMobile && 'medium') ||
+                      (isTablet && 'large') ||
+                      'xLarge'
+                    }
+                    key={i}
+                    mana={mana}
+                  />
+                ))}
+            </Flex>
+          </Grid.Item>
           <Grid.Item area="name">
-            <Text size={10} family="source sans">
+            <Text
+              as="h1"
+              size={isMobile || isTablet ? 7 : 10}
+              family="source sans"
+            >
               {name}
             </Text>
           </Grid.Item>
-          <Grid.Item area="cmc" alignSelf="center" justifySelf="end">
-            <Container width="20rem">
-              <Flex alignItems="center" justifyContent="end">
-                {formattedMana.length !== 0 &&
-                  formattedMana.map((mana, i) => (
-                    <ManaSymbol size="large" key={i} mana={mana} />
-                  ))}
-              </Flex>
-            </Container>
-          </Grid.Item>
-          <Grid.Item area="mainImage">
+          <Grid.Item
+            area="mainImage"
+            justifySelf={isMobile ? 'center' : 'start'}
+          >
             <CardImgContainer>
               <CardImg src={img} alt={name} />
             </CardImgContainer>
@@ -259,17 +310,17 @@ export const Full = ({ id }: Props): ReactElement => {
                 ))}
               </Container>
               <hr />
+              {flavorText && (
+                <>
+                  <Text isItalics>&quot;{flavorText}&quot;</Text>
+                  <hr />
+                </>
+              )}
               {power && (
                 <>
                   <div>
                     {power} / {toughness}
                   </div>
-                  <hr />
-                </>
-              )}
-              {flavorText && (
-                <>
-                  <Text isItalics>&quot;{flavorText}&quot;</Text>
                   <hr />
                 </>
               )}
@@ -290,28 +341,39 @@ export const Full = ({ id }: Props): ReactElement => {
           </Grid.Item>
           <Grid.Item area="legal">
             <CardInfo>
-              <Flex flexWrap="wrap" alignItems="center" justifyContent="start">
-                {Object.entries(legalities).map(([title, legal], i) => {
-                  const isLegal = legal === 'Legal'
-                  return (
-                    <StyledLegal key={i}>
-                      <StyledLegal.Title isLegal={isLegal}>
-                        {title}
-                      </StyledLegal.Title>
-                      <StyledLegal.Status isLegal={isLegal}>
-                        {legal}
-                      </StyledLegal.Status>
-                    </StyledLegal>
-                  )
-                })}
-              </Flex>
+              <LegalContainer>
+                <Flex
+                  flexWrap="wrap"
+                  alignItems="center"
+                  justifyContent={isMobile ? 'center' : 'start'}
+                >
+                  {Object.entries(legalities).map(([title, legal], i) => {
+                    const isLegal = legal === 'Legal'
+                    return (
+                      <StyledLegal key={i}>
+                        <StyledLegal.Title isLegal={isLegal}>
+                          {title}
+                        </StyledLegal.Title>
+                        <StyledLegal.Status isLegal={isLegal}>
+                          {legal}
+                        </StyledLegal.Status>
+                      </StyledLegal>
+                    )
+                  })}
+                </Flex>
+              </LegalContainer>
             </CardInfo>
           </Grid.Item>
           {variations.length > 0 && (
             <Grid.Item area="variations">
-              <Flex alignItems="center" justifyContent="start">
+              <Flex
+                alignItems="center"
+                justifyContent={isMobile ? 'center' : 'start'}
+                flexWrap="wrap"
+                direction={isMobile ? 'column' : 'row'}
+              >
                 {variations.map((variant, i) => (
-                  <CardImgContainer key={i}>
+                  <CardImgContainer style={{ marginBottom: '1rem' }} key={i}>
                     <a href={`/card/${variant.id}`} aria-label="View Variant">
                       <CardImg src={variant.imgUrl} alt={name} />
                     </a>

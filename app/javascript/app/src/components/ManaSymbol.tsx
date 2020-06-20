@@ -25,7 +25,8 @@ export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {
   const sizes = {
     small: { width: 5, height: 5 },
     medium: { width: 6, height: 6 },
-    large: { width: 8, height: 8 },
+    large: { width: 7, height: 7 },
+    xLarge: { width: 8, height: 8 },
   }
 
   return (
