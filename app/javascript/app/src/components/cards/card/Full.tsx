@@ -1,30 +1,12 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
-import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
+import { Text, Container, Flex, Grid } from 'warlock-ui'
 import { ManaSymbol } from '../../ManaSymbol'
 import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
 import { Page } from '../../page'
 import { Ruling, Card } from '../../../interface'
-
-Button.Left = styled(Button)`
-  border-radius: 1rem 0 0 1rem;
-  background-color: transparent;
-`
-Button.Middle = styled.div`
-  border-radius: 0;
-  background-color: transparent;
-  border: 1px solid ${({ theme }): string => theme.color['grey'][8]};
-  display: inline-block;
-  text-align: center;
-  padding: ${({ theme }): string =>
-    [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
-`
-Button.Right = styled(Button)`
-  border-radius: ${({ theme, hasCard }): string =>
-    hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
-  background-color: transparent;
-`
+import { ActionButtons } from '../../buttons'
 
 const CardInfo = styled.div(({ theme }) => ({
   backgroundColor: 'white',
@@ -51,7 +33,9 @@ const StyledRule = styled.div(({ theme }) => ({
 }))
 
 const CardImgContainer = styled.div(({ theme }) => ({
-  width: '16rem',
+  minWidth: '14rem',
+  width: '100%',
+  maxWidth: '22rem',
   marginRight: theme.spaceScale(4),
   borderRadius: theme.spaceScale(4),
   overflow: 'hidden',
@@ -145,7 +129,6 @@ export const Full = ({ id }: Props): ReactElement => {
   ] = useState(defaultCard)
 
   const quantity = collection
-  const hasCard = collection
   const { add, update, remove } = actions
 
   const getVariationInfo = async (card: Card): Promise<void> => {
@@ -223,10 +206,11 @@ export const Full = ({ id }: Props): ReactElement => {
           justifyContent="center"
           templateColumns={Grid.repeat(4, Grid.fr(1))}
           templateRows="auto"
+          rowGap={7}
           templateAreas={[
             'name name name cmc',
             'mainImage actions info info',
-            'legal legal legal legal',
+            'mainImage legal legal legal',
             'variations variations variations variations',
             'rules rules rules rules',
           ]}
@@ -254,56 +238,11 @@ export const Full = ({ id }: Props): ReactElement => {
           <Grid.Item area="actions">
             <CardInfo>
               <Flex alignItems="center" justifyContent="space-between">
-                Collection:
-                <Flex alignItems="center" justifyContent="end">
-                  {!!hasCard && (
-                    <>
-                      <Button.Left
-                        color="grey"
-                        shade={8}
-                        size="small"
-                        variant="outline"
-                        bubble={false}
-                        isDisabled={!hasCard}
-                        onClick={(): void => {
-                          const newQuantity = quantity - 1
-                          if (newQuantity) {
-                            updateCard(newQuantity)
-                          } else {
-                            removeCard()
-                          }
-                        }}
-                      >
-                        -
-                      </Button.Left>
-                      <Button.Middle
-                        color="grey"
-                        shade={8}
-                        variant="outline"
-                        isDisabled
-                      >
-                        {hasCard && quantity}
-                      </Button.Middle>
-                    </>
-                  )}
-                  <Button.Right
-                    hasCard={hasCard}
-                    color="grey"
-                    shade={8}
-                    size="small"
-                    bubble={false}
-                    variant="outline"
-                    onClick={(): void => {
-                      if (hasCard) {
-                        updateCard(quantity + 1)
-                      } else {
-                        addCard()
-                      }
-                    }}
-                  >
-                    +
-                  </Button.Right>
-                </Flex>
+                <span>Collection:</span>
+                <ActionButtons
+                  quantity={quantity}
+                  actions={{ updateCard, addCard, removeCard }}
+                />
               </Flex>
               <hr />
             </CardInfo>
@@ -330,7 +269,7 @@ export const Full = ({ id }: Props): ReactElement => {
               )}
               {flavorText && (
                 <>
-                  <Text isItalics>{flavorText}</Text>
+                  <Text isItalics>&quot;{flavorText}&quot;</Text>
                   <hr />
                 </>
               )}
@@ -370,9 +309,6 @@ export const Full = ({ id }: Props): ReactElement => {
           </Grid.Item>
           {variations.length > 0 && (
             <Grid.Item area="variations">
-              <Text size={8} family="source sans">
-                Variations
-              </Text>
               <Flex alignItems="center" justifyContent="start">
                 {variations.map((variant, i) => (
                   <CardImgContainer key={i}>
@@ -386,9 +322,6 @@ export const Full = ({ id }: Props): ReactElement => {
           )}
           {Object.values(rulings).length > 0 && (
             <Grid.Item area="rules">
-              <Text size={8} family="source sans">
-                Rulings
-              </Text>
               <RulesContainer>
                 {Object.values(rulings).map(({ date, text }: Ruling, i) => (
                   <StyledRule key={i}>
