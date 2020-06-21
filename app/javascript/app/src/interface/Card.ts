@@ -32,4 +32,7 @@ export interface Card {
   collection: number
   deck?: number
   variations: Array<Variation>
+  loyalty: string
+  borderColor: string
+  tcgplayerProductId: number
 }

@@ -2,9 +2,16 @@ import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
-import { Text, Container, Flex, Grid } from 'warlock-ui'
+import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
+import { Link } from '../../link'
 import { ManaSymbol } from '../../ManaSymbol'
-import { getCardImage, useCards, formatDate, toCamelcase } from '../../../utils'
+import {
+  getCard as getScryfallCard,
+  getCardImage,
+  useCards,
+  formatDate,
+  toCamelcase,
+} from '../../../utils'
 import { Page } from '../../page'
 import { Ruling, Card } from '../../../interface'
 import { ActionButtons } from '../../buttons'
@@ -108,15 +115,23 @@ const defaultCard: Card = {
   collection: 0,
   variations: [],
   convertedManaCost: 0,
+  loyalty: '',
+  borderColor: '',
+  tcgplayerProductId: 0,
 }
 
 export const Full = ({ id }: Props): ReactElement => {
+  const isMobile = useMediaQuery({ maxWidth: 650 })
+  const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const { actions, scope, deck } = useCards('collection')
   const [img, setImg] = useState('')
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const isMobile = useMediaQuery({ maxWidth: 650 })
-  const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
+  const [prices, setPrices] = useState({
+    usd: 0,
+    usdFoil: 0,
+  })
+
   const [
     {
       power,
@@ -132,6 +147,8 @@ export const Full = ({ id }: Props): ReactElement => {
       rarity,
       number,
       name,
+      loyalty,
+      tcgplayerProductId,
     },
     setCard,
   ] = useState(defaultCard)
@@ -185,12 +202,15 @@ export const Full = ({ id }: Props): ReactElement => {
 
   const initialize = async (): Promise<void> => {
     const newCard: Card = await getCard()
-    const cardUrl = await getCardImage(newCard.scryfallId, 'large')
+    const scryfallCard = await getScryfallCard(newCard.scryfallId)
+
+    const cardUrl = scryfallCard.imageUris && scryfallCard.imageUris.large
 
     getVariationInfo(newCard)
 
     setCard(newCard)
     setImg(cardUrl)
+    setPrices(scryfallCard.prices)
 
     setIsLoading(false)
   }
@@ -211,8 +231,7 @@ export const Full = ({ id }: Props): ReactElement => {
     templateAreas: [
       'name cmc',
       'mainImage info',
-      'actions actions',
-      'legal legal',
+      'actions legal',
       'variations variations',
       'rules rules',
     ],
@@ -288,14 +307,44 @@ export const Full = ({ id }: Props): ReactElement => {
           </Grid.Item>
           <Grid.Item area="actions">
             <CardInfo>
-              <Flex alignItems="center" justifyContent="space-between">
-                <span>Collection:</span>
-                <ActionButtons
-                  quantity={quantity}
-                  actions={{ updateCard, addCard, removeCard }}
-                />
+              <Container marginBottom={5}>
+                <Flex alignItems="start" justifyContent="space-between">
+                  <Text family="roboto" size={5}>
+                    Collection
+                  </Text>
+                  <ActionButtons
+                    quantity={quantity}
+                    actions={{ updateCard, addCard, removeCard }}
+                  />
+                </Flex>
+              </Container>
+              <Container marginBottom={4}>
+                <Flex justifyContent="space-between" alignItems="start">
+                  <p>Normal</p>
+                  <Text size={6} family="roboto">
+                    ${Number(prices.usd).toFixed(2)}
+                  </Text>
+                </Flex>
+              </Container>
+
+              <Container marginBottom={4}>
+                <Flex justifyContent="space-between" alignItems="start">
+                  <p>Foil</p>
+                  <Text size={6} family="roboto">
+                    ${Number(prices.usdFoil).toFixed(2)}
+                  </Text>
+                </Flex>
+              </Container>
+              <Flex justifyContent="center">
+                <Button color="purpleVivid" shade={2}>
+                  <Link
+                    target="_blank"
+                    href={`https://shop.tcgplayer.com/product/productsearch?id=${tcgplayerProductId}`}
+                  >
+                    Get it on tcgplayer
+                  </Link>
+                </Button>
               </Flex>
-              <hr />
             </CardInfo>
           </Grid.Item>
           <Grid.Item area="info">
@@ -304,9 +353,13 @@ export const Full = ({ id }: Props): ReactElement => {
               <hr />
               <Container maxWidth="35rem">
                 {text.split('\n').map((textLine, i) => (
-                  <div key={i} style={{ marginBottom: '0.5rem' }}>
+                  <Text
+                    family="source sans pro"
+                    key={i}
+                    style={{ marginBottom: '0.5rem' }}
+                  >
                     {textLine.replace(/[{}]/g, ' ')}
-                  </div>
+                  </Text>
                 ))}
               </Container>
               <hr />
@@ -318,16 +371,26 @@ export const Full = ({ id }: Props): ReactElement => {
               )}
               {power && (
                 <>
-                  <div>
+                  <Text family="roboto" isBold>
                     {power} / {toughness}
-                  </div>
+                  </Text>
+                  <hr />
+                </>
+              )}
+              {loyalty && (
+                <>
+                  <Text family="roboto" isBold>
+                    {loyalty}
+                  </Text>
                   <hr />
                 </>
               )}
               <div>
-                Illustrated by{' '}
-                <Text isItalics display="inline-block">
-                  {artist}
+                <Text size={2} display="inline-block">
+                  Illustrated by{' '}
+                  <Text size={2} as="span" isItalics display="inline-block">
+                    {artist}
+                  </Text>
                 </Text>
               </div>
               <hr />
@@ -335,7 +398,7 @@ export const Full = ({ id }: Props): ReactElement => {
                 <Text isItalics display="inline-block">
                   {rarity}
                 </Text>
-                , {number}
+                , #{number}
               </div>
             </CardInfo>
           </Grid.Item>
@@ -345,7 +408,7 @@ export const Full = ({ id }: Props): ReactElement => {
                 <Flex
                   flexWrap="wrap"
                   alignItems="center"
-                  justifyContent={isMobile ? 'center' : 'start'}
+                  justifyContent={isMobile || isTablet ? 'center' : 'start'}
                 >
                   {Object.entries(legalities).map(([title, legal], i) => {
                     const isLegal = legal === 'Legal'

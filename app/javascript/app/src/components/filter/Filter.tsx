@@ -68,6 +68,9 @@ const Background = styled.div`
 interface UpdateFilters {
   (e: any): void
 }
+interface ClearFilters {
+  (): void
+}
 
 interface Cmc {
   min: number
@@ -82,6 +85,7 @@ interface FilterContentProps {
   isOpen: boolean
   stats: CardStats
   updateFilters: UpdateFilters
+  clearFilters: ClearFilters
 }
 
 const FilterContent = ({
@@ -92,8 +96,19 @@ const FilterContent = ({
   updateFilters,
   isMobile,
   isOpen,
+  clearFilters,
 }: FilterContentProps): ReactElement => (
   <FilterContainer isOpen={isOpen} isMobile={isMobile}>
+    <FilterBox>
+      {(color.length !== 0 ||
+        rarity.length !== 0 ||
+        cmc.min !== 0 ||
+        cmc.max !== 20) && (
+        <Button color="red" shade={2} onClick={() => clearFilters()}>
+          Clear Filters
+        </Button>
+      )}
+    </FilterBox>
     <FilterBox>
       <Flex alignItems="center" justifyContent="space-between">
         <Text family="roboto">COLOR</Text>
@@ -273,12 +288,14 @@ interface FilterProps {
   stats: CardStats
   updateFilters: UpdateFilters
   filters: CardFilter
+  clearFilters: ClearFilters
 }
 
 export const Filter = ({
   stats,
   updateFilters,
   filters,
+  clearFilters,
 }: FilterProps): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const [isOpen, setIsOpen] = useState(false)
@@ -312,6 +329,7 @@ export const Filter = ({
     updateFilters,
     isMobile,
     isOpen,
+    clearFilters,
   }
 
   return (

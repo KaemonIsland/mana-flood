@@ -49,8 +49,8 @@ interface Props {
 export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
   const isLoading = cards.length === 0
   const isMobile = useMediaQuery({ maxWidth: 1100 })
-  const { filteredCards, ...rest } = useFilter(cards)
-  const stats = useCardsStats(cards, scope)
+  const { filteredCards, clearFilters, ...rest } = useFilter(cards)
+  const stats = useCardsStats(filteredCards, scope)
   const sortedCards = useSort(filteredCards)
   const { paginatedCards, ...pagination } = usePagination(sortedCards)
 
@@ -59,7 +59,7 @@ export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
       <CardsContainer isMobile={isMobile}>
         <div />
         <Pagination {...pagination} />
-        <Filter stats={stats} {...rest} />
+        <Filter stats={stats} clearFilters={clearFilters} {...rest} />
         <StyledGrid>
           {!isLoading &&
             paginatedCards.map(card => (

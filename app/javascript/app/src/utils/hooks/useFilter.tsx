@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Card } from '../../interface'
 
-export const useFilter = (cards: Array<Card>): Array<Card> => {
+const defaultFilters = {
+  color: [],
+  rarity: [],
+  type: null,
+  cmc: {
+    min: 0,
+    max: 20,
+  },
+}
+
+export const useFilter = (cards: Array<Card>) => {
   const [filteredCards, setFilteredCards] = useState([])
-  const [filters, setFilters] = useState({
-    color: [],
-    rarity: [],
-    type: null,
-    cmc: {
-      min: 0,
-      max: 20,
-    },
-  })
+  const [filters, setFilters] = useState(defaultFilters)
+
+  // Resets the current filters back to default
+  const clearFilters = (): void => setFilters(defaultFilters)
 
   const { color, type, rarity } = filters
   const { min, max } = filters.cmc
@@ -87,7 +92,11 @@ export const useFilter = (cards: Array<Card>): Array<Card> => {
     // Removes promo/alternative cards from general results unless it's within a collection or deck
     newlyFilteredCards = newlyFilteredCards.filter(
       card =>
-        !(card.isPromo || card.isAlternative) ||
+        !(
+          card.isPromo ||
+          card.isAlternative ||
+          card.borderColor === 'borderless'
+        ) ||
         !!card.deck ||
         !!card.collection
     )
@@ -150,5 +159,6 @@ export const useFilter = (cards: Array<Card>): Array<Card> => {
     filteredCards,
     filters,
     updateFilters,
+    clearFilters,
   }
 }
