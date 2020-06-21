@@ -1,6 +1,8 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
+import { Link } from '../../link'
+import { ActionButtons } from '../../buttons'
 import { ManaSymbol } from '../../ManaSymbol'
 import { Dropdown } from '../../Dropdown'
 import { useDropdown, getCardImage } from '../../../utils'
@@ -162,7 +164,22 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const isLand = cardType.includes('Land')
 
-  const { addCard, updateCard, removeCard } = actions
+  const { addCard: add, updateCard: update, removeCard: remove } = actions
+
+  const addCard = async (): Promise<void> => {
+    await add(id)
+    setQuantity(1)
+  }
+
+  const updateCard = async (quantity: number): Promise<void> => {
+    await update(id, quantity)
+    setQuantity(quantity)
+  }
+
+  const removeCard = async (): Promise<void> => {
+    await remove(id)
+    setQuantity(0)
+  }
 
   // Starts a timeout that will fetch the card img after a set time
   const startTimeout = (): void => {
@@ -229,63 +246,14 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                 </Flex>
               </Container>
               <div>
-                <Flex alignItems="center">
-                  {!!quantity && (
-                    <>
-                      <Button.Left
-                        color="grey"
-                        shade={8}
-                        size="small"
-                        variant="outline"
-                        bubble={false}
-                        isDisabled={!quantity}
-                        onClick={(): void => {
-                          const newQuantity = quantity - 1
-                          if (newQuantity) {
-                            updateCard(id, newQuantity)
-                            setQuantity(newQuantity)
-                          } else {
-                            removeCard(id)
-                            setQuantity(0)
-                          }
-                        }}
-                      >
-                        -
-                      </Button.Left>
-                      <Button.Middle
-                        color="grey"
-                        shade={8}
-                        variant="outline"
-                        isDisabled
-                      >
-                        {quantity}
-                      </Button.Middle>
-                    </>
-                  )}
-                  <Button.Right
-                    hasCard={quantity}
-                    color="grey"
-                    shade={8}
-                    size="small"
-                    bubble={false}
-                    variant="outline"
-                    onClick={(): void => {
-                      if (quantity) {
-                        updateCard(id, quantity + 1)
-                        setQuantity(quantity + 1)
-                      } else {
-                        addCard(id)
-                        setQuantity(1)
-                      }
-                    }}
-                  >
-                    +
-                  </Button.Right>
-                </Flex>
+                <ActionButtons
+                  quantity={quantity}
+                  actions={{ updateCard, removeCard, addCard }}
+                />
               </div>
             </Flex>
             <Flex alignItems="flex-end" justifyContent="space-between">
-              <a href={`/card/${id}`}>
+              <Link href={`/card/${id}`}>
                 <CardInfo>
                   <TitleText
                     title={name}
@@ -307,7 +275,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                     {cardType}
                   </Text>
                 </CardInfo>
-              </a>
+              </Link>
               {power && toughness && (
                 <CardInfo>
                   <Text size={4} family="Roboto" color="black">
