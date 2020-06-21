@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
 import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
 import { Link } from '../../link'
-import { ManaSymbol } from '../../ManaSymbol'
+import { ManaSymbol } from '../../icon'
 import {
   getCard as getScryfallCard,
   getCardImage,

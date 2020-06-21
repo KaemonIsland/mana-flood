@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
-import { manaSvgs } from '../../../packs/application.js'
+import { manaSvgs } from '../../../../packs/application.js'
 
 const Mana = styled.div`
   height: ${({ theme, height }): string => theme.spaceScale(height)};
@@ -31,7 +31,7 @@ export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {
 
   return (
     <Mana {...sizes[size]}>
-      <Img src={manaSvgs(`./${mana}.svg`)} alt="0" />
+      <Img src={manaSvgs(`./${mana}.svg`)} alt={`${mana} symbol`} />
     </Mana>
   )
 }
