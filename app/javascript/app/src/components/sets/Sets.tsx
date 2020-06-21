@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import { formatDate } from '../../utils'
-import { Page } from '../page'
+import { CardSet } from '../../interface'
 
 const SetGrid = styled.section(({ theme }) => ({
   maxWidth: '101rem',
@@ -37,43 +37,33 @@ const SetContainer = styled.a(({ theme }) => ({
   },
 }))
 
-type CardSet = {
-  name: string
-  release_date: string
-  id: number
-  code: string
-  base_set_size: number
+interface SetsProps {
+  sets: Array<CardSet>
+  link: string
 }
 
-export const Sets = ({ sets }) => {
-  const filteredSets = sets.filter(({ set_type }) => set_type === 'expansion')
-
+export const Sets = ({ sets, link }: SetsProps): ReactElement => {
   return (
-    <Page>
-      <Flex justifyContent="start" alignItems="center">
-        <Text size={10}>Sets</Text>
-      </Flex>
-      <hr />
-      <SetGrid>
-        {filteredSets.map(
-          ({ id, base_set_size, name, release_date }: CardSet) => (
-            <SetContainer key={id} href={`/sets/${id}`}>
-              <Flex
-                direction="column"
-                justifyContent="space-around"
-                alignItems="start"
-              >
-                <Text size={5}>{name}</Text>
-                <br />
-                <Text font="roboto" isItalics>
-                  {formatDate(new Date(release_date), {})}
-                </Text>
-                <Text font="roboto">{base_set_size} cards</Text>
-              </Flex>
-            </SetContainer>
-          )
-        )}
-      </SetGrid>
-    </Page>
+    <SetGrid>
+      {sets.map(({ id, baseSetSize, name, releaseDate, unique }: CardSet) => (
+        <SetContainer key={id} href={`${link}/${id}`}>
+          <Flex
+            direction="column"
+            justifyContent="space-around"
+            alignItems="start"
+          >
+            <Text size={5}>{name}</Text>
+            <br />
+            <Text font="roboto" isItalics>
+              {formatDate(new Date(releaseDate), {})}
+            </Text>
+            <Text font="roboto">
+              {!!unique && `${unique} / `}
+              {baseSetSize} cards
+            </Text>
+          </Flex>
+        </SetContainer>
+      ))}
+    </SetGrid>
   )
 }

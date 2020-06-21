@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, ReactElement } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import { Button } from 'warlock-ui'
+import { toCamelcase } from '../../utils'
 
 const StyledStatusBar = styled.div(({ theme }) => ({
   position: 'fixed',
@@ -21,15 +22,28 @@ StyledStatusBar.Item = styled.div(({ theme, active }) => ({
   borderBottom: `2px solid ${active ? 'white' : 'transparent'}`,
 }))
 
-export const StatusBar = ({ scope }) => {
+interface UpdateScope {
+  (newScope: string, deckInfo?: {}): void
+}
+
+interface Scope {
+  currentScope: string
+  updateScope: UpdateScope
+}
+
+interface StatusBarProps {
+  scope: Scope
+}
+
+export const StatusBar = ({ scope }: StatusBarProps): ReactElement => {
   const { currentScope, updateScope } = scope
   const [decks, setDecks] = useState([])
-  const getUserDecks = async () => {
+  const getUserDecks = async (): Promise<void> => {
     try {
       const response = await axios('/api/v1/decks')
 
       if (response.data) {
-        setDecks(response.data)
+        setDecks(toCamelcase(response.data))
       }
     } catch (error) {
       console.log('Error: ', error)
@@ -46,7 +60,7 @@ export const StatusBar = ({ scope }) => {
     <StyledStatusBar>
       <StyledStatusBar.Item active={currentScope === 'collection'}>
         <Button
-          onClick={() => updateScope('collection')}
+          onClick={(): void => updateScope('collection')}
           color="purple"
           shade={7}
         >
@@ -54,9 +68,12 @@ export const StatusBar = ({ scope }) => {
         </Button>
       </StyledStatusBar.Item>
       {decks.map(deck => (
-        <StyledStatusBar.Item active={currentScope === deck.name}>
+        <StyledStatusBar.Item
+          key={deck.name}
+          active={currentScope === deck.name}
+        >
           <Button
-            onClick={() => updateScope(deck.name, deck)}
+            onClick={(): void => updateScope(deck.name, deck)}
             color="purple"
             shade={7}
           >

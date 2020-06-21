@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { Card } from '../../interface'
 
-export const useFilter = cards => {
+const defaultFilters = {
+  color: [],
+  rarity: [],
+  type: null,
+  cmc: {
+    min: 0,
+    max: 20,
+  },
+}
+
+export const useFilter = (cards: Array<Card>) => {
   const [filteredCards, setFilteredCards] = useState([])
-  const [filters, setFilters] = useState({
-    color: [],
-    rarity: [],
-    type: null,
-    cmc: {
-      min: 0,
-      max: 20,
-    },
-  })
+  const [filters, setFilters] = useState(defaultFilters)
+
+  // Resets the current filters back to default
+  const clearFilters = (): void => setFilters(defaultFilters)
 
   const { color, type, rarity } = filters
   const { min, max } = filters.cmc
@@ -86,30 +92,29 @@ export const useFilter = cards => {
     // Removes promo/alternative cards from general results unless it's within a collection or deck
     newlyFilteredCards = newlyFilteredCards.filter(
       card =>
-        !(card.is_promo || card.is_alternative) ||
-        (card.deck && card.deck.has_card) ||
-        (card.collection && card.collection.has_card)
-    )
-
-    // Removes land from results unless specified
-    newlyFilteredCards = newlyFilteredCards.filter(
-      card => type === 'land' || !card.card_type.includes('Land')
+        !(
+          card.isPromo ||
+          card.isAlternative ||
+          card.borderColor === 'borderless'
+        ) ||
+        !!card.deck ||
+        !!card.collection
     )
 
     // Filters cards by color
     if (color.length !== 0) {
       newlyFilteredCards = newlyFilteredCards.filter(card => {
-        if (card.color_identity.length === 0 && color.includes('C')) {
+        if (card.colorIdentity.length === 0 && color.includes('C')) {
           return true
         }
 
         if (color.includes('M')) {
           return (
-            card.color_identity.length >= 2 &&
-            card.color_identity.some(cardColor => color.includes(cardColor))
+            card.colorIdentity.length >= 2 &&
+            card.colorIdentity.some(cardColor => color.includes(cardColor))
           )
         }
-        return card.color_identity.some(cardColor => color.includes(cardColor))
+        return card.colorIdentity.some(cardColor => color.includes(cardColor))
       })
     }
 
@@ -123,7 +128,7 @@ export const useFilter = cards => {
     // Filters cards by type
     if (type) {
       newlyFilteredCards = newlyFilteredCards.filter(card =>
-        JSON.parse(card.card_types).some(cardType =>
+        JSON.parse(card.cardTypes).some(cardType =>
           type.includes(cardType.toLowerCase())
         )
       )
@@ -132,14 +137,14 @@ export const useFilter = cards => {
     // Filters cards by minimum converted mana cost
     if (min) {
       newlyFilteredCards = newlyFilteredCards.filter(
-        card => card.converted_mana_cost >= min
+        card => card.convertedManaCost >= min
       )
     }
 
     // Filters cards by maximum converted mana cost
     if (max) {
       newlyFilteredCards = newlyFilteredCards.filter(
-        card => card.converted_mana_cost <= max
+        card => card.convertedManaCost <= max
       )
     }
 
@@ -154,5 +159,6 @@ export const useFilter = cards => {
     filteredCards,
     filters,
     updateFilters,
+    clearFilters,
   }
 }

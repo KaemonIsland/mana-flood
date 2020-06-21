@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, ReactElement } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Text, Flex, Grid, Button } from 'warlock-ui'
 import { useCardsStats } from '../../utils'
 import { useMediaQuery } from 'react-responsive'
+import { Card } from '../../interface'
 
 const StatsContainer = styled.section(({ theme, showStats }) => ({
   padding: `0 ${theme.spaceScale(4)}`,
@@ -19,8 +20,8 @@ const StatsHeader = styled.div(({ theme }) => ({
 }))
 
 const StatsTitle = styled.div`
-  padding: 0 ${({ theme }) => theme.spaceScale(4)};
-  border-bottom: 2px solid ${({ theme }) => theme.color.grey[8]};
+  padding: 0 ${({ theme }): string => theme.spaceScale(4)};
+  border-bottom: 2px solid ${({ theme }): string => theme.color.grey[8]};
   text-transform: uppercase;
   font-family: Roboto, sans-serif;
   display: flex;
@@ -28,17 +29,17 @@ const StatsTitle = styled.div`
   justify-content: space-between;
 `
 const StatsPair = styled.div`
-  padding: 0 ${({ theme }) => theme.spaceScale(4)};
-  margin: ${({ theme }) => theme.spaceScale(1)};
+  padding: 0 ${({ theme }): string => theme.spaceScale(4)};
+  margin: ${({ theme }): string => theme.spaceScale(1)};
   text-transform: capitalize;
   font-family: Roboto, sans-serif;
-  font-size: ${({ theme }) => theme.fontScale(2)};
+  font-size: ${({ theme }): string => theme.fontScale(2)};
   display: flex;
   align-items: center;
   justify-content: space-between;
 `
 
-const StyledRamp = styled.div(({ theme }) => ({
+const StyledRamp = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column-reverse',
   alignItems: 'center',
@@ -97,7 +98,12 @@ const StyledGridItem = styled.div(({ theme }) => ({
   boxShadow: theme.boxShadow.single[2],
 }))
 
-export const Stats = ({ cards, name, format }) => {
+interface StatsProps {
+  cards: Array<Card>
+  name: string
+  format: string
+}
+export const Stats = ({ cards, name, format }: StatsProps): ReactElement => {
   const [showStats, setShowStats] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 950 })
   const {
@@ -134,7 +140,7 @@ export const Stats = ({ cards, name, format }) => {
               variant="outline"
               color="purple"
               shade={8}
-              onClick={() => setShowStats(!showStats)}
+              onClick={(): void => setShowStats(!showStats)}
               type="button"
             >
               View Stats
@@ -179,7 +185,7 @@ export const Stats = ({ cards, name, format }) => {
               </StatsTitle>
               <RampContainer>
                 {[1, 2, 3, 4, 5, 6].map(manaCost => (
-                  <StyledRamp>
+                  <StyledRamp key={manaCost}>
                     <Text size={2} family="roboto">
                       {manaCost} {manaCost === 1 && '-'} {manaCost === 6 && '+'}
                     </Text>
@@ -248,7 +254,7 @@ export const Stats = ({ cards, name, format }) => {
 
               {types.creature.subtypes &&
                 Object.entries(types.creature.subtypes).map(([type, count]) => (
-                  <StatsPair>
+                  <StatsPair key={type}>
                     <div>{type}</div>
                     <div>{count}</div>
                   </StatsPair>
@@ -264,7 +270,7 @@ export const Stats = ({ cards, name, format }) => {
 
               {types.land.subtypes &&
                 Object.entries(types.land.subtypes).map(([land, count]) => (
-                  <StatsPair>
+                  <StatsPair key={land}>
                     <div>{land}</div>
                     <div>{count}</div>
                   </StatsPair>
@@ -278,7 +284,7 @@ export const Stats = ({ cards, name, format }) => {
               </StatsTitle>
 
               {Object.entries(rarity).map(([rare, count]) => (
-                <StatsPair>
+                <StatsPair key={rare}>
                   <div>{rare}</div>
                   <div>{count}</div>
                 </StatsPair>

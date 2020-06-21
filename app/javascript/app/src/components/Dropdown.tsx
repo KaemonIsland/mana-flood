@@ -1,11 +1,18 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  ReactElement,
+  RefObject,
+} from 'react'
 import FocusLock from 'react-focus-lock'
 import styled from 'styled-components'
 import { useOnClickOutside } from '../utils'
 
 const StyledMenu = styled('div')(
   ({ isOpen, triggerRect, dropdownRect, theme, isPaddingless, zIndex }) => {
-    let left: Number | String = '150%'
+    let left: number | string = '150%'
     let top = '150%'
     let marginTop
 
@@ -46,6 +53,23 @@ const StyledMenu = styled('div')(
   }
 )
 
+interface Close {
+  (): void
+}
+
+interface DropdownProps {
+  isPaddingless: boolean
+  children: Array<ReactElement> | ReactElement
+  zIndex: number
+  isOpen: boolean
+  role: string
+  ariaLabelledby: string
+  triggerRect: number
+  triggerRef: RefObject<ReactElement>
+  close: Close
+  id: number
+}
+
 /**
  * This is the main Dropdown component
  * @param {boolean} isOpen If the dropdown is open or not
@@ -62,7 +86,7 @@ export const Dropdown = ({
   triggerRef,
   close,
   id,
-}) => {
+}: DropdownProps): ReactElement => {
   const dropdownRef = useRef(null)
   const [dropdownRect, setDropdownRect] = useState()
 

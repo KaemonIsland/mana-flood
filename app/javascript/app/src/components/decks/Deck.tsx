@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
+import { Button } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { Stats } from './Stats'
 import { Page } from '../page'
+import { Deck as DeckType, Card } from '../../interface'
 
-export const Deck = ({ name, format, id }) => {
+export const Deck = ({ name, format, id }: DeckType): ReactElement => {
   const [cards, setCards] = useState([])
   const { actions } = useCards(name)
 
@@ -12,14 +14,17 @@ export const Deck = ({ name, format, id }) => {
 
   const { get, add, update, remove } = actions
 
-  const addCard = cardId => add(cardId, id)
+  const addCard = async (cardId: number): Promise<Card> => await add(cardId, id)
 
-  const removeCard = async cardId => remove(cardId, id)
+  const removeCard = async (cardId: number): Promise<Card> =>
+    await remove(cardId, id)
 
-  const updateCard = async (cardId, newQuantity) =>
-    await update(cardId, newQuantity, id)
+  const updateCard = async (
+    cardId: number,
+    newQuantity: number
+  ): Promise<Card> => await update(cardId, newQuantity, id)
 
-  const getDeckCards = async () => {
+  const getDeckCards = async (): Promise<void> => {
     const cards = await get(id)
     setCards(cards)
   }

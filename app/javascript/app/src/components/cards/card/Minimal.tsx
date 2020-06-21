@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
+import { Link } from '../../link'
+import { ActionButtons } from '../../buttons'
 import { ManaSymbol } from '../../ManaSymbol'
 import { Dropdown } from '../../Dropdown'
 import { useDropdown, getCardImage } from '../../../utils'
+import { Card } from '../../../interface'
 
 // Card border colors
 const cardColors = {
@@ -13,6 +16,7 @@ const cardColors = {
   G: { color: 'greenVivid', shade: 3 },
   R: { color: 'redVivid', shade: 3 },
   A: { color: 'blueGrey', shade: 2 },
+  C: { color: 'blueGrey', shade: 2 },
   M: { color: 'yellowVivid', shade: 4 },
 }
 
@@ -24,8 +28,8 @@ const cardColors = {
  *
  * @returns formatted linear-gradient string used for a css background
  */
-const buildCardColors = (theme, colors) => {
-  let backgroundColor = []
+const buildCardColors = (theme, colors: Set<string>): string => {
+  const backgroundColor = []
 
   // We use use size because colors is a set
   if (colors.size === 0) {
@@ -64,7 +68,7 @@ const CardImgContainer = styled.div(({ theme }) => ({
   overflow: 'hidden',
   boxShadow: theme.boxShadow.single[2],
 }))
-const CardImg = styled.img(({ theme }) => ({
+const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
   height: '100%',
@@ -89,22 +93,22 @@ Button.Left = styled(Button)`
 Button.Middle = styled.div`
   border-radius: 0;
   background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.color['grey'][8]};
+  border: 1px solid ${({ theme }): string => theme.color['grey'][8]};
   display: inline-block;
   text-align: center;
-  padding: ${({ theme }) =>
+  padding: ${({ theme }): string =>
     [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
 `
 Button.Right = styled(Button)`
-  border-radius: ${({ theme, hasCard }) =>
+  border-radius: ${({ theme, hasCard }): string =>
     hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
   background-color: transparent;
 `
 
 const InnerCard = styled.div`
   background-color: hsl(0, 100%, 100%, 0.7);
-  border-radius: ${({ theme }) => theme.spaceScale(2)};
-  padding: ${({ theme }) => theme.spaceScale(2)};
+  border-radius: ${({ theme }): string => theme.spaceScale(2)};
+  padding: ${({ theme }): string => theme.spaceScale(2)};
 `
 
 const CardInfo = styled.div`
@@ -118,38 +122,73 @@ const TitleText = styled(Text)`
   width: 100%;
 `
 
-export const Minimal = ({ actions, ...card }) => {
+interface AddCard {
+  (id: number): Promise<Card>
+}
+interface UpdateCard {
+  (id: number, quantity: number): Promise<Card>
+}
+interface RemoveCard {
+  (id: number): Promise<Card>
+}
+
+interface CardActions {
+  addCard: AddCard
+  updateCard: UpdateCard
+  removeCard: RemoveCard
+}
+
+interface Props {
+  actions: CardActions
+  card: Card
+}
+
+export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card.deck ? 'deck' : 'collection'
-  const [hasCard, setHasCard] = useState(card[scope].has_card)
-  const [quantity, setQuantity] = useState(card[scope].quantity)
+  const scope = card && card.deck ? 'deck' : 'collection'
+  const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
 
   const {
-    card_type,
+    cardType,
     id,
-    mana_cost,
+    manaCost,
     name,
     power,
     toughness,
-    color_identity,
-    scryfall_id,
+    colorIdentity,
+    scryfallId,
   } = card
 
-  const isLand = card_type.includes('Land')
+  const isLand = cardType.includes('Land')
 
-  const { addCard, updateCard, removeCard } = actions
+  const { addCard: add, updateCard: update, removeCard: remove } = actions
+
+  const addCard = async (): Promise<void> => {
+    await add(id)
+    setQuantity(1)
+  }
+
+  const updateCard = async (quantity: number): Promise<void> => {
+    await update(id, quantity)
+    setQuantity(quantity)
+  }
+
+  const removeCard = async (): Promise<void> => {
+    await remove(id)
+    setQuantity(0)
+  }
 
   // Starts a timeout that will fetch the card img after a set time
-  const startTimeout = () => {
+  const startTimeout = (): void => {
     if (isOpen) {
       return
     }
 
     const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfall_id, 'normal')
+      const cardUrl = await getCardImage(scryfallId, 'normal')
       setCardImg(cardUrl)
       open()
     }, 300)
@@ -158,13 +197,13 @@ export const Minimal = ({ actions, ...card }) => {
   }
 
   // Clears the active timeout if it's set
-  const stopTimeout = () => {
+  const stopTimeout = (): void => {
     timeoutId && clearTimeout(timeoutId)
     close()
   }
 
-  // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana = mana_cost
+  // Formats the cards mana cost for us to easily use mana symbol SVGs
+  const formattedMana: Array<string> = manaCost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -172,25 +211,27 @@ export const Minimal = ({ actions, ...card }) => {
 
   // Further changes the formatted mana to generate the cards colors in mana order
   // A set is used to prevent duplicates
-  const cardColors = new Set(
+  const cardColors: Set<string> = new Set(
     formattedMana
       .filter(char => isNaN(Number(char)) && char !== 'X')
       .map(char => (char.length >= 2 && char.split('')) || char)
       .flat()
+      .filter(Boolean)
   )
 
   useEffect(() => {
-    setHasCard(card[scope].has_card)
-    setQuantity(card[scope].quantity)
+    setQuantity(card[scope])
   }, [card[scope]])
 
   return (
     <ThemeProvider>
       <div>
         <CardContainer
-          color={isLand ? new Set(color_identity) : cardColors}
+          color={isLand ? new Set(colorIdentity) : cardColors}
           {...triggerProps}
-          onClick={() => {}}
+          onClick={(): void => {
+            // TODO Add functionality here
+          }}
           onMouseEnter={startTimeout}
           onMouseLeave={stopTimeout}
         >
@@ -205,64 +246,14 @@ export const Minimal = ({ actions, ...card }) => {
                 </Flex>
               </Container>
               <div>
-                <Flex alignItems="center">
-                  {hasCard && (
-                    <>
-                      <Button.Left
-                        color="grey"
-                        shade={8}
-                        size="small"
-                        variant="outline"
-                        bubble={false}
-                        isDisabled={!hasCard}
-                        onClick={() => {
-                          const newQuantity = quantity - 1
-                          if (newQuantity) {
-                            updateCard(id, newQuantity)
-                            setQuantity(newQuantity)
-                          } else {
-                            removeCard(id)
-                            setHasCard(false)
-                          }
-                        }}
-                      >
-                        -
-                      </Button.Left>
-                      <Button.Middle
-                        color="grey"
-                        shade={8}
-                        variant="outline"
-                        isDisabled
-                      >
-                        {hasCard && quantity}
-                      </Button.Middle>
-                    </>
-                  )}
-                  <Button.Right
-                    hasCard={hasCard}
-                    color="grey"
-                    shade={8}
-                    size="small"
-                    bubble={false}
-                    variant="outline"
-                    onClick={() => {
-                      if (hasCard) {
-                        updateCard(id, quantity + 1)
-                        setQuantity(quantity + 1)
-                      } else {
-                        addCard(id)
-                        setHasCard(true)
-                        setQuantity(1)
-                      }
-                    }}
-                  >
-                    +
-                  </Button.Right>
-                </Flex>
+                <ActionButtons
+                  quantity={quantity}
+                  actions={{ updateCard, removeCard, addCard }}
+                />
               </div>
             </Flex>
             <Flex alignItems="flex-end" justifyContent="space-between">
-              <a href={`/card/${id}`}>
+              <Link href={`/card/${id}`}>
                 <CardInfo>
                   <TitleText
                     title={name}
@@ -279,12 +270,12 @@ export const Minimal = ({ actions, ...card }) => {
                     family="Source Sans"
                     shade={1}
                     color="black"
-                    title={card_type}
+                    title={cardType}
                   >
-                    {card_type}
+                    {cardType}
                   </Text>
                 </CardInfo>
-              </a>
+              </Link>
               {power && toughness && (
                 <CardInfo>
                   <Text size={4} family="Roboto" color="black">
@@ -295,7 +286,11 @@ export const Minimal = ({ actions, ...card }) => {
             </Flex>
           </InnerCard>
         </CardContainer>
-        <Dropdown isPaddingless {...dropdownProps} isOpen={isOpen && cardImg}>
+        <Dropdown
+          isPaddingless
+          isOpen={Boolean(isOpen && cardImg)}
+          {...dropdownProps}
+        >
           <CardImgContainer>
             <CardImg src={cardImg} alt={name} />
           </CardImgContainer>

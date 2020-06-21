@@ -5,25 +5,27 @@ Rails.application.routes.draw do
       get 'sets', to: 'card_sets#index'
       get 'set/:id', to: 'card_sets#show'
       get 'sets/:id/collection', to: 'card_sets#collection'
-      get 'sets/:id/deck/:deck_id', to: 'card_sets#with_deck'
+      get 'sets/:id/deck/:deck_id', to: 'card_sets#deck'
       
       # Crud operations for users decked_cards
       resources :decks, except: [:new, :edit]
       get 'decked_cards/:id/collection', to: 'decked_cards#collection'
-      get 'decked_cards/:id', to: 'decked_cards#with_deck'
+      get 'decked_cards/:id', to: 'decked_cards#deck'
       post 'add_decked_card/:id/:card_id', to: 'decked_cards#create'
       put 'add_decked_card/:id/:card_id', to: 'decked_cards#update'
       delete 'remove_decked_card/:id/:card_id', to: 'decked_cards#destroy'
       
       # Crud operations for users card collection
-      get 'collection', to: 'collected_cards#collection'
-      get 'collection/deck/:id', to: 'collected_cards#with_deck'
+      get 'collection', to: 'collection#index'
+      get 'collection/set/:id', to: 'collected_cards#collection'
+      get 'collection/set/:id/deck/:deck_id', to: 'collected_cards#deck'
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
 
       # Methods for single cards
-      get 'card/:id', to: 'cards#show'
+      get 'card/:id', to: 'cards#collection'
+      get 'card/:id/deck/:deck_id', to: 'cards#deck'
     end
   end
 
@@ -37,6 +39,7 @@ Rails.application.routes.draw do
 
   # Collection Routes
   get 'collection', to: 'collection#index'
+  get 'collection/set/:id', to: 'collection#show'
 
   # Routes to update cards database
   post 'update_cards', to: 'cards#update_card_db'

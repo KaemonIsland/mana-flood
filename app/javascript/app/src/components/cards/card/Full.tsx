@@ -1,29 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
-import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
-import { ManaSymbol } from '../../ManaSymbol'
-import { getCardImage, useCards, formatDate } from '../../../utils'
-import { Page } from '../../page'
 import styled from 'styled-components'
-
-Button.Left = styled(Button)`
-  border-radius: 1rem 0 0 1rem;
-  background-color: transparent;
-`
-Button.Middle = styled.div`
-  border-radius: 0;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.color['grey'][8]};
-  display: inline-block;
-  text-align: center;
-  padding: ${({ theme }) =>
-    [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
-`
-Button.Right = styled(Button)`
-  border-radius: ${({ theme, hasCard }) =>
-    hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
-  background-color: transparent;
-`
+import { useMediaQuery } from 'react-responsive'
+import { Text, Container, Flex, Grid, Button } from 'warlock-ui'
+import { Link } from '../../link'
+import { ManaSymbol } from '../../ManaSymbol'
+import {
+  getCard as getScryfallCard,
+  getCardImage,
+  useCards,
+  formatDate,
+  toCamelcase,
+} from '../../../utils'
+import { Page } from '../../page'
+import { Ruling, Card } from '../../../interface'
+import { ActionButtons } from '../../buttons'
 
 const CardInfo = styled.div(({ theme }) => ({
   backgroundColor: 'white',
@@ -50,113 +41,182 @@ const StyledRule = styled.div(({ theme }) => ({
 }))
 
 const CardImgContainer = styled.div(({ theme }) => ({
-  width: '16rem',
+  minWidth: '14rem',
+  width: '100%',
+  maxWidth: '22rem',
   marginRight: theme.spaceScale(4),
   borderRadius: theme.spaceScale(4),
   overflow: 'hidden',
   boxShadow: theme.boxShadow.single[2],
 }))
 
-const CardImg = styled.img(({ theme }) => ({
+const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
   height: '100%',
 }))
 
-const StyledLegal = styled.div(({ theme }) => ({
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'start',
-  padding: theme.spaceScale(2),
+const LegalContainer = styled.div(({ theme }) => ({
+  height: theme.spaceScale(9),
+  overflowY: 'scroll',
 }))
 
-StyledLegal.Title = styled.p(({ theme }) => ({
-  fontFamily: 'Open Sans',
+const StyledLegal = styled.div(({ theme }) => ({
+  fontFamily: 'Roboto',
+  display: 'flex',
+  justifyContent: 'start',
+  alignItems: 'start',
+  padding: theme.spaceScale(2),
+  width: theme.spaceScale(11),
+}))
+
+StyledLegal.Title = styled.p(({ theme, isLegal }) => ({
+  display: 'inline-block',
   textTransform: 'uppercase',
+  width: '100%',
+  fontSize: theme.fontScale(2),
+  border: `1px solid ${theme.color[isLegal ? 'green' : 'red'][6]}`,
+  borderRadius: `${theme.spaceScale(1)} 0 0 ${theme.spaceScale(1)}`,
+  padding: `${theme.spaceScale(1)} ${theme.spaceScale(2)}`,
 }))
 
 StyledLegal.Status = styled.p(({ theme, isLegal }) => ({
-  fontFamily: 'Roboto',
   fontWeight: 'bold',
   fontSize: theme.fontScale(2),
   backgroundColor: theme.color[isLegal ? 'green' : 'red'][6],
-  borderRadius: theme.spaceScale(1),
+  border: `1px solid ${theme.color[isLegal ? 'green' : 'red'][6]}`,
+  borderRadius: `0 ${theme.spaceScale(1)} ${theme.spaceScale(1)} 0`,
   padding: `${theme.spaceScale(1)} ${theme.spaceScale(2)}`,
   color: 'white',
 }))
 
-export const Full = ({ id }) => {
+interface Props {
+  id: number
+}
+
+const defaultCard: Card = {
+  isAlternative: false,
+  isPromo: false,
+  id: 0,
+  name: '',
+  colorIdentity: '',
+  scryfallId: '',
+  manaCost: '',
+  power: 0,
+  toughness: 0,
+  cardType: '',
+  artist: '',
+  rulings: [],
+  legalities: {},
+  flavorText: '',
+  text: '',
+  number: 0,
+  rarity: '',
+  collection: 0,
+  variations: [],
+  convertedManaCost: 0,
+  loyalty: '',
+  borderColor: '',
+  tcgplayerProductId: 0,
+}
+
+export const Full = ({ id }: Props): ReactElement => {
+  const isMobile = useMediaQuery({ maxWidth: 650 })
+  const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const { actions, scope, deck } = useCards('collection')
   const [img, setImg] = useState('')
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [{ name, mana_cost, collection, ...card }, setCard] = useState({
-    mana_cost: '',
-    name: '',
-    collection: {
-      has_card: false,
-      quantity: 0,
-    },
+  const [prices, setPrices] = useState({
+    usd: 0,
+    usdFoil: 0,
   })
-  const { has_card, quantity } = collection
+
+  const [
+    {
+      power,
+      toughness,
+      cardType,
+      artist,
+      manaCost,
+      collection,
+      text,
+      flavorText,
+      legalities,
+      rulings,
+      rarity,
+      number,
+      name,
+      loyalty,
+      tcgplayerProductId,
+    },
+    setCard,
+  ] = useState(defaultCard)
+
+  const quantity = collection
   const { add, update, remove } = actions
 
-  const getVariationInfo = async card => {
-    if (card.variations) {
-      card.variations = await Promise.all(
+  const getVariationInfo = async (card: Card): Promise<void> => {
+    let newVariations = card.variations
+    if (newVariations) {
+      newVariations = await Promise.all(
         card.variations.map(async variant => ({
           ...variant,
-          imgUrl: await getCardImage(variant.scryfall_id, 'large'),
+          imgUrl: await getCardImage(variant.scryfallId, 'large'),
         }))
       )
     }
 
-    setVariations(card)
+    setVariations(newVariations)
   }
 
-  const addCard = async cardId => {
-    setCard(await add(cardId, deck && deck.id))
+  const addCard = async (): Promise<void> => {
+    const updatedCard: Card = await add(id, deck && deck.id)
+
+    setCard(updatedCard)
   }
 
-  const removeCard = async cardId => {
-    setCard(await remove(cardId, deck && deck.id))
+  const removeCard = async (): Promise<void> => {
+    setCard(await remove(id, deck && deck.id))
   }
 
-  const updateCard = async (cardId, newQuantity) => {
-    setCard(await update(cardId, newQuantity, deck && deck.id))
+  const updateCard = async (newQuantity: number): Promise<void> => {
+    setCard(await update(id, newQuantity, deck && deck.id))
   }
 
-  const getCard = async () => {
+  const getCard = async (): Promise<Card> => {
     try {
       const response = await axios(`/api/v1/card/${id}`)
 
-      const { data } = response
+      const cardData: Card = toCamelcase(response.data)
 
-      if (data) {
-        return data
+      if (cardData) {
+        return cardData
       } else {
-        throw new Error(data)
+        throw new Error()
       }
     } catch (error) {
       console.log('Unable to get card: ', error)
     }
   }
 
-  const initialize = async () => {
-    const card = await getCard()
-    const cardUrl = await getCardImage(card.scryfall_id, 'large')
+  const initialize = async (): Promise<void> => {
+    const newCard: Card = await getCard()
+    const scryfallCard = await getScryfallCard(newCard.scryfallId)
 
-    getVariationInfo(card)
+    const cardUrl = scryfallCard.imageUris && scryfallCard.imageUris.large
 
-    setCard(card)
+    getVariationInfo(newCard)
+
+    setCard(newCard)
     setImg(cardUrl)
+    setPrices(scryfallCard.prices)
 
     setIsLoading(false)
   }
 
   // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana = mana_cost
+  const formattedMana = manaCost
     .replace(/[{ | }]/g, ' ')
     .replace(/\//g, '')
     .split(' ')
@@ -165,14 +225,43 @@ export const Full = ({ id }) => {
   useEffect(() => {
     initialize()
   }, [])
+
+  const tabletGrid = {
+    templateColumns: Grid.repeat(2, Grid.fr(1)),
+    templateAreas: [
+      'name cmc',
+      'mainImage info',
+      'actions legal',
+      'variations variations',
+      'rules rules',
+    ],
+  }
+
+  const mobileGrid = {
+    templateColumns: Grid.fr(1),
+    alignItems: 'center',
+    rowGap: 4,
+    templateAreas: [
+      'cmc',
+      'name',
+      'mainImage',
+      'actions',
+      'info',
+      'legal',
+      'variations',
+      'rules',
+    ],
+  }
+
   return (
     <Page>
       {!isLoading ? (
         <Grid
-          alignItems="start"
           justifyContent="center"
+          alignItems="start"
           templateColumns={Grid.repeat(4, Grid.fr(1))}
           templateRows="auto"
+          rowGap={7}
           templateAreas={[
             'name name name cmc',
             'mainImage actions info info',
@@ -180,149 +269,174 @@ export const Full = ({ id }) => {
             'variations variations variations variations',
             'rules rules rules rules',
           ]}
+          {...(isMobile && mobileGrid)}
+          {...(isTablet && tabletGrid)}
         >
+          <Grid.Item area="cmc" justifySelf={isMobile ? 'start' : 'end'}>
+            <Flex alignItems="center" justifyContent="end">
+              {formattedMana.length !== 0 &&
+                formattedMana.map((mana, i) => (
+                  <ManaSymbol
+                    size={
+                      (isMobile && 'medium') ||
+                      (isTablet && 'large') ||
+                      'xLarge'
+                    }
+                    key={i}
+                    mana={mana}
+                  />
+                ))}
+            </Flex>
+          </Grid.Item>
           <Grid.Item area="name">
-            <Text size={10} family="source sans">
+            <Text
+              as="h1"
+              size={isMobile || isTablet ? 7 : 10}
+              family="source sans"
+            >
               {name}
             </Text>
           </Grid.Item>
-          <Grid.Item area="cmc" justifySelf="end">
-            <Container width="7rem">
-              <Flex alignItems="center" justifyContent="start">
-                {formattedMana.length !== 0 &&
-                  formattedMana.map((mana, i) => (
-                    <ManaSymbol size="large" key={i} mana={mana} />
-                  ))}
-              </Flex>
-            </Container>
-          </Grid.Item>
-          <Grid.Item area="mainImage">
+          <Grid.Item
+            area="mainImage"
+            justifySelf={isMobile ? 'center' : 'start'}
+          >
             <CardImgContainer>
               <CardImg src={img} alt={name} />
             </CardImgContainer>
           </Grid.Item>
           <Grid.Item area="actions">
             <CardInfo>
-              <Flex alignItems="center" justifyContent="space-between">
-                Collection:
-                <Flex alignItems="center" justifyContent="end">
-                  {has_card && (
-                    <>
-                      <Button.Left
-                        color="grey"
-                        shade={8}
-                        size="small"
-                        variant="outline"
-                        bubble={false}
-                        isDisabled={!has_card}
-                        onClick={() => {
-                          const newQuantity = quantity - 1
-                          if (newQuantity) {
-                            updateCard(id, newQuantity)
-                          } else {
-                            removeCard(id)
-                          }
-                        }}
-                      >
-                        -
-                      </Button.Left>
-                      <Button.Middle
-                        color="grey"
-                        shade={8}
-                        variant="outline"
-                        isDisabled
-                      >
-                        {has_card && quantity}
-                      </Button.Middle>
-                    </>
-                  )}
-                  <Button.Right
-                    hasCard={has_card}
-                    color="grey"
-                    shade={8}
-                    size="small"
-                    bubble={false}
-                    variant="outline"
-                    onClick={() => {
-                      if (has_card) {
-                        updateCard(id, quantity + 1)
-                      } else {
-                        addCard(id)
-                      }
-                    }}
-                  >
-                    +
-                  </Button.Right>
+              <Container marginBottom={5}>
+                <Flex alignItems="start" justifyContent="space-between">
+                  <Text family="roboto" size={5}>
+                    Collection
+                  </Text>
+                  <ActionButtons
+                    quantity={quantity}
+                    actions={{ updateCard, addCard, removeCard }}
+                  />
                 </Flex>
+              </Container>
+              <Container marginBottom={4}>
+                <Flex justifyContent="space-between" alignItems="start">
+                  <p>Normal</p>
+                  <Text size={6} family="roboto">
+                    ${Number(prices.usd).toFixed(2)}
+                  </Text>
+                </Flex>
+              </Container>
+
+              <Container marginBottom={4}>
+                <Flex justifyContent="space-between" alignItems="start">
+                  <p>Foil</p>
+                  <Text size={6} family="roboto">
+                    ${Number(prices.usdFoil).toFixed(2)}
+                  </Text>
+                </Flex>
+              </Container>
+              <Flex justifyContent="center">
+                <Button color="purpleVivid" shade={2}>
+                  <Link
+                    target="_blank"
+                    href={`https://shop.tcgplayer.com/product/productsearch?id=${tcgplayerProductId}`}
+                  >
+                    Get it on tcgplayer
+                  </Link>
+                </Button>
               </Flex>
-              <hr />
             </CardInfo>
           </Grid.Item>
           <Grid.Item area="info">
             <CardInfo>
-              <Text isItalics>{card.card_type}</Text>
+              <Text isItalics>{cardType}</Text>
               <hr />
               <Container maxWidth="35rem">
-                {card.text.split('\n').map(text => (
-                  <div style={{ marginBottom: '0.5rem' }}>
-                    {text.replace(/[{}]/g, ' ')}
-                  </div>
+                {text.split('\n').map((textLine, i) => (
+                  <Text
+                    family="source sans pro"
+                    key={i}
+                    style={{ marginBottom: '0.5rem' }}
+                  >
+                    {textLine.replace(/[{}]/g, ' ')}
+                  </Text>
                 ))}
               </Container>
               <hr />
-              {card.power && (
+              {flavorText && (
                 <>
-                  <div>
-                    {card.power} / {card.toughness}
-                  </div>
+                  <Text isItalics>&quot;{flavorText}&quot;</Text>
                   <hr />
                 </>
               )}
-              {card.flavor_text && (
+              {power && (
                 <>
-                  <Text isItalics>{card.flavor_text}</Text>
+                  <Text family="roboto" isBold>
+                    {power} / {toughness}
+                  </Text>
+                  <hr />
+                </>
+              )}
+              {loyalty && (
+                <>
+                  <Text family="roboto" isBold>
+                    {loyalty}
+                  </Text>
                   <hr />
                 </>
               )}
               <div>
-                Illustrated by{' '}
-                <Text isItalics display="inline-block">
-                  {card.artist}
+                <Text size={2} display="inline-block">
+                  Illustrated by{' '}
+                  <Text size={2} as="span" isItalics display="inline-block">
+                    {artist}
+                  </Text>
                 </Text>
               </div>
               <hr />
               <div>
                 <Text isItalics display="inline-block">
-                  {card.rarity}
+                  {rarity}
                 </Text>
-                , {card.number}
+                , #{number}
               </div>
             </CardInfo>
           </Grid.Item>
           <Grid.Item area="legal">
             <CardInfo>
-              <Flex flexWrap="wrap" alignItems="center" justifyContent="start">
-                {Object.entries(card.legalities).map(([title, legal]) => (
-                  <Container width="12rem">
-                    <StyledLegal>
-                      <StyledLegal.Title>{title}</StyledLegal.Title>
-                      <StyledLegal.Status isLegal={legal === 'Legal'}>
-                        {legal}
-                      </StyledLegal.Status>
-                    </StyledLegal>
-                  </Container>
-                ))}
-              </Flex>
+              <LegalContainer>
+                <Flex
+                  flexWrap="wrap"
+                  alignItems="center"
+                  justifyContent={isMobile || isTablet ? 'center' : 'start'}
+                >
+                  {Object.entries(legalities).map(([title, legal], i) => {
+                    const isLegal = legal === 'Legal'
+                    return (
+                      <StyledLegal key={i}>
+                        <StyledLegal.Title isLegal={isLegal}>
+                          {title}
+                        </StyledLegal.Title>
+                        <StyledLegal.Status isLegal={isLegal}>
+                          {legal}
+                        </StyledLegal.Status>
+                      </StyledLegal>
+                    )
+                  })}
+                </Flex>
+              </LegalContainer>
             </CardInfo>
           </Grid.Item>
           {variations.length > 0 && (
             <Grid.Item area="variations">
-              <Text size={8} family="source sans">
-                Variations
-              </Text>
-              <Flex alignItems="center" justifyContent="start">
-                {variations.map(variant => (
-                  <CardImgContainer>
+              <Flex
+                alignItems="center"
+                justifyContent={isMobile ? 'center' : 'start'}
+                flexWrap="wrap"
+                direction={isMobile ? 'column' : 'row'}
+              >
+                {variations.map((variant, i) => (
+                  <CardImgContainer style={{ marginBottom: '1rem' }} key={i}>
                     <a href={`/card/${variant.id}`} aria-label="View Variant">
                       <CardImg src={variant.imgUrl} alt={name} />
                     </a>
@@ -331,14 +445,11 @@ export const Full = ({ id }) => {
               </Flex>
             </Grid.Item>
           )}
-          {Object.values(card.rulings).length > 0 && (
+          {Object.values(rulings).length > 0 && (
             <Grid.Item area="rules">
-              <Text size={8} family="source sans">
-                Rulings
-              </Text>
               <RulesContainer>
-                {Object.values(card.rulings).map(({ date, text }) => (
-                  <StyledRule>
+                {Object.values(rulings).map(({ date, text }: Ruling, i) => (
+                  <StyledRule key={i}>
                     <Text isItalics color="grey" size={2} shade={6}>
                       {formatDate(date, {})}
                     </Text>

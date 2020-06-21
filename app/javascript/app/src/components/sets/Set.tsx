@@ -1,35 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import { Text } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
-import { StatusBar } from '../statusBar'
 import { Page } from '../page'
+import { Card } from '../../interface'
 
-export const Set = ({
-  id,
-  name,
-  code,
-  release_date,
-  set_type,
-  base_set_size,
-}) => {
+interface SetProps {
+  id: number
+  name: string
+  code: string
+  releaseDate: Date
+  setType: string
+  baseSetSize: number
+}
+
+export const Set = ({ id, name }: SetProps): ReactElement => {
   const [cards, setCards] = useState([])
   const { actions, scope, deck } = useCards('collection')
   const { add, update, remove, set } = actions
 
-  const addCard = async cardId => await add(cardId, deck && deck.id)
+  const addCard = async (cardId: number): Promise<Card> =>
+    await add(cardId, deck && deck.id)
 
-  const removeCard = async cardId => await remove(cardId, deck && deck.id)
+  const removeCard = async (cardId: number): Promise<Card> =>
+    await remove(cardId, deck && deck.id)
 
-  const updateCard = async (cardId, newQuantity) =>
-    await update(cardId, newQuantity, deck && deck.id)
+  const updateCard = async (
+    cardId: number,
+    newQuantity: number
+  ): Promise<Card> => await update(cardId, newQuantity, deck && deck.id)
 
-  const getDeckCards = async () => {
+  const getDeckCards = async (): Promise<void> => {
     const newCards = await set.deck(id, deck.id)
     setCards(newCards)
   }
 
-  const getCollectionCards = async () => {
+  const getCollectionCards = async (): Promise<void> => {
     const newCards = await set.collection(id)
     setCards(newCards)
   }
@@ -64,7 +70,6 @@ export const Set = ({
         cards={cards}
         scope="set"
       />
-      <StatusBar scope={scope} />
     </Page>
   )
 }

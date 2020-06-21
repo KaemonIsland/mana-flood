@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { manaSvgs } from '../../../packs/application.js'
 
 const Mana = styled.div`
-  height: ${({ theme, height }) => theme.spaceScale(height)};
-  width: ${({ theme, width }) => theme.spaceScale(width)};
-  margin-right: ${({ theme }) => theme.spaceScale(1)};
+  height: ${({ theme, height }): string => theme.spaceScale(height)};
+  width: ${({ theme, width }): string => theme.spaceScale(width)};
+  margin-right: ${({ theme }): string => theme.spaceScale(1)};
   border: 1px solid black;
   border-radius: 50%;
 `
@@ -16,11 +16,17 @@ const Img = styled.img`
   max-width: 100%;
 `
 
-export const ManaSymbol = ({ mana, size }) => {
+interface ManaSymbolProps {
+  mana: string
+  size: string
+}
+
+export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {
   const sizes = {
     small: { width: 5, height: 5 },
     medium: { width: 6, height: 6 },
-    large: { width: 8, height: 8 },
+    large: { width: 7, height: 7 },
+    xLarge: { width: 8, height: 8 },
   }
 
   return (
