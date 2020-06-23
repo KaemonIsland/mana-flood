@@ -3,16 +3,15 @@ import { Text, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import { formatDate } from '../../utils'
 import { CardSet } from '../../interface'
+import { SetIcon } from '../icon'
 
 const SetGrid = styled.section(({ theme }) => ({
-  maxWidth: '101rem',
-  margin: '0 auto',
   display: 'grid',
   gridGap: theme.spaceScale(4),
   gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spaceScale(
     11
   )}, ${theme.spaceScale(12)}))`,
-  justifyContent: 'center',
+  justifyContent: 'space-between',
 }))
 
 const SetContainer = styled.a(({ theme }) => ({
@@ -45,25 +44,34 @@ interface SetsProps {
 export const Sets = ({ sets, link }: SetsProps): ReactElement => {
   return (
     <SetGrid>
-      {sets.map(({ id, baseSetSize, name, releaseDate, unique }: CardSet) => (
-        <SetContainer key={id} href={`${link}/${id}`}>
-          <Flex
-            direction="column"
-            justifyContent="space-around"
-            alignItems="start"
-          >
-            <Text size={5}>{name}</Text>
-            <br />
-            <Text font="roboto" isItalics>
-              {formatDate(new Date(releaseDate), {})}
+      {sets.map(
+        ({
+          id,
+          baseSetSize,
+          name,
+          releaseDate,
+          unique,
+          keyruneCode,
+        }: CardSet) => (
+          <SetContainer key={id} href={`${link}/${id}`}>
+            <Text size={5} display="block">
+              {name}
             </Text>
-            <Text font="roboto">
-              {!!unique && `${unique} / `}
-              {baseSetSize} cards
-            </Text>
-          </Flex>
-        </SetContainer>
-      ))}
+            <Flex justifyContent="space-between" alignItems="start">
+              <div>
+                <Text font="roboto" display="block" isItalics>
+                  {formatDate(new Date(releaseDate), {})}
+                </Text>
+                <Text font="roboto" display="block">
+                  {!!unique && `${unique} / `}
+                  {baseSetSize} cards
+                </Text>
+              </div>
+              <SetIcon setCode={keyruneCode} size="large" />
+            </Flex>
+          </SetContainer>
+        )
+      )}
     </SetGrid>
   )
 }

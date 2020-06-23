@@ -13,6 +13,7 @@ global.fetch = fetch
 
 // Creates a context for all of the mana symbols
 export const manaSvgs = require.context('./media/manaSymbols', true, /\.svg$/)
+export const setIcons = require.context('./media/setIcons', true, /\.svg$/)
 
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)

@@ -6,4 +6,10 @@ export interface CardSet {
   baseSetSize: number
   setType: string
   unique?: number
+  keyruneCode: string
+  block: string
+  mcmName: string
+  mcmId: number
+  tcgplayerGroupId: string
+  totalSetSize: number
 }
