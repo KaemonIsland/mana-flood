@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
-import { Button, Flex } from 'warlock-ui'
+import { Button, Flex, Text } from 'warlock-ui'
 import styled from 'styled-components'
+import { Feather } from '../icon'
 
 Button.Left = styled(Button)`
   border-radius: 1rem 0 0 1rem;
@@ -65,10 +66,10 @@ export const ActionButtons = ({
             }
           }}
         >
-          -
+          <Feather icon="minus" size="small" />
         </Button.Left>
         <Button.Middle color="grey" shade={8} variant="outline" isDisabled>
-          {quantity}
+          <Text family="roboto">{quantity}</Text>
         </Button.Middle>
       </>
     )}
@@ -87,7 +88,7 @@ export const ActionButtons = ({
         }
       }}
     >
-      +
+      <Feather icon="plus" size="small" />
     </Button.Right>
   </Flex>
 )

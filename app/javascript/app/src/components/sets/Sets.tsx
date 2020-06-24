@@ -36,6 +36,13 @@ const SetContainer = styled.a(({ theme }) => ({
   },
 }))
 
+const StyledFlex = styled.div(() => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'end',
+  justifyContent: 'space-between',
+}))
+
 interface SetsProps {
   sets: Array<CardSet>
   link: string
@@ -57,18 +64,24 @@ export const Sets = ({ sets, link }: SetsProps): ReactElement => {
             <Text size={5} display="block">
               {name}
             </Text>
-            <Flex justifyContent="space-between" alignItems="start">
-              <div>
-                <Text font="roboto" display="block" isItalics>
-                  {formatDate(new Date(releaseDate), {})}
-                </Text>
-                <Text font="roboto" display="block">
-                  {!!unique && `${unique} / `}
-                  {baseSetSize} cards
-                </Text>
-              </div>
+            <Text
+              as="span"
+              font="roboto"
+              display="block"
+              color="grey"
+              shade={6}
+              size={1}
+              isItalics
+            >
+              {formatDate(new Date(releaseDate), {})}
+            </Text>
+            <StyledFlex>
+              <Text font="roboto" display="block">
+                {!!unique && `${unique} / `}
+                {baseSetSize} Cards
+              </Text>
               <SetIcon setCode={keyruneCode} size="large" />
-            </Flex>
+            </StyledFlex>
           </SetContainer>
         )
       )}
