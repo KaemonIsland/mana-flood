@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 import { ThemeProvider } from 'warlock-ui'
 import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
-import { Toast } from '../toast'
+import { ToastProvider } from '../toast'
 
 const PageContainer = styled.div(() => ({
   width: '100%',
@@ -23,9 +23,11 @@ export const Page = ({ children }: PageProps): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 650 })
   return (
     <ThemeProvider>
-      <PageContainer>
-        <StyledPage isMobile={isMobile}>{children}</StyledPage>
-      </PageContainer>
+      <ToastProvider>
+        <PageContainer>
+          <StyledPage isMobile={isMobile}>{children}</StyledPage>
+        </PageContainer>
+      </ToastProvider>
     </ThemeProvider>
   )
 }
