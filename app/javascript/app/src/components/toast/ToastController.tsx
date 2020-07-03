@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement } from 'react'
 import { useTimer } from '../../utils/hooks'
+
+interface ToastControllerProps {
+  autoDismiss?: boolean
+  autoDismissTimeout?: number
+  onDismiss: () => {}
+  Toast: ReactElement
+}
 
 export const ToastController = ({
   autoDismiss = false,
@@ -7,24 +14,20 @@ export const ToastController = ({
   onDismiss,
   Toast,
   ...props
-}) => {
+}: ToastControllerProps): ReactElement => {
   const [isRunning, setIsRunning] = useState(autoDismiss)
   const { clear, pause, resume } = useTimer(onDismiss, autoDismissTimeout)
 
-  const startTimer = () => {
-    resume()
-  }
+  const startTimer = (): void => resume()
 
-  const clearTimer = () => {
-    clear()
-  }
+  const clearTimer = (): void => clear()
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (): void => {
     setIsRunning(false)
     pause()
   }
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (): void => {
     setIsRunning(true)
     resume()
   }
@@ -36,9 +39,7 @@ export const ToastController = ({
       clearTimer()
     }
 
-    return () => {
-      clearTimer()
-    }
+    return (): void => clearTimer()
   }, [autoDismiss])
 
   return (

@@ -1,6 +1,13 @@
-import React, { useEffect, useRef, useState, ReactElement } from 'react'
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  ReactElement,
+  ReactChild,
+  ReactChildren,
+} from 'react'
 import styled, { keyframes } from 'styled-components'
-
+import { Button } from 'warlock-ui'
 import { CheckIcon, FlameIcon, InfoIcon, CloseIcon, AlertIcon } from './icons'
 import * as colors from './colors'
 
@@ -9,20 +16,6 @@ export const borderRadius = 4
 export const gutter = 8
 export const toastWidth = 360
 export const shrinkKeyframes = keyframes`from { height: 100%; } to { height: 0% }`
-
-const StyledTag = styled.span(() => ({
-  border: 0,
-  clip: 'rect(1px, 1px, 1px, 1px)',
-  height: 1,
-  overflow: 'hidden',
-  padding: 0,
-  position: 'absolute',
-  whiteSpace: 'nowrap',
-  width: 1,
-}))
-
-// a11y helper
-const A11yText = ({ ...props }): ReactElement => <StyledTag {...props} />
 
 // default appearances
 
@@ -53,28 +46,7 @@ const appearances = {
   },
 }
 
-const StyledButton = styled.button(() => ({
-  cursor: 'pointer',
-  flexShrink: 0,
-  opacity: 0.5,
-  padding: `${gutter}px ${gutter * 1.5}px`,
-  transition: 'opacity 150ms',
-
-  '&:hover': { opacity: 1 },
-}))
-
-const Button = props => <StyledButton type="button" {...props} />
-
-const StyledContent = styled.div(() => ({
-  flexGrow: 1,
-  fontSize: 14,
-  lineHeight: 1.4,
-  minHeight: 40,
-  padding: `${gutter}px ${gutter * 1.5}px`,
-}))
-
-const Content = props => <StyledContent {...props} />
-
+// Animates the countdown progress
 const StyledCountdown = styled.div`
   animation: ${shrinkKeyframes}
     ${({ autoDismissTimeout }) => autoDismissTimeout}ms linear;
@@ -88,18 +60,6 @@ const StyledCountdown = styled.div`
   position: absolute;
   width: 100%;
 `
-
-// NOTE: invoke animation when NOT `autoDismiss` with opacity of 0 to avoid a
-// paint bug in FireFox.
-// https://bugzilla.mozilla.org/show_bug.cgi?id=625289
-const Countdown = ({ autoDismissTimeout, opacity, isRunning, ...props }) => (
-  <StyledCountdown
-    opacity={opacity}
-    isRunning={isRunning}
-    autoDismissTimeout={autoDismissTimeout}
-    {...props}
-  />
-)
 
 const StyledIcon = styled.div(({ meta }) => ({
   backgroundColor: meta.fg,
@@ -115,15 +75,28 @@ const StyledIcon = styled.div(({ meta }) => ({
   width: 30,
 }))
 
-const Icon = ({ appearance, autoDismiss, autoDismissTimeout, isRunning }) => {
+interface IconProps {
+  appearance?: string
+  autoDismiss?: boolean
+  autoDismissTimeout?: number
+  opacity?: number
+  isRunning?: boolean
+}
+
+const Icon = ({
+  appearance,
+  autoDismiss,
+  autoDismissTimeout,
+  isRunning,
+}: IconProps): ReactElement => {
   const meta = appearances[appearance]
   const Glyph = meta.icon
 
   return (
     <StyledIcon meta={meta}>
-      <Countdown
-        opacity={autoDismiss ? 1 : 0}
+      <StyledCountdown
         autoDismissTimeout={autoDismissTimeout}
+        opacity={autoDismiss ? 1 : 0}
         isRunning={isRunning}
       />
       <Glyph />
@@ -134,21 +107,8 @@ const Icon = ({ appearance, autoDismiss, autoDismissTimeout, isRunning }) => {
 // Transitions
 // ------------------------------
 
-const getTranslate = placement => {
-  const pos = placement.split('-')
-  const relevantPlacement = pos[1] === 'center' ? pos[0] : pos[1]
-  const translateMap = {
-    right: 'translate3d(120%, 0, 0)',
-    left: 'translate3d(-120%, 0, 0)',
-    bottom: 'translate3d(0, 120%, 0)',
-    top: 'translate3d(0, -120%, 0)',
-  }
-
-  return translateMap[relevantPlacement]
-}
-
-const toastStates = placement => ({
-  entering: { transform: getTranslate(placement) },
+const toastStates = () => ({
+  entering: { transform: 'translate3d(120%, 0, 0)' },
   entered: { transform: 'translate3d(0,0,0)' },
   exiting: { transform: 'scale(0.66)', opacity: 0 },
   exited: { transform: 'scale(0.66)', opacity: 0 },
@@ -160,7 +120,7 @@ const ToastContainer = styled.div`
 `
 
 const StyledToast = styled.div(
-  ({ appearance, transitionDuration, placement, transitionState }) => ({
+  ({ appearance, transitionDuration, transitionState }) => ({
     backgroundColor: appearances[appearance].bg,
     borderRadius,
     boxShadow: '0 3px 8px rgba(0, 0, 0, 0.175)',
@@ -169,17 +129,25 @@ const StyledToast = styled.div(
     marginBottom: gutter,
     transition: `transform ${transitionDuration}ms cubic-bezier(0.2, 0, 0, 1), opacity ${transitionDuration}ms`,
     width: toastWidth,
-    ...toastStates(placement)[transitionState],
+    ...toastStates()[transitionState],
   })
 )
 
+interface ToastElementProps {
+  appearance?: string
+  transitionDuration?: number
+  transitionState?: string
+  onMouseEnter?: any
+  onMouseLeave?: any
+  children?: ReactChild | ReactChildren
+}
+
 const ToastElement = ({
   appearance,
-  placement,
   transitionDuration,
   transitionState,
   ...props
-}) => {
+}: ToastElementProps): ReactElement => {
   const [height, setHeight] = useState('auto')
   const elementRef = useRef(null)
 
@@ -203,17 +171,47 @@ const ToastElement = ({
         {...props}
         appearance={appearance}
         transitionDuration={transitionDuration}
-        placement={placement}
         transitionState={transitionState}
       />
     </ToastContainer>
   )
 }
 
+const StyledTag = styled.span(() => ({
+  border: 0,
+  clip: 'rect(1px, 1px, 1px, 1px)',
+  height: 1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  whiteSpace: 'nowrap',
+  width: 1,
+}))
+
+const StyledContent = styled.div(() => ({
+  flexGrow: 1,
+  fontSize: 14,
+  lineHeight: 1.4,
+  minHeight: 40,
+  padding: `${gutter}px ${gutter * 1.5}px`,
+}))
+
 // ==============================
 // DefaultToast
 // ==============================
 
+interface ToastProps {
+  appearance?: string
+  autoDismiss?: boolean
+  autoDismissTimeout?: number
+  children?: ReactChild | ReactChildren
+  isRunning?: boolean
+  onDismiss?: any
+  transitionDuration?: number
+  transitionState?: string
+  onMouseEnter?: any
+  onMouseLeave?: any
+}
 export const Toast = ({
   appearance,
   autoDismiss,
@@ -221,16 +219,14 @@ export const Toast = ({
   children,
   isRunning,
   onDismiss,
-  placement,
   transitionDuration,
   transitionState,
   onMouseEnter,
   onMouseLeave,
   ...otherProps
-}) => (
+}: ToastProps): ReactElement => (
   <ToastElement
     appearance={appearance}
-    placement={placement}
     transitionState={transitionState}
     transitionDuration={transitionDuration}
     onMouseEnter={onMouseEnter}
@@ -243,11 +239,11 @@ export const Toast = ({
       autoDismissTimeout={autoDismissTimeout}
       isRunning={isRunning}
     />
-    <Content>{children}</Content>
+    <StyledContent>{children}</StyledContent>
     {onDismiss ? (
       <Button onClick={onDismiss}>
         <CloseIcon />
-        <A11yText>Close</A11yText>
+        <StyledTag>Close</StyledTag>
       </Button>
     ) : null}
   </ToastElement>

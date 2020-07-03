@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, ReactChildren, ReactChild } from 'react'
 import styled from 'styled-components'
 import { gutter } from './ToastElement'
 
@@ -11,7 +11,7 @@ import { gutter } from './ToastElement'
 //   'bottom-center': { bottom: 0, left: '50%', transform: 'translateX(-50%)' }
 //   'bottom-right': { bottom: 0, right: 0 }
 
-const StyledContainer = styled.div(({ theme, hasToasts }) => ({
+const StyledContainer = styled.div(({ hasToasts }) => ({
   maxHeight: '100%',
   overflow: 'hidden',
   padding: gutter,
@@ -22,6 +22,17 @@ const StyledContainer = styled.div(({ theme, hasToasts }) => ({
   right: 0,
 }))
 
-export const ToastContainer = ({ hasToasts, ...props }): ReactElement => (
-  <StyledContainer hasToasts={hasToasts} {...props} />
+interface ToastContainerProps {
+  hasToasts: boolean
+  children: ReactChild | ReactChildren
+}
+
+export const ToastContainer = ({
+  hasToasts,
+  children,
+  ...props
+}: ToastContainerProps): ReactElement => (
+  <StyledContainer hasToasts={hasToasts} {...props}>
+    {children}
+  </StyledContainer>
 )

@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { formatDate } from '../../utils'
 import { CardSet } from '../../interface'
 import { SetIcon } from '../icon'
-import { useToasts } from '../toast'
 
 const SetGrid = styled.section(({ theme }) => ({
   display: 'grid',
@@ -50,95 +49,42 @@ interface SetsProps {
 }
 
 export const Sets = ({ sets, link }: SetsProps): ReactElement => {
-  const {
-    addToast,
-    removeToast,
-    removeAllToasts,
-    updateToast,
-    toasts,
-  } = useToasts()
   return (
-    <React.Fragment>
-      <button
-        type="button"
-        onClick={() =>
-          addToast('Successfully added card', {
-            appearance: 'success',
-            autoDismiss: true,
-          })
-        }
-      >
-        Success
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          addToast('Unable to remove card', {
-            appearance: 'error',
-            autoDismiss: true,
-          })
-        }
-      >
-        Error
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          addToast('You removed your last card', {
-            appearance: 'warning',
-            autoDismiss: true,
-          })
-        }
-      >
-        Warning
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          addToast('That was cool!', {
-            appearance: 'info',
-            autoDismiss: true,
-          })
-        }
-      >
-        Info!
-      </button>
-      <SetGrid>
-        {sets.map(
-          ({
-            id,
-            baseSetSize,
-            name,
-            releaseDate,
-            unique,
-            keyruneCode,
-          }: CardSet) => (
-            <SetContainer key={id} href={`${link}/${id}`}>
-              <Text size={5} display="block">
-                {name}
+    <SetGrid>
+      {sets.map(
+        ({
+          id,
+          baseSetSize,
+          name,
+          releaseDate,
+          unique,
+          keyruneCode,
+        }: CardSet) => (
+          <SetContainer key={id} href={`${link}/${id}`}>
+            <Text size={5} display="block">
+              {name}
+            </Text>
+            <Text
+              as="span"
+              font="roboto"
+              display="block"
+              color="grey"
+              shade={6}
+              size={1}
+              isItalics
+            >
+              {formatDate(new Date(releaseDate), {})}
+            </Text>
+            <StyledFlex>
+              <Text font="roboto" display="block">
+                {!!unique && `${unique} / `}
+                {baseSetSize} Cards
               </Text>
-              <Text
-                as="span"
-                font="roboto"
-                display="block"
-                color="grey"
-                shade={6}
-                size={1}
-                isItalics
-              >
-                {formatDate(new Date(releaseDate), {})}
-              </Text>
-              <StyledFlex>
-                <Text font="roboto" display="block">
-                  {!!unique && `${unique} / `}
-                  {baseSetSize} Cards
-                </Text>
-                <SetIcon setCode={keyruneCode} size="large" />
-              </StyledFlex>
-            </SetContainer>
-          )
-        )}
-      </SetGrid>
-    </React.Fragment>
+              <SetIcon setCode={keyruneCode} size="large" />
+            </StyledFlex>
+          </SetContainer>
+        )
+      )}
+    </SetGrid>
   )
 }

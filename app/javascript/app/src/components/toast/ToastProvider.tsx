@@ -1,53 +1,76 @@
-import React, { useContext, createContext, useState } from 'react'
+import React, {
+  useContext,
+  createContext,
+  useState,
+  ReactElement,
+  ReactChildren,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { Transition, TransitionGroup } from 'react-transition-group'
-
 import { ToastController } from './ToastController'
 import { ToastContainer } from './ToastContainer'
 import { Toast } from './ToastElement'
 import { ueid } from '../../utils'
 
-const ToastContext = createContext({})
+const ToastContext = createContext({
+  add: (content?: string, options = {}): void => null,
+  remove: (id: string | number): void => null,
+  removeAll: (): void => null,
+  update: (id: string | number, options = {}): void => null,
+  toasts: [],
+})
 
+/**
+ * Use context hook for interacting with toasts.
+ *
+ * Must be used within a child of ToastProvider.
+ */
 export const useToasts = () => {
-  const ctx = useContext(ToastContext)
-
-  if (!ctx) {
-    throw Error(
-      'The `useToasts` hook must be called from a descendent of the `ToastProvider`.'
-    )
-  }
+  const { add, remove, removeAll, update, toasts } = useContext(ToastContext)
 
   return {
-    addToast: ctx.add,
-    removeToast: ctx.remove,
-    removeAllToasts: ctx.removeAll,
-    updateToast: ctx.update,
-    toasts: ctx.toasts,
+    addToast: add,
+    removeToast: remove,
+    removeAllToasts: removeAll,
+    updateToast: update,
+    toasts,
   }
 }
 
+/**
+ * Boolean to let us know where to render toasts
+ */
 const canUseDOM = !!(
   typeof window !== 'undefined' &&
   window.document &&
   window.document.createElement
 )
 
-// Provider
-// ==============================
+interface ToastProviderProps {
+  autoDismiss?: boolean
+  autoDismissTimeout?: number
+  transitionDuration?: number
+  children: ReactChildren
+}
+
+/**
+ * Toast context provider.
+ * Accepts settings for toasts that van be passed as a "value" prop.
+ */
 export const ToastProvider = ({
   autoDismiss = true,
   autoDismissTimeout = 5000,
-  placement = 'top-right',
   transitionDuration = 220,
   children,
-}) => {
+}: ToastProviderProps): ReactElement => {
   const [toasts, setToasts] = useState([])
 
-  const has = id => !!toasts.filter(toast => toast.id === id).length
+  const has = (id: number | string): boolean =>
+    !!toasts.filter(toast => toast.id === id).length
 
-  const add = (content, options = {}) => {
-    const id = options.id || ueid()
+  // Adds new toast to toast list
+  const add = (content: string, options = {}): void => {
+    const id = ueid()
 
     // bail if a toast exists with this ID
     if (has(id)) {
@@ -60,7 +83,8 @@ export const ToastProvider = ({
     setToasts(currentToasts => [...currentToasts, newToast])
   }
 
-  const remove = id => {
+  // Removes toasts from toast list
+  const remove = (id: number): void => {
     // bail if NO toasts exists with this ID
     if (!has(id)) {
       return
@@ -69,9 +93,9 @@ export const ToastProvider = ({
     setToasts(currentToasts => currentToasts.filter(toast => toast.id !== id))
   }
 
-  const removeAll = () => setToasts([])
+  const removeAll = (): void => setToasts([])
 
-  const update = (id, options = {}) => {
+  const update = (id: number | string, options = {}): void => {
     // bail if NO toasts exists with this ID
     if (!has(id)) {
       return
@@ -100,9 +124,9 @@ export const ToastProvider = ({
   return (
     <ToastContext.Provider value={{ add, remove, removeAll, update, toasts }}>
       {children}
-      {portalTarget ? (
+      {portalTarget &&
         createPortal(
-          <ToastContainer placement={placement} hasToasts={hasToasts}>
+          <ToastContainer hasToasts={hasToasts}>
             <TransitionGroup component={null}>
               {toasts.map(
                 ({
@@ -131,7 +155,6 @@ export const ToastProvider = ({
                         Toast={Toast}
                         key={id}
                         onDismiss={() => onDismiss(id)}
-                        placement={placement}
                         transitionDuration={transitionDuration}
                         transitionState={transitionState}
                         {...unknownConsumerProps}
@@ -145,10 +168,7 @@ export const ToastProvider = ({
             </TransitionGroup>
           </ToastContainer>,
           portalTarget
-        )
-      ) : (
-        <ToastContainer placement={placement} hasToasts={hasToasts} /> // keep ReactDOM.hydrate happy
-      )}
+        )}
     </ToastContext.Provider>
   )
 }
