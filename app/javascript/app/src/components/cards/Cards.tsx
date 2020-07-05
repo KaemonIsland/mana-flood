@@ -50,9 +50,9 @@ export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
   const isLoading = cards.length === 0
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const { filteredCards, clearFilters, ...rest } = useFilter(cards)
-  const stats = useCardsStats(filteredCards, scope)
-  const sortedCards = useSort(filteredCards)
-  const { paginatedCards, ...pagination } = usePagination(sortedCards)
+  const stats = useCardsStats(cards, scope)
+  // const sortedCards = useSort(filteredCards)
+  const { paginatedCards, ...pagination } = usePagination(cards)
 
   return (
     <>

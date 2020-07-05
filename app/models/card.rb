@@ -9,7 +9,6 @@ class Card < ApplicationRecord
 
   # Serialize Objects/Arrays https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html
   serialize :preferences, JSON
-  serialize :color_identity, JSON
   serialize :color_indicator, JSON
   serialize :colors, JSON
   serialize :frame_effects, JSON

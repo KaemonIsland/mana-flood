@@ -28,7 +28,12 @@ export const CollectionCards = ({
 
   const getCollectionCards = async (): Promise<void> => {
     try {
-      const response = await axios(`/api/v1/collection/set/${setId}`)
+      const response = await axios(`/api/v1/collection/set/${setId}`, {
+        params: {
+          color: 'U',
+          page: 1,
+        },
+      })
 
       const { data } = response
 
@@ -36,7 +41,7 @@ export const CollectionCards = ({
         throw new Error(data.error)
       }
 
-      setCards(toCamelcase(data))
+      setCards(toCamelcase(data.cards))
     } catch (error) {
       console.log('Unable to get cards from collection', error)
     }
@@ -61,10 +66,6 @@ export const CollectionCards = ({
   }
 
   useEffect(() => {
-    getCollectionCards()
-  }, [])
-
-  useEffect(() => {
     setCards([])
     if (scope.currentScope !== 'collection' && deck && deck.id) {
       getCollectionCardsWithDeck()
@@ -75,7 +76,6 @@ export const CollectionCards = ({
   return (
     <Page>
       <Text size={10}>My Collection</Text>
-      <Text>{cards.length} unique cards</Text>
       <hr />
       <Cards
         actions={{ addCard, updateCard, removeCard }}

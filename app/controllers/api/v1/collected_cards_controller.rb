@@ -6,7 +6,54 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def collection
     if current_user
-      @cards = @collection.cards.filter{ |card| card.card_set_id === params[:id].to_i }
+      @colors = {
+        W: [],
+        U: [],
+        B: [],
+        R: [],
+        G: [],
+        M: [],
+        C: [],
+      }
+
+      # Single or specific Multi color
+      #  .where(color_identity: ["W", "U"])
+
+      # All multi searches
+      #  .where('array_length(color_identity, 1) >= 2')
+
+      # Colorless search
+      #  .where(color_identity, [])
+      @query = Card
+        .where(card_set_id: params[:id].to_i)
+        .ransack(params[:q])
+
+      @query
+        .result
+        .order(converted_mana_cost: :asc, name: :asc)
+        .each{ |card| 
+          colors = card.color_identity
+
+          if colors.empty?
+            @colors[:C] << card
+          elsif colors.length === 2
+            @colors[:M] << card
+          else
+            @colors[colors[0].to_sym] << card
+          end
+        }
+
+        @cards = Kaminari.paginate_array([].concat(
+          @colors[:W],
+          @colors[:U],
+          @colors[:B],
+          @colors[:R],
+          @colors[:G],
+          @colors[:M],
+          @colors[:C]))
+        .page(params[:page])
+        .per(params[:per_page] || 30)
+
       render 'api/v1/cards/collection.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401

@@ -19,6 +19,7 @@ const blockedCardAttributes: Array<string> = [
   'purchaseUrls',
   'isDateStamped',
   'isBuyABox',
+  'hasContentWarning',
 ]
 
 // The Set attributes we don't care about
@@ -129,11 +130,9 @@ export const buildCardParams = (cards: Array<object>): Array<object> => {
     // Sets all default attributes
     let formattedCard: Card = { ...allowedCardAttributes }
 
-    for (let [key, value] of Object.entries(card)) {
+    Object.entries(card).forEach(([key, value]) => {
       // Removes blocked attributes
       if (blockedCardAttributes.includes(key)) {
-        continue
-
         // Type is a reserved word, use cardType
       } else if (key === 'type') {
         formattedCard['cardType'] = value
@@ -141,6 +140,8 @@ export const buildCardParams = (cards: Array<object>): Array<object> => {
         // Use cardTypes for consistency
       } else if (key === 'types') {
         formattedCard['cardTypes'] = JSON.stringify(value)
+      } else if (key === 'colorIdentity') {
+        formattedCard[key] = value
 
         // Stringify the value if it's an object
       } else if (typeof value === 'object') {
@@ -150,7 +151,7 @@ export const buildCardParams = (cards: Array<object>): Array<object> => {
       } else {
         formattedCard[key] = value
       }
-    }
+    })
     cardParams.push(formattedCard)
   })
 
@@ -182,11 +183,9 @@ export const buildSetParams = (sets: Array<object>): object => {
 
     let formattedSet: Set = { ...allowedSetAttributes }
 
-    for (let [key, value] of Object.entries(set)) {
-      // Removes blocked attributes
+    Object.entries(set).forEach(([key, value]) => {
       if (blockedSetAttributes.includes(key)) {
-        continue
-
+        // Removes blocked attributes
         // Type is a reserved word, use setType
       } else if (key === 'type') {
         formattedSet['setType'] = value
@@ -208,7 +207,7 @@ export const buildSetParams = (sets: Array<object>): object => {
       } else {
         formattedSet[key] = value
       }
-    }
+    })
     setParams.card_sets.push(formattedSet)
   })
 
