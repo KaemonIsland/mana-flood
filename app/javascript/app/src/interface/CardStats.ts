@@ -1,5 +1,4 @@
 interface Colors {
-  total: number
   W: number
   U: number
   B: number
@@ -11,7 +10,7 @@ interface Colors {
 
 interface Count {
   count: number
-  subTypes: {}
+  subtypes: any
 }
 
 interface Types {

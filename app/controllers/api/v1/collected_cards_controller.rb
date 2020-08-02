@@ -1,56 +1,17 @@
 class Api::V1::CollectedCardsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :load_card, :load_collection, only: [:collection, :create, :update, :destroy]
+  before_action :load_set, only: [:collection, :deck]
   before_action :load_collected_card, only: [:update, :destroy]
   respond_to :json
 
   def collection
     if current_user
-      @colors = {
-        W: [],
-        U: [],
-        B: [],
-        R: [],
-        G: [],
-        M: [],
-        C: [],
-      }
+      @query = @collection.with_set_cards(params[:id]).with_color(params[:colors], @collection.with_set_cards(params[:id])).ransack(params[:q])
 
-      # Single or specific Multi color
-      #  .where(color_identity: ["W", "U"])
+      @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
-      # All multi searches
-      #  .where('array_length(color_identity, 1) >= 2')
-
-      # Colorless search
-      #  .where(color_identity, [])
-      @query = Card
-        .where(card_set_id: params[:id].to_i)
-        .ransack(params[:q])
-
-      @query
-        .result
-        .order(converted_mana_cost: :asc, name: :asc)
-        .each{ |card| 
-          colors = card.color_identity
-
-          if colors.empty?
-            @colors[:C] << card
-          elsif colors.length === 2
-            @colors[:M] << card
-          else
-            @colors[colors[0].to_sym] << card
-          end
-        }
-
-        @cards = Kaminari.paginate_array([].concat(
-          @colors[:W],
-          @colors[:U],
-          @colors[:B],
-          @colors[:R],
-          @colors[:G],
-          @colors[:M],
-          @colors[:C]))
+        @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])
         .per(params[:per_page] || 30)
 
@@ -109,6 +70,10 @@ class Api::V1::CollectedCardsController < ApplicationController
   
     def load_card
       @card = Card.find(params[:id])
+    end
+
+    def load_set
+      @set = CardSet.find(params[:id])
     end
   
     def load_collection

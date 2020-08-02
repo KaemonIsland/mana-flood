@@ -4,7 +4,7 @@ export const usePagination = cards => {
   const [paginatedCards, setPaginatedCards] = useState([])
   const [page, setPage] = useState(0)
 
-  const cardsPerPage = 21
+  const cardsPerPage = 30
 
   const totalPages =
     cards.length === cardsPerPage * page

@@ -65,10 +65,10 @@ const Background = styled.div`
   animation-duration: 300ms;
 `
 
-interface UpdateFilters {
+interface Update {
   (e: any): void
 }
-interface ClearFilters {
+interface Clear {
   (): void
 }
 
@@ -84,8 +84,9 @@ interface FilterContentProps {
   isMobile: boolean
   isOpen: boolean
   stats: CardStats
-  updateFilters: UpdateFilters
-  clearFilters: ClearFilters
+  update: Update
+  clear: Clear
+  apply: Clear
 }
 
 const FilterContent = ({
@@ -93,10 +94,11 @@ const FilterContent = ({
   rarity,
   cmc,
   stats,
-  updateFilters,
+  update,
   isMobile,
   isOpen,
-  clearFilters,
+  clear,
+  apply,
 }: FilterContentProps): ReactElement => (
   <FilterContainer isOpen={isOpen} isMobile={isMobile}>
     <FilterBox>
@@ -104,9 +106,14 @@ const FilterContent = ({
         rarity.length !== 0 ||
         cmc.min !== 0 ||
         cmc.max !== 20) && (
-        <Button color="red" shade={2} onClick={() => clearFilters()}>
-          Clear Filters
-        </Button>
+        <>
+          <Button color="red" shade={2} onClick={clear}>
+            Clear
+          </Button>
+          <Button color="purple" shade={3} onClick={apply}>
+            Apply
+          </Button>
+        </>
       )}
     </FilterBox>
     <FilterBox>
@@ -122,7 +129,7 @@ const FilterContent = ({
                 type="checkbox"
                 name="color"
                 value="all"
-                onChange={updateFilters}
+                onChange={update}
                 checked={color.length === 0}
               />
               All
@@ -145,7 +152,7 @@ const FilterContent = ({
                   type="checkbox"
                   name="color"
                   value={value}
-                  onChange={updateFilters}
+                  onChange={update}
                   checked={color.includes(value)}
                   disabled={!stats.colors[value]}
                 />
@@ -170,7 +177,7 @@ const FilterContent = ({
                 type="radio"
                 name="type"
                 value="all"
-                onChange={updateFilters}
+                onChange={update}
                 defaultChecked
               />
               All
@@ -193,7 +200,7 @@ const FilterContent = ({
                   type="radio"
                   name="type"
                   value={type}
-                  onChange={updateFilters}
+                  onChange={update}
                   disabled={!stats.types[type].count}
                 />
                 {type}
@@ -217,7 +224,7 @@ const FilterContent = ({
                 type="checkbox"
                 name="rarity"
                 value="all"
-                onChange={updateFilters}
+                onChange={update}
                 checked={rarity.length === 0}
               />
               All
@@ -232,7 +239,7 @@ const FilterContent = ({
                   type="checkbox"
                   name="rarity"
                   value={cardRarity}
-                  onChange={updateFilters}
+                  onChange={update}
                   checked={rarity.includes(cardRarity)}
                   disabled={!stats.rarity[cardRarity]}
                 />
@@ -262,7 +269,7 @@ const FilterContent = ({
             max={cmc.max}
             id="min"
             value={cmc.min}
-            onChange={updateFilters}
+            onChange={update}
           />
         </Container>
         <Container width="100%">
@@ -276,7 +283,7 @@ const FilterContent = ({
             max={20}
             id="max"
             value={cmc.max}
-            onChange={updateFilters}
+            onChange={update}
           />
         </Container>
       </Flex>
@@ -286,16 +293,18 @@ const FilterContent = ({
 
 interface FilterProps {
   stats: CardStats
-  updateFilters: UpdateFilters
+  update: Update
   filters: CardFilter
-  clearFilters: ClearFilters
+  clear: Clear
+  apply: Clear
 }
 
 export const Filter = ({
   stats,
-  updateFilters,
+  update,
   filters,
-  clearFilters,
+  clear,
+  apply,
 }: FilterProps): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const [isOpen, setIsOpen] = useState(false)
@@ -326,10 +335,11 @@ export const Filter = ({
   const filterParams = {
     ...filters,
     stats,
-    updateFilters,
+    update,
     isMobile,
     isOpen,
-    clearFilters,
+    clear,
+    apply,
   }
 
   return (

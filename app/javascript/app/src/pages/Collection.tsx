@@ -7,7 +7,7 @@ export const Collection = (): ReactElement => {
   const [cardSets, setCardSets] = useState([])
 
   const getCollectionSets = async (): Promise<void> => {
-    const newSets = await cardActions.collection.get()
+    const newSets = await cardActions.collection.sets()
     setCardSets(newSets)
   }
 

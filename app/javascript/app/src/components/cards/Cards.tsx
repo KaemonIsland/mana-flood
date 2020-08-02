@@ -4,8 +4,7 @@ import { Filter } from '../filter'
 import { Minimal } from './card'
 import { Pagination } from '../Pagination'
 import { useMediaQuery } from 'react-responsive'
-import { useFilter, useCardsStats, useSort, usePagination } from '../../utils'
-import { Card } from '../../interface'
+import { useFilter, useCards } from '../../utils'
 
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
   display: 'grid',
@@ -18,54 +17,49 @@ const CardsContainer = styled.section(({ theme, isMobile }) => ({
 const StyledGrid = styled.div`
   display: grid;
   grid-gap: ${({ theme }) => theme.spaceScale(3)};
-  margin: ${({ theme }) => theme.spaceScale(2)};
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   grid-auto-rows: 7rem;
   justify-items: center;
-  align-items: center;
+  align-items: start;
 `
 
-interface AddCard {
-  (id: number): Promise<Card>
-}
-interface UpdateCard {
-  (id: number, quantity: number): Promise<Card>
-}
-interface RemoveCard {
-  (id: number): Promise<Card>
-}
-
-interface CardActions {
-  addCard: AddCard
-  updateCard: UpdateCard
-  removeCard: RemoveCard
+interface Options {
+  id?: number
 }
 
 interface Props {
-  actions: CardActions
-  cards: Array<Card>
   scope: string
+  options: Options
 }
-export const Cards = ({ actions, cards, scope }: Props): ReactElement => {
-  const isLoading = cards.length === 0
+export const Cards = ({ scope, options }: Props): ReactElement => {
+  const { actions, cards, pagination, deck, stats } = useCards(scope, options)
+  const isLoading = !cards.length
   const isMobile = useMediaQuery({ maxWidth: 1100 })
-  const { filteredCards, clearFilters, ...rest } = useFilter(cards)
-  const stats = useCardsStats(cards, scope)
-  // const sortedCards = useSort(filteredCards)
-  const { paginatedCards, ...pagination } = usePagination(cards)
+  const filter = useFilter(actions.get)
+
+  const results = `Showing ${30 * (pagination.page - 1) + 1} - 
+  ${
+    30 * pagination.page > pagination.total
+      ? pagination.total
+      : 30 * pagination.page
+  } 
+  of ${pagination.total} unique cards`
 
   return (
     <>
+      <div>{results}</div>
       <CardsContainer isMobile={isMobile}>
         <div />
         <Pagination {...pagination} />
-        <Filter stats={stats} clearFilters={clearFilters} {...rest} />
+        <Filter stats={stats} {...filter} />
         <StyledGrid>
-          {!isLoading &&
-            paginatedCards.map(card => (
+          {isLoading ? (
+            <h1>...Loading!</h1>
+          ) : (
+            cards.map(card => (
               <Minimal actions={actions} key={card.id} card={card} />
-            ))}
-          {isLoading && <h1>...Loading!</h1>}
+            ))
+          )}
         </StyledGrid>
         <div />
         <Pagination {...pagination} />
