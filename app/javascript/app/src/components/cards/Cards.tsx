@@ -25,6 +25,7 @@ const StyledGrid = styled.div`
 
 interface Options {
   id?: number
+  setType?: string
 }
 
 interface Props {

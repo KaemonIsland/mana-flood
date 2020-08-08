@@ -8,9 +8,9 @@ import { ManaSymbol } from '../../icon'
 import {
   getCard as getScryfallCard,
   getCardImage,
-  useCards,
   formatDate,
   toCamelcase,
+  cardActions,
 } from '../../../utils'
 import { Page } from '../../page'
 import { Ruling, Card } from '../../../interface'
@@ -123,7 +123,6 @@ const defaultCard: Card = {
 export const Full = ({ id }: Props): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 650 })
   const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
-  const { actions, scope, deck } = useCards('collection')
   const [img, setImg] = useState('')
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -154,7 +153,7 @@ export const Full = ({ id }: Props): ReactElement => {
   ] = useState(defaultCard)
 
   const quantity = collection
-  const { add, update, remove } = actions
+  const { add, update, remove } = cardActions['collection']
 
   const getVariationInfo = async (card: Card): Promise<void> => {
     let newVariations = card.variations
@@ -171,17 +170,17 @@ export const Full = ({ id }: Props): ReactElement => {
   }
 
   const addCard = async (): Promise<void> => {
-    const updatedCard: Card = await add(id, deck && deck.id)
+    const updatedCard: Card = await add(id)
 
     setCard(updatedCard)
   }
 
   const removeCard = async (): Promise<void> => {
-    setCard(await remove(id, deck && deck.id))
+    setCard(await remove(id))
   }
 
   const updateCard = async (newQuantity: number): Promise<void> => {
-    setCard(await update(id, newQuantity, deck && deck.id))
+    setCard(await update(id, newQuantity))
   }
 
   const getCard = async (): Promise<Card> => {

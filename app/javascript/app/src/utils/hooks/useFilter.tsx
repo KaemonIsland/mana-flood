@@ -39,8 +39,8 @@ export const useFilter = cardSearch => {
       })
     }
 
-    q.append(formatKey('cmc_gteq'), String(cmc.min))
-    q.append(formatKey('cmc_lteq'), String(cmc.max))
+    q.append(formatKey('converted_mana_cost_gteq'), String(cmc.min))
+    q.append(formatKey('converted_mana_cost_lteq'), String(cmc.max))
 
     return q
   }

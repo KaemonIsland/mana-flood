@@ -80,6 +80,7 @@ interface Cmc {
 interface FilterContentProps {
   color: Array<string>
   rarity: Array<string>
+  type: string
   cmc: Cmc
   isMobile: boolean
   isOpen: boolean
@@ -91,6 +92,7 @@ interface FilterContentProps {
 
 const FilterContent = ({
   color,
+  type,
   rarity,
   cmc,
   stats,
@@ -99,197 +101,213 @@ const FilterContent = ({
   isOpen,
   clear,
   apply,
-}: FilterContentProps): ReactElement => (
-  <FilterContainer isOpen={isOpen} isMobile={isMobile}>
-    <FilterBox>
-      {(color.length !== 0 ||
-        rarity.length !== 0 ||
-        cmc.min !== 0 ||
-        cmc.max !== 20) && (
-        <>
-          <Button color="red" shade={2} onClick={clear}>
-            Clear
-          </Button>
-          <Button color="purple" shade={3} onClick={apply}>
-            Apply
-          </Button>
-        </>
-      )}
-    </FilterBox>
-    <FilterBox>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text family="roboto">COLOR</Text>
-      </Flex>
-      <hr />
-      <Flex direction="column" alignItems="start" justifyContent="start">
-        <Container width="100%">
-          <StyledLabel>
-            <span>
-              <input
-                type="checkbox"
-                name="color"
-                value="all"
-                onChange={update}
-                checked={color.length === 0}
-              />
-              All
-            </span>
-          </StyledLabel>
-        </Container>
-        {[
-          { label: 'white', value: 'W' },
-          { label: 'blue', value: 'U' },
-          { label: 'black', value: 'B' },
-          { label: 'red', value: 'R' },
-          { label: 'green', value: 'G' },
-          { label: 'multi', value: 'M' },
-          { label: 'colorless', value: 'C' },
-        ].map(({ label, value }) => (
-          <Container width="100%" key={label}>
-            <StyledLabel disabled={!stats.colors[value]}>
+}: FilterContentProps): ReactElement => {
+  const isDisabled = !(
+    color.length ||
+    rarity.length ||
+    type ||
+    cmc.min ||
+    cmc.max !== 20
+  )
+  return (
+    <FilterContainer isOpen={isOpen} isMobile={isMobile}>
+      <FilterBox>
+        {
+          <Flex alignItems="center" justifyContent="space-between">
+            <Button
+              color="red"
+              isDisabled={isDisabled}
+              shade={2}
+              onClick={clear}
+            >
+              Clear
+            </Button>
+            <Button
+              color="purple"
+              isDisabled={isDisabled}
+              shade={3}
+              onClick={apply}
+            >
+              Apply
+            </Button>
+          </Flex>
+        }
+      </FilterBox>
+      <FilterBox>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Text family="roboto">COLOR</Text>
+        </Flex>
+        <hr />
+        <Flex direction="column" alignItems="start" justifyContent="start">
+          <Container width="100%">
+            <StyledLabel>
               <span>
                 <input
                   type="checkbox"
                   name="color"
-                  value={value}
+                  value="all"
                   onChange={update}
-                  checked={color.includes(value)}
-                  disabled={!stats.colors[value]}
+                  checked={color.length === 0}
                 />
-                {label}
+                All
               </span>
-              <Count>({stats.colors[value]})</Count>
             </StyledLabel>
           </Container>
-        ))}
-      </Flex>
-    </FilterBox>
-    <FilterBox>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text family="roboto">TYPE</Text>
-      </Flex>
-      <hr />
-      <Flex direction="column" alignItems="start" justifyContent="start">
-        <Container width="100%">
-          <StyledLabel>
-            <span>
-              <input
-                type="radio"
-                name="type"
-                value="all"
-                onChange={update}
-                defaultChecked
-              />
-              All
-            </span>
-          </StyledLabel>
-        </Container>
-        {[
-          'creature',
-          'sorcery',
-          'instant',
-          'enchantment',
-          'artifact',
-          'planeswalker',
-          'land',
-        ].map(type => (
-          <Container width="100%" key={type}>
-            <StyledLabel disabled={!stats.types[type].count}>
+          {[
+            { label: 'white', value: 'W' },
+            { label: 'blue', value: 'U' },
+            { label: 'black', value: 'B' },
+            { label: 'red', value: 'R' },
+            { label: 'green', value: 'G' },
+            { label: 'multi', value: 'M' },
+            { label: 'colorless', value: 'C' },
+          ].map(({ label, value }) => (
+            <Container width="100%" key={label}>
+              <StyledLabel disabled={!stats.colors[value]}>
+                <span>
+                  <input
+                    type="checkbox"
+                    name="color"
+                    value={value}
+                    onChange={update}
+                    checked={color.includes(value)}
+                    disabled={!stats.colors[value]}
+                  />
+                  {label}
+                </span>
+                <Count>({stats.colors[value]})</Count>
+              </StyledLabel>
+            </Container>
+          ))}
+        </Flex>
+      </FilterBox>
+      <FilterBox>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Text family="roboto">TYPE</Text>
+        </Flex>
+        <hr />
+        <Flex direction="column" alignItems="start" justifyContent="start">
+          <Container width="100%">
+            <StyledLabel>
               <span>
                 <input
                   type="radio"
                   name="type"
-                  value={type}
+                  value="all"
                   onChange={update}
-                  disabled={!stats.types[type].count}
+                  defaultChecked
                 />
-                {type}
+                All
               </span>
-              <Count>({stats.types[type].count})</Count>
             </StyledLabel>
           </Container>
-        ))}
-      </Flex>
-    </FilterBox>
-    <FilterBox>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text family="roboto">RARITY</Text>
-      </Flex>
-      <hr />
-      <Flex direction="column" alignItems="start" justifyContent="start">
-        <Container width="100%">
-          <StyledLabel>
-            <span>
-              <input
-                type="checkbox"
-                name="rarity"
-                value="all"
-                onChange={update}
-                checked={rarity.length === 0}
-              />
-              All
-            </span>
-          </StyledLabel>
-        </Container>
-        {['common', 'uncommon', 'rare', 'mythic'].map(cardRarity => (
-          <Container width="100%" key={cardRarity}>
-            <StyledLabel disabled={!stats.rarity[cardRarity]}>
+          {[
+            'creature',
+            'sorcery',
+            'instant',
+            'enchantment',
+            'artifact',
+            'planeswalker',
+            'land',
+          ].map(type => (
+            <Container width="100%" key={type}>
+              <StyledLabel disabled={!stats.types[type].count}>
+                <span>
+                  <input
+                    type="radio"
+                    name="type"
+                    value={type}
+                    onChange={update}
+                    disabled={!stats.types[type].count}
+                  />
+                  {type}
+                </span>
+                <Count>({stats.types[type].count})</Count>
+              </StyledLabel>
+            </Container>
+          ))}
+        </Flex>
+      </FilterBox>
+      <FilterBox>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Text family="roboto">RARITY</Text>
+        </Flex>
+        <hr />
+        <Flex direction="column" alignItems="start" justifyContent="start">
+          <Container width="100%">
+            <StyledLabel>
               <span>
                 <input
                   type="checkbox"
                   name="rarity"
-                  value={cardRarity}
+                  value="all"
                   onChange={update}
-                  checked={rarity.includes(cardRarity)}
-                  disabled={!stats.rarity[cardRarity]}
+                  checked={rarity.length === 0}
                 />
-
-                {cardRarity}
+                All
               </span>
-              <Count>({stats.rarity[cardRarity]})</Count>
             </StyledLabel>
           </Container>
-        ))}
-      </Flex>
-    </FilterBox>
-    <FilterBox>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text family="roboto">CMC</Text>
-      </Flex>
-      <hr />
-      <Flex direction="column" alignItems="start" justifyContent="start">
-        <Container width="100%">
-          <StyledLabel htmlFor="min">
-            <span>Min: {cmc.min}</span>
-          </StyledLabel>
-          <input
-            type="range"
-            name="min"
-            min={0}
-            max={cmc.max}
-            id="min"
-            value={cmc.min}
-            onChange={update}
-          />
-        </Container>
-        <Container width="100%">
-          <StyledLabel htmlFor="max">
-            <span>Max: {cmc.max}</span>
-          </StyledLabel>
-          <input
-            type="range"
-            name="max"
-            min={cmc.min}
-            max={20}
-            id="max"
-            value={cmc.max}
-            onChange={update}
-          />
-        </Container>
-      </Flex>
-    </FilterBox>
-  </FilterContainer>
-)
+          {['common', 'uncommon', 'rare', 'mythic'].map(cardRarity => (
+            <Container width="100%" key={cardRarity}>
+              <StyledLabel disabled={!stats.rarity[cardRarity]}>
+                <span>
+                  <input
+                    type="checkbox"
+                    name="rarity"
+                    value={cardRarity}
+                    onChange={update}
+                    checked={rarity.includes(cardRarity)}
+                    disabled={!stats.rarity[cardRarity]}
+                  />
+
+                  {cardRarity}
+                </span>
+                <Count>({stats.rarity[cardRarity]})</Count>
+              </StyledLabel>
+            </Container>
+          ))}
+        </Flex>
+      </FilterBox>
+      <FilterBox>
+        <Flex alignItems="center" justifyContent="space-between">
+          <Text family="roboto">CMC</Text>
+        </Flex>
+        <hr />
+        <Flex direction="column" alignItems="start" justifyContent="start">
+          <Container width="100%">
+            <StyledLabel htmlFor="min">
+              <span>Min: {cmc.min}</span>
+            </StyledLabel>
+            <input
+              type="range"
+              name="min"
+              min={0}
+              max={cmc.max}
+              id="min"
+              value={cmc.min}
+              onChange={update}
+            />
+          </Container>
+          <Container width="100%">
+            <StyledLabel htmlFor="max">
+              <span>Max: {cmc.max}</span>
+            </StyledLabel>
+            <input
+              type="range"
+              name="max"
+              min={cmc.min}
+              max={20}
+              id="max"
+              value={cmc.max}
+              onChange={update}
+            />
+          </Container>
+        </Flex>
+      </FilterBox>
+    </FilterContainer>
+  )
+}
 
 interface FilterProps {
   stats: CardStats

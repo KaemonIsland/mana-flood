@@ -128,7 +128,13 @@ export const useCards = (scope = 'collection', options = {}): Actions => {
 
     setQuery(cardQuery)
 
-    const response = await cardActions[scope].get(options.id, cardQuery)
+    let response
+
+    if (options?.setType === 'full') {
+      response = await cardActions[scope].all(options.id, cardQuery)
+    } else {
+      response = await cardActions[scope].owned(options.id, cardQuery)
+    }
 
     setCards(response.cards)
     setPagination(response.pagination)

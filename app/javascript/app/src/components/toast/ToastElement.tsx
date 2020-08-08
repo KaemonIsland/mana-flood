@@ -108,7 +108,7 @@ const Icon = ({
 // ------------------------------
 
 const toastStates = () => ({
-  entering: { transform: 'translate3d(120%, 0, 0)' },
+  entering: { transform: 'translate3d(20rem, 0, 0)' },
   entered: { transform: 'translate3d(0,0,0)' },
   exiting: { transform: 'scale(0.66)', opacity: 0 },
   exited: { transform: 'scale(0.66)', opacity: 0 },

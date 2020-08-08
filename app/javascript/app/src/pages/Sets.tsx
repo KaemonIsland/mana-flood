@@ -9,8 +9,8 @@ interface SetsProps {
 }
 
 export const Sets = ({ sets }: SetsProps): ReactElement => {
-  const filteredSets = toCamelcase(sets).filter(
-    ({ setType }) => setType === 'expansion'
+  const filteredSets = toCamelcase(sets).filter(({ setType }) =>
+    ['masters', 'expansion', 'core'].includes(setType)
   )
 
   return (

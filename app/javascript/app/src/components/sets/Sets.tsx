@@ -59,6 +59,7 @@ export const Sets = ({ sets, link }: SetsProps): ReactElement => {
           releaseDate,
           unique,
           keyruneCode,
+          setType,
         }: CardSet) => (
           <SetContainer key={id} href={`${link}/${id}`}>
             <Text size={5} display="block">
@@ -67,7 +68,16 @@ export const Sets = ({ sets, link }: SetsProps): ReactElement => {
             <Text
               as="span"
               font="roboto"
-              display="block"
+              display="inline-block"
+              shade={6}
+              size={2}
+            >
+              {`${setType.toUpperCase()} - `}
+            </Text>
+            <Text
+              as="span"
+              font="roboto"
+              display="inline-block"
               color="grey"
               shade={6}
               size={1}

@@ -145,7 +145,7 @@ export const ToastProvider = ({
                   >
                     {transitionState => (
                       <ToastController
-                        appearance={appearance}
+                        appearance={appearance || 'success'}
                         autoDismiss={
                           propAutoDismiss !== undefined
                             ? propAutoDismiss
