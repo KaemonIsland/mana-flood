@@ -32,7 +32,7 @@ interface Props {
 }
 
 export const Decks = ({ decks }: Props): ReactElement => {
-  const [deckList, setDeckList] = useState(decks.reverse())
+  const [deckList, setDeckList] = useState(decks)
   const [isUpdating, setIsUpdating] = useState({})
   const [showForm, setShowForm] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 650 })

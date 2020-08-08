@@ -4,7 +4,7 @@ import { toCamelcase } from '../utils'
 
 export const cardActions = {
   collection: {
-    get: async (): Promise<Array<CardSet>> => {
+    sets: async (): Promise<Array<CardSet>> => {
       try {
         const response = await axios('/api/v1/collection')
 
@@ -17,6 +17,43 @@ export const cardActions = {
         return toCamelcase(data)
       } catch (error) {
         console.log('Unable to get cards: ', error)
+      }
+    },
+    owned: async (id: number, query: string): Promise<void> => {
+      try {
+        // const response = await axios(
+        //   `/api/v1/collection/set/${id}/deck/${deck.id}`
+        // )
+        const response = await axios(`/api/v1/collection/set/${id}`, {
+          params: query,
+        })
+
+        const { data } = response
+
+        if (data.error) {
+          throw new Error(data.error)
+        }
+
+        return toCamelcase(data)
+      } catch (error) {
+        console.log('Unable to get cards from collection', error)
+      }
+    },
+    all: async (id: number, query: string): Promise<void> => {
+      try {
+        const response = await axios(`/api/v1/sets/${id}/collection`, {
+          params: query,
+        })
+
+        const { data } = response
+
+        if (data.error) {
+          throw new Error(data.error)
+        }
+
+        return toCamelcase(data)
+      } catch (error) {
+        console.log('Unable to get cards from collection', error)
       }
     },
     add: async (id: number): Promise<Card> => {
@@ -140,21 +177,6 @@ export const cardActions = {
     },
   },
   set: {
-    collection: async (id: number): Promise<Array<Card> | Card> => {
-      try {
-        const response = await axios(`/api/v1/sets/${id}/collection`)
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
-        }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
     deck: async (id: number, deckId: number): Promise<Array<Card> | Card> => {
       try {
         const response = await axios(`/api/v1/sets/${id}/deck/${deckId}`)
@@ -172,5 +194,3 @@ export const cardActions = {
     },
   },
 }
-
-// TODO add better error handling!

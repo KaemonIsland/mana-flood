@@ -1,5 +1,4 @@
 import React, { useState, useEffect, ReactElement } from 'react'
-import { Button } from 'warlock-ui'
 import { Cards } from '../cards'
 import { useCards } from '../../utils'
 import { Stats } from './Stats'

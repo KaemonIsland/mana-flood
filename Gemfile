@@ -31,6 +31,9 @@ gem 'react-rails'
 # Pagination
 gem 'kaminari'
 
+# Queries
+gem 'ransack'
+
 # Authorization
 gem 'cancancan'
 

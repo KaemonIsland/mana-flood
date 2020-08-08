@@ -24,31 +24,16 @@ PageButton.Right = styled(Button)(({ theme, isDisabled }) => ({
   borderRadius: `0 ${theme.spaceScale(2)} ${theme.spaceScale(2)} 0`,
 }))
 
-interface Prev {
-  (): void
-}
-interface Next {
-  (): void
-}
-
-interface SetPage {
-  (page: number): void
-}
-
 interface PaginationProps {
-  prev: Prev
-  next: Next
+  changePage: any
   page: number
   totalPages: number
-  setPage: SetPage
 }
 
 export const Pagination = ({
-  prev,
-  next,
   page,
   totalPages,
-  setPage,
+  changePage,
 }: PaginationProps): ReactElement => {
   const [pageRange, setPageRange] = useState([])
 
@@ -56,7 +41,7 @@ export const Pagination = ({
     const buildPageRange = (): Array<number> => {
       let newPageRange = [page - 1, page, page + 1]
 
-      if (page === 0) {
+      if (page === 1) {
         newPageRange = [page + 1, page + 2]
       }
 
@@ -64,10 +49,11 @@ export const Pagination = ({
         newPageRange = [page - 2, page - 1]
       }
 
-      return newPageRange.filter(page => page > 0 && page < totalPages)
+      return newPageRange.filter(page => page > 1 && page < totalPages)
     }
     setPageRange(buildPageRange())
   }, [page, totalPages])
+
   return (
     <PaginationContainer>
       <Flex alignItems="start" justifyContent="center">
@@ -75,9 +61,9 @@ export const Pagination = ({
           type="button"
           color="grey"
           shade={8}
-          onClick={prev}
+          onClick={() => changePage(page - 1)}
           variant="outline"
-          isDisabled={!page}
+          isDisabled={page === 1}
         >
           Previous
         </PageButton.Left>
@@ -85,13 +71,13 @@ export const Pagination = ({
           type="button"
           color="grey"
           shade={8}
-          onClick={(): void => setPage(0)}
+          onClick={() => changePage(1)}
           variant="outline"
-          isDisabled={page === 0}
+          isDisabled={page === 1}
         >
-          {1}
+          1
         </PageButton>
-        {pageRange[0] > 1 && (
+        {pageRange[0] > 2 && (
           <PageButton type="button" color="grey" shade={8} variant="outline">
             ...
           </PageButton>
@@ -102,11 +88,11 @@ export const Pagination = ({
             type="button"
             color="grey"
             shade={8}
-            onClick={(): void => setPage(pageNumber)}
+            onClick={() => changePage(pageNumber)}
             variant="outline"
             isDisabled={page === pageNumber}
           >
-            {pageNumber + 1}
+            {pageNumber}
           </PageButton>
         ))}
         {pageRange[pageRange.length - 1] + 1 < totalPages && (
@@ -119,18 +105,18 @@ export const Pagination = ({
             type="button"
             color="grey"
             shade={8}
-            onClick={(): void => setPage(totalPages)}
+            onClick={(): void => changePage(totalPages)}
             variant="outline"
             isDisabled={page === totalPages}
           >
-            {totalPages + 1}
+            {totalPages}
           </PageButton>
         )}
         <PageButton.Right
           type="button"
           color="grey"
           shade={8}
-          onClick={next}
+          onClick={() => changePage(page + 1)}
           variant="outline"
           isDisabled={page === totalPages}
         >

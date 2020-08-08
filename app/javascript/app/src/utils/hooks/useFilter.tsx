@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Card } from '../../interface'
+import { useState } from 'react'
 
 const defaultFilters = {
   color: [],
@@ -11,15 +10,46 @@ const defaultFilters = {
   },
 }
 
-export const useFilter = (cards: Array<Card>) => {
-  const [filteredCards, setFilteredCards] = useState([])
+export const useFilter = cardSearch => {
   const [filters, setFilters] = useState(defaultFilters)
 
   // Resets the current filters back to default
-  const clearFilters = (): void => setFilters(defaultFilters)
+  const clear = (): void => {
+    cardSearch()
+    setFilters(defaultFilters)
+  }
 
-  const { color, type, rarity } = filters
-  const { min, max } = filters.cmc
+  const formatKey = (key): string => `q[${key}]`
+
+  const buildQuery = () => {
+    const { color, rarity, type, cmc } = filters
+    const q = new URLSearchParams()
+
+    if (color.length) {
+      q.append('colors', String(color))
+    }
+
+    if (type) {
+      q.append(formatKey('card_type_cont'), type)
+    }
+
+    if (rarity.length) {
+      rarity.forEach(rareVal => {
+        q.append(`${formatKey('rarity_in')}[]`, String(rareVal))
+      })
+    }
+
+    q.append(formatKey('converted_mana_cost_gteq'), String(cmc.min))
+    q.append(formatKey('converted_mana_cost_lteq'), String(cmc.max))
+
+    return q
+  }
+
+  // Searches for cards with current filters
+  const apply = (): void => {
+    const query = buildQuery()
+    cardSearch(query)
+  }
 
   /**
    * Updates an array of options, either adding a new item to the array, or removing it.
@@ -74,7 +104,7 @@ export const useFilter = (cards: Array<Card>) => {
    *
    * @param {object} target - value form form element
    */
-  const updateFilters = ({ target }) => {
+  const update = ({ target }) => {
     const { name } = target
 
     if (name === 'color' || name === 'rarity') {
@@ -86,79 +116,10 @@ export const useFilter = (cards: Array<Card>) => {
     }
   }
 
-  const filterCards = () => {
-    let newlyFilteredCards = [...cards]
-
-    // Removes promo/alternative cards from general results unless it's within a collection or deck
-    newlyFilteredCards = newlyFilteredCards.filter(
-      card =>
-        !(
-          card.isPromo ||
-          card.isAlternative ||
-          card.borderColor === 'borderless'
-        ) ||
-        !!card.deck ||
-        !!card.collection
-    )
-
-    // Filters cards by color
-    if (color.length !== 0) {
-      newlyFilteredCards = newlyFilteredCards.filter(card => {
-        if (card.colorIdentity.length === 0 && color.includes('C')) {
-          return true
-        }
-
-        if (color.includes('M')) {
-          return (
-            card.colorIdentity.length >= 2 &&
-            card.colorIdentity.some(cardColor => color.includes(cardColor))
-          )
-        }
-        return card.colorIdentity.some(cardColor => color.includes(cardColor))
-      })
-    }
-
-    // Filters cards by rarity
-    if (rarity.length !== 0) {
-      newlyFilteredCards = newlyFilteredCards.filter(card =>
-        rarity.some(rare => card.rarity === rare)
-      )
-    }
-
-    // Filters cards by type
-    if (type) {
-      newlyFilteredCards = newlyFilteredCards.filter(card =>
-        JSON.parse(card.cardTypes).some(cardType =>
-          type.includes(cardType.toLowerCase())
-        )
-      )
-    }
-
-    // Filters cards by minimum converted mana cost
-    if (min) {
-      newlyFilteredCards = newlyFilteredCards.filter(
-        card => card.convertedManaCost >= min
-      )
-    }
-
-    // Filters cards by maximum converted mana cost
-    if (max) {
-      newlyFilteredCards = newlyFilteredCards.filter(
-        card => card.convertedManaCost <= max
-      )
-    }
-
-    setFilteredCards(newlyFilteredCards)
-  }
-
-  useEffect(() => {
-    filterCards()
-  }, [cards, filters])
-
   return {
-    filteredCards,
     filters,
-    updateFilters,
-    clearFilters,
+    clear,
+    update,
+    apply,
   }
 }

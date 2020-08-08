@@ -20,7 +20,6 @@ interface SetIconProps {
 export const SetIcon = ({ setCode = '', size }: SetIconProps): ReactElement => {
   const formattedSetCode = String(setCode).toLowerCase()
 
-  const iconPath = setIcons(`./${formattedSetCode}.svg`)
   const sizes = {
     small: { width: 5, height: 5 },
     medium: { width: 6, height: 6 },
@@ -28,9 +27,15 @@ export const SetIcon = ({ setCode = '', size }: SetIconProps): ReactElement => {
     xLarge: { width: 8, height: 8 },
   }
 
-  return (
-    <IconContainer {...sizes[size]}>
-      {iconPath && <Img src={iconPath} alt={`${setCode} Icon`} />}
-    </IconContainer>
-  )
+  try {
+    const iconPath = setIcons(`./${formattedSetCode}.svg`)
+
+    return (
+      <IconContainer {...sizes[size]}>
+        {iconPath && <Img src={iconPath} alt={`${setCode} Icon`} />}
+      </IconContainer>
+    )
+  } catch (error) {
+    return null
+  }
 }

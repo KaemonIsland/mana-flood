@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_161506) do
+ActiveRecord::Schema.define(version: 2020_07_05_170807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,6 @@ ActiveRecord::Schema.define(version: 2020_05_23_161506) do
   create_table "cards", force: :cascade do |t|
     t.string "artist"
     t.string "border_color"
-    t.string "color_identity"
     t.string "color_indicator"
     t.string "colors"
     t.float "converted_mana_cost"
@@ -102,6 +101,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_161506) do
     t.bigint "card_set_id"
     t.string "ascii_name"
     t.string "flavor_name"
+    t.string "color_identity", default: [], array: true
     t.index ["card_set_id"], name: "index_cards_on_card_set_id"
     t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end

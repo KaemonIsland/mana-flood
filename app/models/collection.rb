@@ -30,4 +30,9 @@ class Collection < ApplicationRecord
   def sets_unique(card_set_id)
     self.cards.filter{ |card| card.card_set_id === card_set_id }.count
   end
+
+  ############## SCOPES #################
+  def with_set_cards (set_id) 
+    self.cards.where(card_set_id: set_id)
+  end
 end
