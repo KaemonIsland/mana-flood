@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
+import { useMediaQuery } from 'react-responsive'
 import { Filter } from '../filter'
 import { Minimal } from './card'
 import { Pagination } from '../Pagination'
-import { useMediaQuery } from 'react-responsive'
 import { useFilter, useCards } from '../../utils'
+import { useScope } from '../../providers'
 
 const CardsContainer = styled.section(({ theme, isMobile }) => ({
   display: 'grid',
@@ -24,16 +25,22 @@ const StyledGrid = styled.div`
 `
 
 interface Options {
-  id?: number
+  setId?: number
   setType?: string
+  deckId?: number
 }
 
 interface Props {
-  scope: string
-  options: Options
+  options?: Options
+  type: string
 }
-export const Cards = ({ scope, options }: Props): ReactElement => {
-  const { actions, cards, pagination, deck, stats } = useCards(scope, options)
+export const Cards = ({ type, options }: Props): ReactElement => {
+  const { currentScope, updateScope, scopes } = useScope()
+  const { actions, cards, pagination, stats } = useCards(
+    type,
+    currentScope,
+    options
+  )
   const isLoading = !cards.length
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const filter = useFilter(actions.get)
@@ -49,6 +56,28 @@ export const Cards = ({ scope, options }: Props): ReactElement => {
   return (
     <>
       <div>{results}</div>
+      <div>
+        <p>
+          Adding Cards to{' '}
+          {typeof currentScope === 'string' ? 'Collection' : currentScope.name}
+        </p>
+        <select
+          onBlur={e => {
+            updateScope(e.target.value)
+          }}
+          defaultValue={
+            typeof currentScope === 'string' ? 'Collection' : currentScope.id
+          }
+        >
+          <option value="collection">Collection</option>
+          {scopes.length &&
+            scopes.map(scope => (
+              <option key={scope.id} value={scope.id}>
+                {scope.name}
+              </option>
+            ))}
+        </select>
+      </div>
       <CardsContainer isMobile={isMobile}>
         <div />
         <Pagination {...pagination} />

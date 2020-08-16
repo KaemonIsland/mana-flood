@@ -9,8 +9,7 @@ Rails.application.routes.draw do
       
       # Crud operations for users decked_cards
       resources :decks, except: [:new, :edit]
-      get 'decked_cards/:id/collection', to: 'decked_cards#collection'
-      get 'decked_cards/:id', to: 'decked_cards#deck'
+      get 'decked_cards/:id', to: 'decked_cards#index'
       post 'add_decked_card/:id/:card_id', to: 'decked_cards#create'
       put 'add_decked_card/:id/:card_id', to: 'decked_cards#update'
       delete 'remove_decked_card/:id/:card_id', to: 'decked_cards#destroy'
@@ -23,7 +22,10 @@ Rails.application.routes.draw do
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
 
-      # Methods for single cards
+      # Route for user Decks
+      get 'decks', to: 'decks#index'
+
+      # Routes for single cards
       get 'card/:id', to: 'cards#collection'
       get 'card/:id/deck/:deck_id', to: 'cards#deck'
     end

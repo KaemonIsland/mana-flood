@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
 import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
-import { ManaSymbol, Feather } from '../../icon'
+import { ManaSymbol } from '../../icon'
 import { Dropdown } from '../../Dropdown'
 import { useDropdown, getCardImage } from '../../../utils'
 import { Card } from '../../../interface'
-import { useToasts } from '../../toast'
+import { useToasts } from '../../../providers'
 
 // Card border colors
 const cardColors = {

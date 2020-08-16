@@ -5,7 +5,12 @@ json.pagination do
   json.total @cards.total_count
 end
 
-json.stats @deck.card_stats
+json.set do
+  json.(@set, *@set.attributes.keys)
+  json.unique @collection.sets_unique(@set.id)
+end
+
+json.stats @set.card_stats
 
 json.cards @cards do |card|
   # Returns all card attributes

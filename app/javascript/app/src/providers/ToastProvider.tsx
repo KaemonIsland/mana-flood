@@ -4,13 +4,12 @@ import React, {
   useState,
   ReactElement,
   ReactChildren,
+  ReactChild,
 } from 'react'
 import { createPortal } from 'react-dom'
 import { Transition, TransitionGroup } from 'react-transition-group'
-import { ToastController } from './ToastController'
-import { ToastContainer } from './ToastContainer'
-import { Toast } from './ToastElement'
-import { ueid } from '../../utils'
+import { ToastController, ToastContainer, Toast } from '../components/toast'
+import { ueid } from '../utils'
 
 const ToastContext = createContext({
   add: (content?: string, options = {}): void => null,
@@ -50,7 +49,7 @@ interface ToastProviderProps {
   autoDismiss?: boolean
   autoDismissTimeout?: number
   transitionDuration?: number
-  children: ReactChildren
+  children: ReactChildren | ReactChild
 }
 
 /**

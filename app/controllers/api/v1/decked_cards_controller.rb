@@ -1,22 +1,22 @@
 class Api::V1::DeckedCardsController < ApplicationController
     skip_before_action :verify_authenticity_token
-    before_action :load_deck, :load_collection, only: [:collection, :deck, :create, :update, :destroy]
+    before_action :load_deck, :load_collection, only: [:index, :create, :update, :destroy]
     before_action :load_card, only: [:create, :update, :destroy]
     before_action :load_decked_cards, only: [:update, :destroy]
     respond_to :json
-  
-    def collection
-      if current_user
-        @cards = @deck.cards
-        render 'api/v1/cards/collection.json.jbuilder', status: 200
-      else
-        render json: { error: 'User must be signed in' }, status: 401
-      end
-    end
 
-    def deck
+    def index
       if current_user
-        @cards = @deck.cards
+        @collection = current_user.collection
+
+        @query =@deck.cards.with_color(params[:colors], @deck.cards).ransack(params[:q])
+  
+        @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+  
+        @cards = Kaminari.paginate_array(@sorted_cards)
+        .page(params[:page])
+        .per(params[:per_page] || 30)
+        
         render 'api/v1/cards/deck.json.jbuilder', status: 200
       else
         render json: { error: 'User must be signed in' }, status: 401

@@ -2,15 +2,6 @@ import { useState, useEffect } from 'react'
 import { cardActions } from '../cardActions'
 import { Deck, Card, CardStats } from '../../interface'
 
-const defaultDeck = {
-  id: 0,
-}
-
-interface Scope {
-  currentScope: string
-  updateScope
-}
-
 interface Get {
   (id: number, query?: {}): Promise<Array<Card>>
 }
@@ -40,6 +31,10 @@ interface PaginationProps {
   total?: number
   totalPages: number
   changePage: any
+}
+
+interface Options {
+  setId?: number
 }
 
 interface Actions {
@@ -97,27 +92,27 @@ const defaultStats = {
  * This makes it a lot easier to dynamically set where we update
  * card information for User Collection or Sets.
  */
-export const useCards = (scope = 'collection', options = {}): Actions => {
+export const useCards = (
+  type: string,
+  scope: Deck | string,
+  options: Options
+): Actions => {
+  const [isLoading, setIsLoading] = useState(true)
   const [cards, setCards] = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 })
   const [stats, setStats] = useState(defaultStats)
   const [query, setQuery] = useState(new URLSearchParams())
-  const [currentScope, setCurrentScope] = useState(scope)
-  const [deck, setDeck] = useState(defaultDeck)
 
-  const updateScope = (name: string, deckInfo: Deck): void => {
-    setCurrentScope(name)
-    name !== 'collection' ? setDeck(deckInfo) : setDeck(defaultDeck)
-  }
+  const actionScope = typeof scope === 'string' ? 'collection' : 'deck'
 
   const addCard = async (id: number): Promise<Card> =>
-    await cardActions[scope].add(id)
+    await cardActions[actionScope].add(id, scope.id)
 
   const removeCard = async (id: number): Promise<Card> =>
-    await cardActions[scope].remove(id)
+    await cardActions[actionScope].remove(id, scope.id)
 
   const updateCard = async (id: number, quantity: number): Promise<Card> =>
-    await cardActions[scope].update(id, quantity)
+    await cardActions[actionScope].update(id, quantity, scope.id)
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
     if (!cardQuery.has('page')) {
@@ -130,11 +125,21 @@ export const useCards = (scope = 'collection', options = {}): Actions => {
 
     let response
 
-    if (options?.setType === 'full') {
-      response = await cardActions[scope].all(options.id, cardQuery)
+    if (typeof scope === 'object' || options.deckId) {
+      if (type === 'deck') {
+        response = await cardActions.deck.deck(scope.id, cardQuery)
+      } else {
+        response = await cardActions.deck[type](
+          options.setId,
+          cardQuery,
+          scope.id
+        )
+      }
     } else {
-      response = await cardActions[scope].owned(options.id, cardQuery)
+      response = await cardActions.collection[type](options.setId, cardQuery)
     }
+
+    setIsLoading(false)
 
     setCards(response.cards)
     setPagination(response.pagination)
@@ -150,8 +155,15 @@ export const useCards = (scope = 'collection', options = {}): Actions => {
   }
 
   useEffect(() => {
-    getCards()
-  }, [])
+    if (isLoading) {
+      getCards()
+    }
+  }, [isLoading])
+
+  useEffect(() => {
+    setCards([])
+    setIsLoading(true)
+  }, [scope])
 
   return {
     actions: {
@@ -165,7 +177,6 @@ export const useCards = (scope = 'collection', options = {}): Actions => {
       ...pagination,
       changePage,
     },
-    deck,
     stats,
   }
 }

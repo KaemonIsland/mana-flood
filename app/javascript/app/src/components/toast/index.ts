@@ -1,3 +1,3 @@
-export { ToastContainer as DefaultToastContainer } from './ToastContainer'
-export { Toast } from './ToastElement'
-export { ToastProvider, useToasts } from './ToastProvider'
+export * from './ToastContainer'
+export * from './ToastElement'
+export * from './ToastController'
