@@ -4,6 +4,7 @@ import { useMediaQuery } from 'react-responsive'
 import { Filter } from '../filter'
 import { Minimal } from './card'
 import { Pagination } from '../Pagination'
+import { Scope } from '../scope'
 import { useFilter, useCards } from '../../utils'
 import { useScope } from '../../providers'
 
@@ -33,9 +34,14 @@ interface Options {
 interface Props {
   options?: Options
   type: string
+  showScope?: boolean
 }
-export const Cards = ({ type, options }: Props): ReactElement => {
-  const { currentScope, updateScope, scopes } = useScope()
+export const Cards = ({
+  type,
+  options,
+  showScope = true,
+}: Props): ReactElement => {
+  const { currentScope, scopes, updateScope } = useScope()
   const { actions, cards, pagination, stats } = useCards(
     type,
     currentScope,
@@ -56,30 +62,16 @@ export const Cards = ({ type, options }: Props): ReactElement => {
   return (
     <>
       <div>{results}</div>
-      <div>
-        <p>
-          Adding Cards to{' '}
-          {typeof currentScope === 'string' ? 'Collection' : currentScope.name}
-        </p>
-        <select
-          onBlur={e => {
-            updateScope(e.target.value)
-          }}
-          defaultValue={
-            typeof currentScope === 'string' ? 'Collection' : currentScope.id
-          }
-        >
-          <option value="collection">Collection</option>
-          {scopes.length &&
-            scopes.map(scope => (
-              <option key={scope.id} value={scope.id}>
-                {scope.name}
-              </option>
-            ))}
-        </select>
-      </div>
       <CardsContainer isMobile={isMobile}>
-        <div />
+        <div>
+          {showScope && (
+            <Scope
+              currentScope={currentScope}
+              scopes={scopes}
+              updateScope={updateScope}
+            />
+          )}
+        </div>
         <Pagination {...pagination} />
         <Filter stats={stats} {...filter} />
         <StyledGrid>

@@ -5,6 +5,7 @@ import { Button, Flex, Text } from 'warlock-ui'
 import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
 import { Deck } from '../../interface'
+import { ManaSymbol } from '../icon'
 import { Form } from './Form'
 
 const StyledDecks = styled.div(({ theme }) => ({
@@ -54,9 +55,10 @@ export const Decks = ({ decks }: Props): ReactElement => {
       const filteredDeckList = deckList.filter(deck => deck.id !== id)
       setDeckList(filteredDeckList)
     } catch (error) {
-      console.log('Unable to destroy deck: ', error)
+      console.log('Unable to remove deck: ', error)
     }
   }
+
   return (
     <Flex direction="column" alignItems="center">
       <Button onClick={() => setShowForm(true)} color="purple" shade={7}>
@@ -73,6 +75,12 @@ export const Decks = ({ decks }: Props): ReactElement => {
             justifyContent="space-between"
           >
             <div style={{ width: '100%' }}>
+              <Flex alignItems="center" justifyContent="start">
+                {deck.colors.length &&
+                  deck.colors.map((mana, i) => (
+                    <ManaSymbol size="medium" key={i} mana={mana} />
+                  ))}
+              </Flex>
               <Text family="roboto" weight="300" size={6}>
                 {deck.name}
               </Text>

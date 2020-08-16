@@ -1,3 +1,5 @@
+import { CardStats } from './CardStats'
+
 export interface Deck {
   id: number
   user_id?: number
@@ -6,4 +8,6 @@ export interface Deck {
   description?: string
   created_at?: string
   updated_at?: string
+  colors?: Array<string>
+  stats?: CardStats
 }

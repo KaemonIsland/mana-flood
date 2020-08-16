@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
       # Route for user Decks
       get 'decks', to: 'decks#index'
+      get 'deck/:id', to:'decks#show'
 
       # Routes for single cards
       get 'card/:id', to: 'cards#collection'

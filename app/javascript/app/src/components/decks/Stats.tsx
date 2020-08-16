@@ -1,18 +1,18 @@
 import React, { useState, ReactElement } from 'react'
 import styled from 'styled-components'
 import { ThemeProvider, Text, Flex, Grid, Button } from 'warlock-ui'
-import { useCardsStats } from '../../utils'
 import { useMediaQuery } from 'react-responsive'
-import { Card } from '../../interface'
+import { CardStats } from '../../interface'
 
 const StatsContainer = styled.section(({ theme, showStats }) => ({
   padding: `0 ${theme.spaceScale(4)}`,
   backgroundColor: theme.color.purple[3],
   borderBottom: `1px solid ${theme.color.purple[8]}`,
-  height: showStats ? '100%' : '6rem',
+  height: showStats ? '100%' : '4rem',
   maxHeight: '100%',
   overflow: 'hidden',
   transition: 'all 300ms ease-in-out',
+  borderRadius: theme.spaceScale(2),
 }))
 
 const StatsHeader = styled.div(({ theme }) => ({
@@ -99,22 +99,20 @@ const StyledGridItem = styled.div(({ theme }) => ({
 }))
 
 interface StatsProps {
-  cards: Array<Card>
-  name: string
-  format: string
+  stats: CardStats
 }
-export const Stats = ({ cards, name, format }: StatsProps): ReactElement => {
+export const Stats = ({ stats }: StatsProps): ReactElement => {
   const [showStats, setShowStats] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 950 })
-  const {
-    average,
-    cmc,
-    colors,
-    counts,
-    types,
-    rarity,
-    ...stats
-  } = useCardsStats(cards, 'deck')
+  const { cmc, colors, types, counts, rarity, cards } = stats
+
+  // Calculates the average mana cost by total cards
+  const averageCost = (
+    Object.entries(cmc).reduce(
+      (curr, acc) => curr + Number(acc[0]) * acc[1],
+      0
+    ) / cards
+  ).toFixed(2)
 
   // Adds a leading zero if cmc is less than 10
   const formatNumber = (num: number): string =>
@@ -127,15 +125,6 @@ export const Stats = ({ cards, name, format }: StatsProps): ReactElement => {
       <StatsContainer showStats={showStats}>
         <StatsHeader>
           <Flex alignItems="center" justifyContent="space-between">
-            <div>
-              <Text family="roboto" size={7}>
-                {name}
-              </Text>
-              <Text>
-                {format} {stats.cards >= 60 ? 'Legal' : 'Illegal'} {stats.cards}
-                /60
-              </Text>
-            </div>
             <Button
               variant="outline"
               color="purple"
@@ -181,7 +170,7 @@ export const Stats = ({ cards, name, format }: StatsProps): ReactElement => {
             <StyledGridItem>
               <StatsTitle>
                 <div>Ramp</div>
-                <div>Avg: {average}</div>
+                <div>Avg: {averageCost || 0}</div>
               </StatsTitle>
               <RampContainer>
                 {[1, 2, 3, 4, 5, 6].map(manaCost => (

@@ -23,6 +23,7 @@ interface ManaSymbolProps {
 
 export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {
   const sizes = {
+    tiny: { width: 4, height: 4 },
     small: { width: 5, height: 5 },
     medium: { width: 6, height: 6 },
     large: { width: 7, height: 7 },

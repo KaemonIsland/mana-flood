@@ -1,11 +1,23 @@
 class Deck < ApplicationRecord
-    belongs_to :user
-    has_many :decked_cards, dependent: :destroy
-    has_many :cards, -> { distinct }, through: :decked_cards
+  belongs_to :user
+  has_many :decked_cards, dependent: :destroy
+  has_many :cards, -> { distinct }, through: :decked_cards
 
-    validates :name, presence: true
+  validates :name, presence: true
 
-      # This is the default object for setting all of the stats.
+  def colors
+    order = ['W', 'U', 'B', 'R', 'G']
+    card_colors = []
+    self.cards.each{ |card| 
+      card_colors << card.color_identity
+    }
+
+    card_colors.flatten.uniq.sort do |e1, e2|
+      order.index(e1) <=> order.index(e2)
+    end
+  end
+
+  # This is the default object for setting all of the stats.
 
   # colors is a representation of the card colors, not the individual mana costs
   # W = White
@@ -37,6 +49,7 @@ class Deck < ApplicationRecord
         G: 0,
         C: 0,
         M: 0,
+        total: 0
       },
       types: {
         creature: { count: 0, subtypes: {} },
@@ -75,13 +88,14 @@ class Deck < ApplicationRecord
     cards = self.cards
       # Iterates over every card and updates stats object
       cards.each do |card|
+        multiplier = card.deck_quantity(self.id)
       
         if card.is_promo || card.is_alternative
           next
         end
 
         # Increment total cards
-        stats[:cards] += 1
+        stats[:cards] += multiplier
 
 
         # Card types, they have been stringified so we must parse them
@@ -94,7 +108,7 @@ class Deck < ApplicationRecord
           lower_type = type.downcase()
   
           if types[lower_type.to_sym]
-            types[lower_type.to_sym][:count] += 1
+            types[lower_type.to_sym][:count] += multiplier
           end
           
   
@@ -103,9 +117,9 @@ class Deck < ApplicationRecord
             lower_subtype = subtype.downcase()
 
             if types[lower_type.to_sym][:subtypes][lower_subtype.to_sym]
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] += 1
+              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] += multiplier
             else
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] = 1
+              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] = multiplier
             end
           end
         end
@@ -113,36 +127,38 @@ class Deck < ApplicationRecord
 
         # Counts multicolored cards and individual colors
         if card.color_identity.length > 1
-          stats[:colors][:M] += 1
+          stats[:colors][:M] += multiplier
         end
 
         
 
         # Artifacts do not have colors, so we increment colorless
         if (card.color_identity.length === 0) 
-          stats[:colors][:C] += 1
+          stats[:colors][:C] += multiplier
+          stats[:colors][:total] += multiplier
         end
-
         
-
+        
+        
         # Otherwise we update the color identity
         card.color_identity.each { |color|
-          stats[:colors][color.to_sym] += 1
+          stats[:colors][color.to_sym] += multiplier
+          stats[:colors][:total] += multiplier
         }
 
 
         # if the card is a land we just need to up the land count. Otherwise we set a few more counts
         if (card.card_type.include?('Basic Land')) 
-          stats[:counts][:land] += 1
+          stats[:counts][:land] += multiplier
         else
-          stats[:counts][:nonLand] += 1
+          stats[:counts][:nonLand] += multiplier
 
     
           # Updates counts for creatures and nonCreatures
           if card_types.include?('Creature')
-            stats[:counts][:creature] += 1
+            stats[:counts][:creature] += multiplier
           else
-            stats[:counts][:nonCreature] += 1
+            stats[:counts][:nonCreature] += multiplier
           end
 
           # Gets converted mana cost counts
@@ -150,19 +166,19 @@ class Deck < ApplicationRecord
     
           # Increments 1 mana for 1 or 0 cmc
           if (card_cmc <= 1) 
-            stats[:cmc][1] += 1
+            stats[:cmc][1] += multiplier
     
             # Increments 6 mana for 6 or more cmc
           elsif (card_cmc >= 6) 
-            stats[:cmc][6] += 1
+            stats[:cmc][6] += multiplier
     
             # Otherwise we increment what's in-between as long as it's not a land
           else
-            stats[:cmc][card_cmc.to_i] += 1
+            stats[:cmc][card_cmc.to_i] += multiplier
           end
     
           # counts card rarity, doesn't include basic lands
-          stats[:rarity][card.rarity.to_sym] += 1
+          stats[:rarity][card.rarity.to_sym] += multiplier
         end
 
 
