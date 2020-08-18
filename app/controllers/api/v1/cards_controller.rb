@@ -17,8 +17,21 @@ class Api::V1::CardsController < ApplicationController
       render 'api/v1/card/deck.json.jbuilder', status: 200
     else
    render json: { error: 'User must be signed in' }, status: 401
+    end
   end
-end
+
+  def search
+      @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+
+      @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+
+        @cards = Kaminari.paginate_array(@sorted_cards)
+        .page(params[:page])
+        .per(params[:per_page] || 30)
+
+      render 'api/v1/cards/collection.json.jbuilder', status: 200
+    end
+  end
 
   private
 

@@ -26,6 +26,9 @@ Rails.application.routes.draw do
       get 'decks', to: 'decks#index'
       get 'deck/:id', to:'decks#show'
 
+      # Search Route
+      get 'search', to: 'cards#search'
+
       # Routes for single cards
       get 'card/:id', to: 'cards#collection'
       get 'card/:id/deck/:deck_id', to: 'cards#deck'
@@ -35,6 +38,9 @@ Rails.application.routes.draw do
   # Deck Routes
   get 'decks', to: 'decks#index'
   get 'deck/:id', to: 'decks#show'
+
+  # Search Route
+  get 'search', to: 'cards#search'
 
   # Set Routes
   get 'sets', to: 'card_sets#index'
