@@ -35,6 +35,7 @@ interface PaginationProps {
 
 interface Options {
   setId?: number
+  query?: URLSearchParams
 }
 
 interface Actions {

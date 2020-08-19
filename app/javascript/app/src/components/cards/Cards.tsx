@@ -29,6 +29,7 @@ interface Options {
   setId?: number
   setType?: string
   deckId?: number
+  query?: URLSearchParams
 }
 
 interface Props {
