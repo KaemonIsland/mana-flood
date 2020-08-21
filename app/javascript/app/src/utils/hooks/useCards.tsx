@@ -102,7 +102,7 @@ export const useCards = (
   const [cards, setCards] = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 })
   const [stats, setStats] = useState(defaultStats)
-  const [query, setQuery] = useState(new URLSearchParams())
+  const [query, setQuery] = useState(options?.query || new URLSearchParams())
 
   const actionScope = typeof scope === 'string' ? 'collection' : 'deck'
 
@@ -126,18 +126,20 @@ export const useCards = (
 
     let response
 
-    if (typeof scope === 'object' || options.deckId) {
+    if (type === 'search') {
+      response = await cardActions[actionScope][type](cardQuery)
+    } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await cardActions.deck.deck(scope.id, cardQuery)
+        response = await cardActions.deck.deck(cardQuery, scope.id)
       } else {
         response = await cardActions.deck[type](
-          options.setId,
           cardQuery,
+          options.setId,
           scope.id
         )
       }
     } else {
-      response = await cardActions.collection[type](options.setId, cardQuery)
+      response = await cardActions.collection[type](cardQuery, options.setId)
     }
 
     setIsLoading(false)
@@ -157,7 +159,7 @@ export const useCards = (
 
   useEffect(() => {
     if (isLoading) {
-      getCards()
+      getCards(query)
     }
   }, [isLoading])
 

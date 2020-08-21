@@ -3,7 +3,7 @@ import { Text } from 'warlock-ui'
 import { Page, Cards } from '../components'
 
 export const Search = (): ReactElement => {
-  const [query, setQuery] = useState(new URLSearchParams())
+  const [query, setQuery] = useState(new URLSearchParams('q[name_cont]=jace'))
 
   return (
     <Page>
@@ -12,5 +12,3 @@ export const Search = (): ReactElement => {
     </Page>
   )
 }
-
-// TODO move query to first param for card actions

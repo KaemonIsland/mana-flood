@@ -4,6 +4,23 @@ import { toCamelcase } from '../utils'
 
 export const cardActions = {
   collection: {
+    search: async (query: URLSearchParams): Promise<Array<Card>> => {
+      try {
+        const response = await axios('/api/v1/search', {
+          params: query,
+        })
+
+        const { data } = response
+
+        if (data.error) {
+          throw new Error(data.error)
+        }
+
+        return toCamelcase(data)
+      } catch (error) {
+        console.log('Unable to get cards: ', error)
+      }
+    },
     sets: async (): Promise<Array<CardSet>> => {
       try {
         const response = await axios('/api/v1/collection')
@@ -19,7 +36,7 @@ export const cardActions = {
         console.log('Unable to get cards: ', error)
       }
     },
-    collection: async (id: number, query: URLSearchParams): Promise<void> => {
+    collection: async (query: URLSearchParams, id: number): Promise<void> => {
       try {
         // const response = await axios(
         //   `/api/v1/collection/set/${id}/deck/${deck.id}`
@@ -39,7 +56,7 @@ export const cardActions = {
         console.log('Unable to get cards from collection', error)
       }
     },
-    set: async (id: number, query: URLSearchParams): Promise<void> => {
+    set: async (query: URLSearchParams, id: number): Promise<void> => {
       try {
         const response = await axios(`/api/v1/sets/${id}/collection`, {
           params: query,
@@ -106,8 +123,8 @@ export const cardActions = {
   },
   deck: {
     set: async (
-      id: number,
       query: URLSearchParams,
+      id: number,
       deckId: number
     ): Promise<Array<CardSet>> => {
       try {
@@ -127,8 +144,8 @@ export const cardActions = {
       }
     },
     collection: async (
-      id: number,
       query: URLSearchParams,
+      id: number,
       deckId: number
     ): Promise<void> => {
       try {
@@ -150,7 +167,7 @@ export const cardActions = {
         console.log('Unable to get cards from collection', error)
       }
     },
-    deck: async (id: number, query: URLSearchParams): Promise<Array<Card>> => {
+    deck: async (query: URLSearchParams, id: number): Promise<Array<Card>> => {
       try {
         const response = await axios(`/api/v1/decked_cards/${id}`, {
           params: query,

@@ -1,6 +1,7 @@
 class Api::V1::CardsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :load_card, :load_collection, :set_variations, only: [:collection, :deck]
+  before_action :load_card, :set_variations, only: [:collection, :deck]
+  before_action :load_collection, only: [:collection, :search_with_collection, :deck]
   respond_to :json
 
   def collection
@@ -20,17 +21,28 @@ class Api::V1::CardsController < ApplicationController
     end
   end
 
-  def search
-      @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+  def search_with_collection
+    @query = Card.with_color(params[:colors], Card).ransack(params[:q])
 
-      @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
-        @cards = Kaminari.paginate_array(@sorted_cards)
-        .page(params[:page])
-        .per(params[:per_page] || 30)
+      @cards = Kaminari.paginate_array(@sorted_cards)
+      .page(params[:page])
+      .per(params[:per_page] || 30)
 
-      render 'api/v1/cards/collection.json.jbuilder', status: 200
-    end
+    render 'api/v1/cards/collection.json.jbuilder', status: 200
+end
+
+  def search_with_deck
+    @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+
+    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+
+      @cards = Kaminari.paginate_array(@sorted_cards)
+      .page(params[:page])
+      .per(params[:per_page] || 30)
+
+    render 'api/v1/cards/collection.json.jbuilder', status: 200
   end
 
   private
