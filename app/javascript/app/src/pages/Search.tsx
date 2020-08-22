@@ -12,3 +12,5 @@ export const Search = (): ReactElement => {
     </Page>
   )
 }
+
+// TODO Fix card Stats for searches, and add card view for json builder

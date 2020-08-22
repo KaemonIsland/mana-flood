@@ -11,11 +11,13 @@ class Api::V1::CollectedCardsController < ApplicationController
 
       @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
+      @stats = Card.card_stats(@collection.with_set_cards(params[:id]))
+
         @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])
         .per(params[:per_page] || 30)
 
-      render 'api/v1/cards/collection.json.jbuilder', status: 200
+      render 'api/v1/cards/cards.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end
@@ -27,13 +29,15 @@ class Api::V1::CollectedCardsController < ApplicationController
 
       @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
+      @stats = Card.card_stats(@collection.with_set_cards(params[:id]))
+
       @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])
         .per(params[:per_page] || 30)
 
       
       @deck = current_user.decks.find(params[:deck_id])
-      render 'api/v1/cards/deck_with_set.json.jbuilder', status: 200
+      render 'api/v1/cards/cards.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end

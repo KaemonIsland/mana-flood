@@ -26,11 +26,13 @@ class Api::V1::CardsController < ApplicationController
 
     @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
+    @stats = Card.card_stats(@sorted_cards)
+
       @cards = Kaminari.paginate_array(@sorted_cards)
       .page(params[:page])
       .per(params[:per_page] || 30)
 
-    render 'api/v1/cards/collection.json.jbuilder', status: 200
+    render 'api/v1/cards/search.json.jbuilder', status: 200
 end
 
   def search_with_deck
@@ -42,7 +44,7 @@ end
       .page(params[:page])
       .per(params[:per_page] || 30)
 
-    render 'api/v1/cards/collection.json.jbuilder', status: 200
+    render 'api/v1/cards/cards.json.jbuilder', status: 200
   end
 
   private
