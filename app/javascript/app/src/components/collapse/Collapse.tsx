@@ -9,7 +9,7 @@ const StyledCollapse = styled.div(({ theme, color, shade }) => ({
 }))
 
 interface CollapseProps {
-  children: Array<ReactChild>
+  children: Array<ReactChild> | ReactChild
   isOpen: boolean
   color?: string
   shade?: number
@@ -32,7 +32,7 @@ export const Collapse = ({
 }
 
 interface HeaderProps {
-  children: Array<ReactChild>
+  children: Array<ReactChild> | ReactChild
   isOpen?: boolean
 }
 
@@ -54,7 +54,7 @@ const CollapseContent = styled.section(({ isOpen }) => ({
 }))
 
 interface ContentProps {
-  children: Array<ReactChild>
+  children: Array<ReactChild> | ReactChild
   isOpen?: boolean
 }
 

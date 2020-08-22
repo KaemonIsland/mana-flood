@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
       # Search Route
       get 'search', to: 'cards#search_with_collection'
+      get 'search/deck/:deck_id', to: 'cards#search_with_deck'
 
       # Routes for single cards
       get 'card/:id', to: 'cards#collection'

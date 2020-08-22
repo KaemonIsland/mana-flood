@@ -127,7 +127,10 @@ export const useCards = (
     let response
 
     if (type === 'search') {
-      response = await cardActions[actionScope][type](cardQuery)
+      response = await cardActions[actionScope][type](
+        cardQuery,
+        scope && scope.id
+      )
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
         response = await cardActions.deck.deck(cardQuery, scope.id)
@@ -159,9 +162,13 @@ export const useCards = (
 
   useEffect(() => {
     if (isLoading) {
-      getCards(query)
+      getCards(options.query)
     }
   }, [isLoading])
+
+  useEffect(() => {
+    setIsLoading(true)
+  }, [options.query])
 
   useEffect(() => {
     setCards([])

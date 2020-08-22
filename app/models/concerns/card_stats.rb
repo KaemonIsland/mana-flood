@@ -78,7 +78,6 @@ module CardStats
         # Increment total cards
         stats[:cards] += 1
 
-
         # Card types, they have been stringified so we must parse them
         card_types = JSON.parse(card.card_types)
         types = stats[:types]
@@ -86,23 +85,23 @@ module CardStats
 
         # Counts the card types
         card_types.each do |type|
-          lower_type = type.downcase()
+          lower_type = type.downcase().to_sym
   
-          if types[lower_type.to_sym]
-            types[lower_type.to_sym][:count] += 1
+          if types[lower_type]
+            types[lower_type][:count] += 1
           end
           
   
-          # Counts the card subTypes
-          card.subtypes.each do |subtype|
-            lower_subtype = subtype.downcase()
+            # Counts the card subTypes
+            card.subtypes.each do |subtype|
+              lower_subtype = subtype.downcase().to_sym
 
-            if types[lower_type.to_sym][:subtypes][lower_subtype.to_sym]
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] += 1
-            else
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] = 1
+              if types[lower_type][:subtypes][lower_subtype]
+                types[lower_type][:subtypes][lower_subtype] += 1
+              else
+                types[lower_type][:subtypes][lower_subtype] = 1
+              end
             end
-          end
         end
 
 

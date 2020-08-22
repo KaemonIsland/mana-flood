@@ -122,6 +122,26 @@ export const cardActions = {
     },
   },
   deck: {
+    search: async (
+      query: URLSearchParams,
+      deckId: number
+    ): Promise<Array<Card>> => {
+      try {
+        const response = await axios(`/api/v1/search/deck/${deckId}`, {
+          params: query,
+        })
+
+        const { data } = response
+
+        if (data.error) {
+          throw new Error(data.error)
+        }
+
+        return toCamelcase(data)
+      } catch (error) {
+        console.log('Unable to get cards: ', error)
+      }
+    },
     set: async (
       query: URLSearchParams,
       id: number,
