@@ -148,11 +148,12 @@ export const Full = ({ id }: Props): ReactElement => {
       name,
       loyalty,
       tcgplayerProductId,
+      deck,
     },
     setCard,
   ] = useState(defaultCard)
 
-  const quantity = collection
+  const quantity = deck && deck >= 0 ? deck : collection
   const { add, update, remove } = cardActions['collection']
 
   const getVariationInfo = async (card: Card): Promise<void> => {

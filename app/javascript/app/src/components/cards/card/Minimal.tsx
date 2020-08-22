@@ -147,7 +147,7 @@ interface Props {
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
-  const scope = card && card.deck ? 'deck' : 'collection'
+  const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
