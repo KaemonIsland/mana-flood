@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const StyledCollapse = styled.div(({ theme, color, shade }) => ({
   padding: theme.spaceScale(2),
   borderRadius: theme.spaceScale(2),
-  backgroundColor: theme.color[color][shade],
+  backgroundColor: color && shade ? theme.color[color][shade] : 'transparent',
 }))
 
 interface CollapseProps {
@@ -18,7 +18,7 @@ interface CollapseProps {
 export const Collapse = ({
   children,
   isOpen,
-  color = 'grey',
+  color,
   shade = 3,
 }: CollapseProps): ReactElement => {
   const childrenWithExtraProp = React.Children.map(children, child =>

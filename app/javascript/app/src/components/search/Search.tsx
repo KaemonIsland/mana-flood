@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, ReactElement } from 'react'
-import { Button } from 'warlock-ui'
+import { Button, Flex, Container } from 'warlock-ui'
 import { Collapse } from '../collapse'
 import { Form, Input } from '../../elements'
 
@@ -30,27 +30,43 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
   }
 
   return (
-    <Collapse isOpen={isOpen} color="purple" shade={3}>
-      <Collapse.Header>
-        <Button color="purple" shade={1} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? 'Hide' : 'Show'} Search
-        </Button>
-      </Collapse.Header>
-      <Collapse.Content>
-        <Form onSubmit={submitForm}>
+    <Form onSubmit={submitForm}>
+      <Input
+        label="Card Name"
+        name="cardName"
+        type="text"
+        placeholder="name doesn't have to be exact"
+        onChange={handleFormChange}
+        value={form}
+      />
+      <Collapse isOpen={isOpen}>
+        <Collapse.Content>
           <Input
-            label="Card Name"
-            name="name"
+            label="Card Text"
+            name="cardText"
             type="text"
-            placeholder="name doesn't have to be exact"
+            placeholder="Text can match anything"
             onChange={handleFormChange}
             value={form}
           />
-          <Button color="blue" shade={1} type="submit">
-            Search
+        </Collapse.Content>
+      </Collapse>
+      <Flex alignItems="center" justifyContent="flex-end">
+        <Container marginRight={4}>
+          <Button
+            color="purple"
+            shade={6}
+            variant="text"
+            size="large"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? 'Hide' : 'Show'} Advanced Search
           </Button>
-        </Form>
-      </Collapse.Content>
-    </Collapse>
+        </Container>
+        <Button color="yellow" size="large" shade={4} type="submit">
+          Search
+        </Button>
+      </Flex>
+    </Form>
   )
 }

@@ -1,27 +1,30 @@
 import React, { ReactElement, FormEvent } from 'react'
+import { Text } from 'warlock-ui'
 import styled from 'styled-components'
 import { capitalize } from '../../utils'
 
-const InputContainer = styled.div(({ theme }) => ({
+const InputContainer = styled.div(({ disabled }) => ({
   position: 'relative',
-  height: '5rem',
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'start',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  justifyContent: 'end',
+  opacity: disabled ? 0.5 : 1,
 }))
 
 const StyledInput = styled.input(({ theme }) => ({
   width: '100%',
-  border: `2px solid ${theme.color.grey[4]}`,
-  borderBottom: `3px solid ${theme.color.grey[4]}`,
-  boxShadow: theme.boxShadow.single[2],
+  border: '1px solid transparent',
+  borderBottom: '3px solid transparent',
+  boxShadow: theme.boxShadow.single[1],
   borderRadius: theme.spaceScale(2),
+  marginTop: theme.spaceScale(4),
   padding: theme.spaceScale(2),
   transition: 'all 250ms ease-in-out',
   '&:focus': {
-    border: `2px solid ${theme.color.grey[6]}`,
+    border: `1px solid black`,
     '&:valid': {
-      borderBottom: `3px solid ${theme.color.greenVivid[4]}`,
+      borderBottom: `3px solid ${theme.color.greenVivid[3]}`,
     },
   },
   '&:invalid': {
@@ -40,7 +43,7 @@ const StyledInput = styled.input(({ theme }) => ({
 
 const StyledLabel = styled.label(({ theme }) => ({
   position: 'absolute',
-  top: 28,
+  top: 25,
   left: 10,
   userSelect: 'none',
   transition: 'all 250ms ease-in-out',
@@ -58,7 +61,11 @@ interface InputProps {
   placeholder: string
   label: string
   value: string | number
-  type: string
+  type?: string
+  autoComplete?: boolean
+  hint?: string
+  removeHint?: boolean
+  disabled?: boolean
 }
 
 export const Input = ({
@@ -68,10 +75,14 @@ export const Input = ({
   label,
   value,
   type = 'text',
+  autoComplete = false,
+  hint,
+  removeHint = false,
+  disabled = false,
   ...rest
 }: InputProps): ReactElement => {
   return (
-    <InputContainer>
+    <InputContainer disabled={disabled}>
       <StyledInput
         {...rest}
         placeholder={placeholder}
@@ -79,9 +90,15 @@ export const Input = ({
         onChange={onChange}
         id={name}
         value={value}
-        autofill={false}
+        autoComplete={autoComplete ? 'on' : 'off'}
+        disabled={disabled}
       />
       <StyledLabel htmlFor={name}>{capitalize(label)}</StyledLabel>
+      {!removeHint && (
+        <Text size={2} display="inline" color="grey" shade={6}>
+          {hint}
+        </Text>
+      )}
     </InputContainer>
   )
 }
