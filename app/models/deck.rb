@@ -105,21 +105,21 @@ class Deck < ApplicationRecord
 
         # Counts the card types
         card_types.each do |type|
-          lower_type = type.downcase()
+          lower_type = type.downcase().to_sym
   
-          if types[lower_type.to_sym]
-            types[lower_type.to_sym][:count] += multiplier
+          if types[lower_type]
+            types[lower_type][:count] += multiplier
           end
           
   
           # Counts the card subTypes
           card.subtypes.each do |subtype|
-            lower_subtype = subtype.downcase()
+            lower_subtype = subtype.downcase().to_sym
 
-            if types[lower_type.to_sym][:subtypes][lower_subtype.to_sym]
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] += multiplier
-            else
-              types[lower_type.to_sym][:subtypes][lower_subtype.to_sym] = multiplier
+            if types[lower_type] && types[lower_type][:subtypes] && types[lower_type][:subtypes][lower_subtype]
+              types[lower_type][:subtypes][lower_subtype] += multiplier
+            elsif types[lower_type] && types[lower_type][:subtypes]
+              types[lower_type][:subtypes][lower_subtype] = multiplier
             end
           end
         end

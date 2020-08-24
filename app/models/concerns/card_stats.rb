@@ -67,9 +67,8 @@ module CardStats
       cards: 0,
     }
 
-    
       # Iterates over every card and updates stats object
-      cards.each do |card|
+      cards.any? && cards.each do |card|
       
         if card.is_promo || card.is_alternative
           next
@@ -96,9 +95,9 @@ module CardStats
             card.subtypes.each do |subtype|
               lower_subtype = subtype.downcase().to_sym
 
-              if types[lower_type][:subtypes][lower_subtype]
+              if types[lower_type] && types[lower_type][:subtypes] && types[lower_type][:subtypes][lower_subtype]
                 types[lower_type][:subtypes][lower_subtype] += 1
-              else
+              elsif types[lower_type] && types[lower_type][:subtypes]
                 types[lower_type][:subtypes][lower_subtype] = 1
               end
             end

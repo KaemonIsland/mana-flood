@@ -24,7 +24,7 @@ class Api::V1::CardsController < ApplicationController
   def search_with_collection
     @query = Card.with_color(params[:colors], Card).ransack(params[:q])
 
-    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
 
     @stats = Card.card_stats(@sorted_cards)
 
@@ -38,7 +38,7 @@ end
   def search_with_deck
     @query = Card.with_color(params[:colors], Card).ransack(params[:q])
 
-    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
 
     @stats = Card.card_stats(@sorted_cards)
 

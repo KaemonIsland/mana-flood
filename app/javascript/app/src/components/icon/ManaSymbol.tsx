@@ -30,9 +30,13 @@ export const ManaSymbol = ({ mana, size }: ManaSymbolProps): ReactElement => {
     xLarge: { width: 8, height: 8 },
   }
 
-  return (
-    <Mana {...sizes[size]}>
-      <Img src={manaSvgs(`./${mana}.svg`)} alt={`${mana} symbol`} />
-    </Mana>
-  )
+  try {
+    return (
+      <Mana {...sizes[size]}>
+        <Img src={manaSvgs(`./${mana}.svg`)} alt={`${mana} symbol`} />
+      </Mana>
+    )
+  } catch (error) {
+    return null
+  }
 }
