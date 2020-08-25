@@ -4,29 +4,53 @@ import { Collapse } from '../collapse'
 import { Form, Input } from '../../elements'
 
 interface Callback {
-  (query: string): void
+  (query: URLSearchParams): void
 }
 
 interface SearchProps {
   callback: Callback
 }
 
+const formatKey = (key): string => `q[${key}]`
+
+const searchSettings = {
+  cardName: 'name_cont',
+  cardText: 'text_cont',
+  cardType: 'card_type_or_subtypes_cont',
+}
+
 export const Search = ({ callback }: SearchProps): ReactElement => {
   const [isOpen, setIsOpen] = useState(true)
-  const [form, setForm] = useState('')
+  const [form, setForm] = useState({})
+
+  const buildQuery = () => {
+    const query = new URLSearchParams()
+
+    Object.entries(form).forEach(([key, value]) => {
+      query.append(formatKey(searchSettings[key]), String(value))
+    })
+
+    return query
+  }
+
+  // TODO Allow the form to search for ANY part of card text, even out of order.
 
   const submitForm = (e: FormEvent): void => {
     e.preventDefault()
 
-    callback(`q[name_cont]=${form}`)
+    const query = buildQuery()
+
+    callback(query)
 
     setForm('')
   }
 
   const handleFormChange = e => {
-    const { target, value } = e.target
-
-    setForm(value)
+    const { name, value } = e.target
+    setForm(currentForm => ({
+      ...currentForm,
+      [name]: value,
+    }))
   }
 
   return (
@@ -37,7 +61,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
         type="text"
         placeholder="name doesn't have to be exact"
         onChange={handleFormChange}
-        value={form}
+        value={form?.cardName || ''}
       />
       <Collapse isOpen={isOpen}>
         <Collapse.Content>
@@ -47,7 +71,15 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             type="text"
             placeholder="Text can match anything"
             onChange={handleFormChange}
-            value={form}
+            value={form?.cardText || ''}
+          />
+          <Input
+            label="Card Type"
+            name="cardType"
+            type="text"
+            placeholder="Text can match anything"
+            onChange={handleFormChange}
+            value={form?.cardType || ''}
           />
         </Collapse.Content>
       </Collapse>

@@ -89,6 +89,7 @@ export const Input = ({
         type={type}
         onChange={onChange}
         id={name}
+        name={name}
         value={value}
         autoComplete={autoComplete ? 'on' : 'off'}
         disabled={disabled}
