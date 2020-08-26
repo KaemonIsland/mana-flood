@@ -17,6 +17,9 @@ const searchSettings = {
   cardName: 'name_cont',
   cardText: 'text_cont',
   cardType: 'card_type_or_subtypes_cont',
+  manaCost: 'mana_cost_cont',
+  artist: 'artist_cont',
+  flavorText: 'flavor_text_cont',
 }
 
 export const Search = ({ callback }: SearchProps): ReactElement => {
@@ -80,6 +83,31 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             placeholder="Text can match anything"
             onChange={handleFormChange}
             value={form?.cardType || ''}
+          />
+          <Input
+            label="Mana Cost"
+            name="manaCost"
+            type="text"
+            placeholder="Wrap colors within curly brackets {}"
+            hint="Wrap colors within curly brackets. EX {1}{U/B}{W}"
+            onChange={handleFormChange}
+            value={form?.manaCost || ''}
+          />
+          <Input
+            label="Artist"
+            name="artist"
+            type="text"
+            placeholder="Text can match anything"
+            onChange={handleFormChange}
+            value={form?.artist || ''}
+          />
+          <Input
+            label="Flavor Text"
+            name="flavorText"
+            type="text"
+            placeholder="Text can match anything"
+            onChange={handleFormChange}
+            value={form?.flavorText || ''}
           />
         </Collapse.Content>
       </Collapse>
