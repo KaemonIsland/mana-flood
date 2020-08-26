@@ -43,10 +43,5 @@
     "react-is": "^16.13.1",
     "warlock-config": "^1.2.0",
     "webpack-dev-server": "^3.10.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "echo Hello World!"
-    }
   }
 }
