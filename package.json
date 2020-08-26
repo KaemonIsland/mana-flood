@@ -37,8 +37,16 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "commitizen": "^4.2.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.13",
     "react-is": "^16.13.1",
     "warlock-config": "^1.2.0",
     "webpack-dev-server": "^3.10.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo Hello World"
+    }
   }
 }
