@@ -1,7 +1,7 @@
 import React, { useState, FormEvent, ReactElement } from 'react'
 import { Button, Flex, Container } from 'warlock-ui'
 import { Collapse } from '../collapse'
-import { Form, Input } from '../../elements'
+import { Form, Input, Checkbox } from '../../elements'
 
 interface Callback {
   (query: URLSearchParams): void
@@ -58,6 +58,17 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
 
   return (
     <Form onSubmit={submitForm}>
+      <Checkbox
+        label="Colors"
+        onChange={e => {
+          console.log(e.target.value)
+          console.log(e.target.name)
+          console.log(e.target.checked)
+        }}
+        hint="select which colors to search by"
+        name="colors"
+        options={['White', 'Blue', 'Black', 'Red', 'Green']}
+      />
       <Input
         label="Card Name"
         name="cardName"
