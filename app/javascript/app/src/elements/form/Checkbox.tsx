@@ -3,7 +3,11 @@ import { Text } from 'warlock-ui'
 import styled from 'styled-components'
 import { capitalize } from '../../utils'
 
-const InputContainer = styled.div(({ disabled }) => ({}))
+const InputContainer = styled.div(({ disabled }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+}))
 
 const StyledInput = styled.input(({ theme }) => ({
   position: 'absolute',
@@ -27,10 +31,10 @@ const StyledLabel = styled.label(({ theme }) => ({
   '&:hover span': {
     backgroundColor: '#ccc',
   },
-  '& input:checked span': {
+  '& input:checked ~ span': {
     backgroundColor: '#2196F3',
   },
-  '& input:checked span:after': {
+  '& input:checked ~ span:after': {
     display: 'block',
   },
 
@@ -88,33 +92,33 @@ export const Checkbox = ({
   ...rest
 }: InputProps): ReactElement => {
   return (
-    <InputContainer disabled={disabled}>
+    <div>
       <Text>{label}</Text>
-
-      {options.map(option => (
-        <>
-          <StyledLabel htmlFor={option}>
-            {capitalize(option)}
-            <StyledSpan />
-            <StyledInput
-              {...rest}
-              type="checkbox"
-              onChange={onChange}
-              id={option}
-              name={name}
-              value={option}
-              disabled={disabled}
-              checked={checked}
-            />
-          </StyledLabel>
-        </>
-      ))}
-
+      <InputContainer disabled={disabled}>
+        {options.map(option => (
+          <>
+            <StyledLabel htmlFor={option}>
+              {capitalize(option)}
+              <StyledSpan />
+              <StyledInput
+                {...rest}
+                type="checkbox"
+                onChange={onChange}
+                id={option}
+                name={name}
+                value={option}
+                disabled={disabled}
+                checked={checked}
+              />
+            </StyledLabel>
+          </>
+        ))}
+      </InputContainer>
       {!removeHint && (
         <Text size={2} display="inline" color="grey" shade={6}>
           {hint}
         </Text>
       )}
-    </InputContainer>
+    </div>
   )
 }
