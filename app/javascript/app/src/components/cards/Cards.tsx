@@ -8,9 +8,10 @@ import { Scope } from '../scope'
 import { useFilter, useCards } from '../../utils'
 import { useScope } from '../../providers'
 
-const CardsContainer = styled.section(({ theme, isMobile }) => ({
+const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
   display: 'grid',
-  gridTemplateColumns: isMobile ? `1fr` : `${theme.spaceScale(12)} 1fr`,
+  gridTemplateColumns:
+    isMobile || !showFilter ? `1fr` : `${theme.spaceScale(12)} 1fr`,
   margin: isMobile && theme.spaceScale(4),
   gridTemplateRows: isMobile ? `${theme.spaceScale(6)} 1fr` : 'auto',
   gridGap: '1rem',
@@ -36,11 +37,13 @@ interface Props {
   options?: Options
   type: string
   showScope?: boolean
+  showFilter?: boolean
 }
 export const Cards = ({
   type,
   options,
   showScope = true,
+  showFilter = true,
 }: Props): ReactElement => {
   const { currentScope, scopes, updateScope } = useScope()
   const { actions, cards, pagination, stats } = useCards(
@@ -63,7 +66,7 @@ export const Cards = ({
   return (
     <>
       <div>{results}</div>
-      <CardsContainer isMobile={isMobile}>
+      <CardsContainer showFilter={showFilter} isMobile={isMobile}>
         <div>
           {showScope && (
             <Scope
@@ -74,7 +77,7 @@ export const Cards = ({
           )}
         </div>
         <Pagination {...pagination} />
-        <Filter stats={stats} {...filter} />
+        {showFilter && <Filter stats={stats} {...filter} />}
         <StyledGrid>
           {isLoading ? (
             <h1>...Loading!</h1>

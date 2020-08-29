@@ -14,7 +14,7 @@ export const Search = (): ReactElement => {
       <Text size={10}>Search</Text>
       <SearchComponent callback={submitQuery} />
       <hr />
-      <Cards type="search" options={{ query }} />
+      <Cards type="search" showFilter={false} options={{ query }} />
     </Page>
   )
 }

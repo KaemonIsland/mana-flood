@@ -20,23 +20,30 @@ const searchSettings = {
   manaCost: 'mana_cost_cont',
   artist: 'artist_cont',
   flavorText: 'flavor_text_cont',
+  rarity: 'rarity_in',
 }
 
 export const Search = ({ callback }: SearchProps): ReactElement => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [showAdvanced, setShowAdvanced] = useState(true)
   const [form, setForm] = useState({})
 
   const buildQuery = () => {
     const query = new URLSearchParams()
 
     Object.entries(form).forEach(([key, value]) => {
-      query.append(formatKey(searchSettings[key]), String(value))
+      if (key === 'colors') {
+        query.append('colors', String(form.colors))
+      } else if (key === 'rarity') {
+        form.rarity.forEach(rareVal => {
+          query.append(`${formatKey('rarity_in')}[]`, String(rareVal))
+        })
+      } else {
+        query.append(formatKey(searchSettings[key]), String(value))
+      }
     })
 
     return query
   }
-
-  // TODO Allow the form to search for ANY part of card text, even out of order.
 
   const submitForm = (e: FormEvent): void => {
     e.preventDefault()
@@ -45,10 +52,10 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
 
     callback(query)
 
-    setForm('')
+    setForm({})
   }
 
-  const handleFormChange = e => {
+  const handleTextChange = e => {
     const { name, value } = e.target
     setForm(currentForm => ({
       ...currentForm,
@@ -56,35 +63,57 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
     }))
   }
 
+  const handleCheckboxChange = e => {
+    const { name, value, checked } = e.target
+
+    let updatedValue = form[name] || []
+
+    if (checked) {
+      updatedValue.push(value)
+    } else {
+      updatedValue = updatedValue.filter(elem => elem !== value)
+    }
+
+    setForm(currentForm => ({
+      ...currentForm,
+      [name]: updatedValue,
+    }))
+  }
+
   return (
     <Form onSubmit={submitForm}>
-      <Checkbox
-        label="Colors"
-        onChange={e => {
-          console.log(e.target.value)
-          console.log(e.target.name)
-          console.log(e.target.checked)
-        }}
-        hint="select which colors to search by"
-        name="colors"
-        options={['White', 'Blue', 'Black', 'Red', 'Green']}
-      />
       <Input
         label="Card Name"
         name="cardName"
         type="text"
         placeholder="name doesn't have to be exact"
-        onChange={handleFormChange}
+        onChange={handleTextChange}
         value={form?.cardName || ''}
       />
-      <Collapse isOpen={isOpen}>
+      <Collapse isOpen={showAdvanced}>
         <Collapse.Content>
+          <Checkbox
+            label="Colors"
+            onChange={handleCheckboxChange}
+            hint="Selecting Multi will return cards that only contain selected colors"
+            name="colors"
+            value={form?.colors || []}
+            options={[
+              { label: 'White', value: 'W' },
+              { label: 'Blue', value: 'U' },
+              { label: 'Black', value: 'B' },
+              { label: 'Red', value: 'R' },
+              { label: 'Green', value: 'G' },
+              { label: 'Multi', value: 'M' },
+              { label: 'Colorless', value: 'C' },
+            ]}
+          />
           <Input
             label="Card Text"
             name="cardText"
             type="text"
             placeholder="Text can match anything"
-            onChange={handleFormChange}
+            onChange={handleTextChange}
             value={form?.cardText || ''}
           />
           <Input
@@ -92,7 +121,8 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             name="cardType"
             type="text"
             placeholder="Text can match anything"
-            onChange={handleFormChange}
+            hint="Can be Type or Subtype"
+            onChange={handleTextChange}
             value={form?.cardType || ''}
           />
           <Input
@@ -101,15 +131,27 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             type="text"
             placeholder="Wrap colors within curly brackets {}"
             hint="Wrap colors within curly brackets. EX {1}{U/B}{W}"
-            onChange={handleFormChange}
+            onChange={handleTextChange}
             value={form?.manaCost || ''}
+          />
+          <Checkbox
+            label="Rarity"
+            onChange={handleCheckboxChange}
+            name="rarity"
+            value={form?.rarity || []}
+            options={[
+              { value: 'common' },
+              { value: 'uncommon' },
+              { value: 'rare' },
+              { value: 'mythic' },
+            ]}
           />
           <Input
             label="Artist"
             name="artist"
             type="text"
             placeholder="Text can match anything"
-            onChange={handleFormChange}
+            onChange={handleTextChange}
             value={form?.artist || ''}
           />
           <Input
@@ -117,7 +159,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             name="flavorText"
             type="text"
             placeholder="Text can match anything"
-            onChange={handleFormChange}
+            onChange={handleTextChange}
             value={form?.flavorText || ''}
           />
         </Collapse.Content>
@@ -125,16 +167,27 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
       <Flex alignItems="center" justifyContent="flex-end">
         <Container marginRight={4}>
           <Button
-            color="purple"
+            color="grey"
+            shade={9}
+            variant="text"
+            size="large"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+          >
+            {showAdvanced ? 'Hide' : 'Show'} Advanced Search
+          </Button>
+        </Container>
+        <Container marginRight={4}>
+          <Button
+            color="red"
             shade={6}
             variant="text"
             size="large"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setForm({})}
           >
-            {isOpen ? 'Hide' : 'Show'} Advanced Search
+            Clear
           </Button>
         </Container>
-        <Button color="yellow" size="large" shade={4} type="submit">
+        <Button color="purple" size="large" shade={4} type="submit">
           Search
         </Button>
       </Flex>

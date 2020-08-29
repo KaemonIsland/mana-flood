@@ -1,22 +1,10 @@
-import React, { ReactElement } from 'react'
-import styled from 'styled-components'
+import React, { ReactElement, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import feather from 'feather-icons'
 
-const IconContainer = styled.div`
-  height: ${({ theme, height }): string => theme.spaceScale(height)};
-  width: ${({ theme, width }): string => theme.spaceScale(width)};
-`
-
-const StyledSvg = styled.div(({ theme, color, shade }) => ({
-  width: '100%',
-  height: 'auto',
-  maxWidth: '100%',
-  '& svg': {
-    stroke:
-      color !== 'black' && color !== 'white'
-        ? theme.color[color][shade]
-        : color,
-  },
+const StyledSvg = styled.div(({ theme, size }) => ({
+  height: theme.spaceScale(size),
+  width: theme.spaceScale(size),
 }))
 
 interface FeatherProps {
@@ -36,13 +24,15 @@ export const Feather = ({
   size = 'medium',
   color = 'black',
   shade = 1,
+  ...props
 }: FeatherProps): ReactElement => {
   const sizes = {
-    small: { width: 5, height: 5 },
-    medium: { width: 6, height: 6 },
-    large: { width: 7, height: 7 },
-    xLarge: { width: 8, height: 8 },
+    small: 5,
+    medium: 6,
+    large: 7,
+    xLarge: 8,
   }
+  const theme = useContext(ThemeContext)
 
   /**
    * Obtains the svg string from feather-icons
@@ -50,15 +40,20 @@ export const Feather = ({
    * We must use dangerouslySetInnerHTML to render the svg properly
    * https://feathericons.com/
    */
-  const featherIcon = feather.icons[icon].toSvg()
+  const featherIcon = feather.icons[icon].toSvg({
+    height: '100%',
+    width: '100%',
+    color:
+      color !== 'black' && color !== 'white'
+        ? theme.color[color][shade]
+        : color,
+    ...props,
+  })
 
   return (
-    <IconContainer {...sizes[size]}>
-      <StyledSvg
-        color={color}
-        shade={shade}
-        dangerouslySetInnerHTML={{ __html: featherIcon }}
-      />
-    </IconContainer>
+    <StyledSvg
+      size={sizes[size]}
+      dangerouslySetInnerHTML={{ __html: featherIcon }}
+    />
   )
 }
