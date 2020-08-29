@@ -3,7 +3,7 @@ import { Text } from 'warlock-ui'
 import { Page, Cards, Search as SearchComponent } from '../components'
 
 export const Search = (): ReactElement => {
-  const [query, setQuery] = useState(new URLSearchParams('q[name_cont]=jace'))
+  const [query, setQuery] = useState(new URLSearchParams())
 
   const submitQuery = (query: string): void => {
     setQuery(new URLSearchParams(query))

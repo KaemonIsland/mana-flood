@@ -24,7 +24,7 @@ const searchSettings = {
 }
 
 export const Search = ({ callback }: SearchProps): ReactElement => {
-  const [showAdvanced, setShowAdvanced] = useState(true)
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [form, setForm] = useState({})
 
   const buildQuery = () => {
