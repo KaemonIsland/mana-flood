@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
 import { Filter } from '../filter'
-import { Minimal } from './card'
+import { Minimal, ImageOnly } from './card'
 import { Pagination } from '../Pagination'
 import { Scope } from '../scope'
 import { useFilter, useCards } from '../../utils'
@@ -17,14 +17,14 @@ const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
   gridGap: '1rem',
 }))
 
-const StyledGrid = styled.div`
-  display: grid;
-  grid-gap: ${({ theme }) => theme.spaceScale(3)};
-  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  grid-auto-rows: 7rem;
-  justify-items: center;
-  align-items: start;
-`
+const StyledGrid = styled.div(({ theme, imageOnly }) => ({
+  display: 'grid',
+  gridGap: theme.spaceScale(3),
+  gridTemplateColumns: 'repeat(auto-fill, minmax(20rem, 1fr))',
+  gridAutoRows: imageOnly ? '26rem' : '7rem',
+  justifyItems: 'center',
+  alignItems: 'start',
+}))
 
 interface Options {
   setId?: number
@@ -38,12 +38,14 @@ interface Props {
   type: string
   showScope?: boolean
   showFilter?: boolean
+  imageOnly?: boolean
 }
 export const Cards = ({
   type,
   options,
   showScope = true,
   showFilter = true,
+  imageOnly = false,
 }: Props): ReactElement => {
   const { currentScope, scopes, updateScope } = useScope()
   const { actions, cards, pagination, stats } = useCards(
@@ -78,13 +80,17 @@ export const Cards = ({
         </div>
         <Pagination {...pagination} />
         {showFilter && <Filter stats={stats} {...filter} />}
-        <StyledGrid>
+        <StyledGrid imageOnly={imageOnly}>
           {isLoading ? (
             <h1>...Loading!</h1>
           ) : (
-            cards.map(card => (
-              <Minimal actions={actions} key={card.id} card={card} />
-            ))
+            cards.map(card =>
+              imageOnly ? (
+                <ImageOnly actions={actions} key={card.id} card={card} />
+              ) : (
+                <Minimal actions={actions} key={card.id} card={card} />
+              )
+            )
           )}
         </StyledGrid>
         <div />

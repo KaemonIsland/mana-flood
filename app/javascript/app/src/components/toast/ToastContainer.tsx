@@ -11,14 +11,14 @@ import { gutter } from './ToastElement'
 //   'bottom-center': { bottom: 0, left: '50%', transform: 'translateX(-50%)' }
 //   'bottom-right': { bottom: 0, right: 0 }
 
-const StyledContainer = styled.div(({ hasToasts }) => ({
+const StyledContainer = styled.div(({ theme, hasToasts }) => ({
   maxHeight: '100%',
   overflow: 'hidden',
   padding: gutter,
   pointerEvents: hasToasts ? null : 'none',
   position: 'fixed',
   zIndex: 100000000000000,
-  top: 0,
+  top: theme.spaceScale(8),
   right: 0,
 }))
 

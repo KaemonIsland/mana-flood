@@ -58,7 +58,7 @@ interface ToastProviderProps {
  */
 export const ToastProvider = ({
   autoDismiss = true,
-  autoDismissTimeout = 5000,
+  autoDismissTimeout = 4000,
   transitionDuration = 220,
   children,
 }: ToastProviderProps): ReactElement => {
@@ -79,7 +79,13 @@ export const ToastProvider = ({
     const newToast = { content, id, ...options }
 
     // adds new toast to toasts
-    setToasts(currentToasts => [...currentToasts, newToast])
+    setToasts(currentToasts => {
+      if (currentToasts.length > 5) {
+        return [...currentToasts.slice(1), newToast]
+      } else {
+        return [...currentToasts, newToast]
+      }
+    })
   }
 
   // Removes toasts from toast list

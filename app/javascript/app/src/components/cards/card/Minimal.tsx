@@ -87,27 +87,8 @@ const CardContainer = styled.div(({ theme, color }) => {
   }
 })
 
-Button.Left = styled(Button)`
-  border-radius: 1rem 0 0 1rem;
-  background-color: transparent;
-`
-Button.Middle = styled.div`
-  border-radius: 0;
-  background-color: transparent;
-  border: 1px solid ${({ theme }): string => theme.color['grey'][8]};
-  display: inline-block;
-  text-align: center;
-  padding: ${({ theme }): string =>
-    [theme.spaceScale(1), theme.spaceScale(2)].join(' ')};
-`
-Button.Right = styled(Button)`
-  border-radius: ${({ theme, hasCard }): string =>
-    hasCard ? '0 1rem 1rem 0' : theme.spaceScale(1)};
-  background-color: transparent;
-`
-
 Button.Icon = styled(Button)`
-  border-radius: ${({ theme, hasCard }): string => theme.spaceScale(1)};
+  border-radius: ${({ theme }): string => theme.spaceScale(1)};
   background-color: transparent;
 `
 
@@ -243,7 +224,8 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                 <CardInfo>
                   <TitleText
                     title={name}
-                    weight="400"
+                    weight="500"
+                    spacing={1.1}
                     family="Roboto"
                     color="black"
                   >
@@ -263,7 +245,13 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                 </CardInfo>
               </Link>
               <Button.Icon color="purple" shade={1} {...triggerProps}>
-                <Feather icon={`eye${isOpen ? '-off' : ''}`} size="small" />
+                <Feather
+                  svgProps={{
+                    'stroke-width': 1,
+                  }}
+                  icon={`eye${isOpen ? '-off' : ''}`}
+                  size="small"
+                />
               </Button.Icon>
             </Flex>
           </InnerCard>

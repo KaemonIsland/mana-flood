@@ -12,6 +12,7 @@ interface FeatherProps {
   color?: string
   shade?: number
   size?: string
+  svgProps?: any
 }
 
 /**
@@ -24,6 +25,7 @@ export const Feather = ({
   size = 'medium',
   color = 'black',
   shade = 1,
+  svgProps = {},
   ...props
 }: FeatherProps): ReactElement => {
   const sizes = {
@@ -47,11 +49,12 @@ export const Feather = ({
       color !== 'black' && color !== 'white'
         ? theme.color[color][shade]
         : color,
-    ...props,
+    ...svgProps,
   })
 
   return (
     <StyledSvg
+      {...props}
       size={sizes[size]}
       dangerouslySetInnerHTML={{ __html: featherIcon }}
     />
