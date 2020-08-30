@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
 import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
-import { ManaSymbol } from '../../icon'
+import { ManaSymbol, Feather } from '../../icon'
 import { Dropdown } from '../../Dropdown'
 import { useDropdown, getCardImage } from '../../../utils'
 import { Card } from '../../../interface'
@@ -106,6 +106,11 @@ Button.Right = styled(Button)`
   background-color: transparent;
 `
 
+Button.Icon = styled(Button)`
+  border-radius: ${({ theme, hasCard }): string => theme.spaceScale(1)};
+  background-color: transparent;
+`
+
 const InnerCard = styled.div`
   background-color: hsl(0, 100%, 100%, 0.7);
   border-radius: ${({ theme }): string => theme.spaceScale(2)};
@@ -145,25 +150,15 @@ interface Props {
 }
 
 export const Minimal = ({ actions, card }: Props): ReactElement => {
-  const [timeoutId, setTimeoutId] = useState(null)
   const [cardImg, setCardImg] = useState('')
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
-  const { dropdownProps, triggerProps, open, close, isOpen } = useDropdown()
+  const { dropdownProps, triggerProps, isOpen } = useDropdown()
 
   const { addToast } = useToasts()
 
-  const {
-    cardType,
-    id,
-    manaCost,
-    name,
-    power,
-    toughness,
-    colorIdentity,
-    scryfallId,
-  } = card
+  const { cardType, id, manaCost, name, colorIdentity, scryfallId } = card
 
   const isLand = cardType.includes('Land')
 
@@ -187,27 +182,6 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     setQuantity(0)
   }
 
-  // Starts a timeout that will fetch the card img after a set time
-  const startTimeout = (): void => {
-    if (isOpen) {
-      return
-    }
-
-    const timeoutId = setTimeout(async () => {
-      const cardUrl = await getCardImage(scryfallId, 'normal')
-      setCardImg(cardUrl)
-      open()
-    }, 300)
-
-    setTimeoutId(timeoutId)
-  }
-
-  // Clears the active timeout if it's set
-  const stopTimeout = (): void => {
-    timeoutId && clearTimeout(timeoutId)
-    close()
-  }
-
   // Formats the cards mana cost for us to easily use mana symbol SVGs
   const formattedMana: Array<string> = manaCost
     .replace(/[{ | }]/g, ' ')
@@ -225,21 +199,27 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
       .filter(Boolean)
   )
 
+  const handleCardImage = async () => {
+    const cardUrl = await getCardImage(scryfallId, 'normal')
+    setCardImg(cardUrl)
+  }
+
   useEffect(() => {
     setQuantity(card[scope])
   }, [card[scope]])
+
+  useEffect(() => {
+    if (isOpen) {
+      handleCardImage()
+    }
+  }, [isOpen])
 
   return (
     <ThemeProvider>
       <div>
         <CardContainer
+          ref={triggerProps.ref}
           color={isLand ? new Set(colorIdentity) : cardColors}
-          {...triggerProps}
-          onClick={(): void => {
-            // TODO Add functionality here
-          }}
-          onMouseEnter={startTimeout}
-          onMouseLeave={stopTimeout}
         >
           <InnerCard>
             <Flex justifyContent="space-between" alignItems="start">
@@ -282,21 +262,13 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                   </Text>
                 </CardInfo>
               </Link>
-              {power && toughness && (
-                <CardInfo>
-                  <Text size={4} family="Roboto" color="black">
-                    {power} / {toughness}
-                  </Text>
-                </CardInfo>
-              )}
+              <Button.Icon color="purple" shade={1} {...triggerProps}>
+                <Feather icon={`eye${isOpen ? '-off' : ''}`} size="small" />
+              </Button.Icon>
             </Flex>
           </InnerCard>
         </CardContainer>
-        <Dropdown
-          isPaddingless
-          isOpen={Boolean(isOpen && cardImg)}
-          {...dropdownProps}
-        >
+        <Dropdown isPaddingless {...dropdownProps}>
           <CardImgContainer>
             <CardImg src={cardImg} alt={name} />
           </CardImgContainer>
