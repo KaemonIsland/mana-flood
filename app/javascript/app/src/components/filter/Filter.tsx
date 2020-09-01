@@ -196,6 +196,7 @@ const FilterContent = ({
                   value="all"
                   onChange={update}
                   defaultChecked
+                  checked={!type}
                 />
                 All
               </span>
