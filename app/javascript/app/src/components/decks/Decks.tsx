@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive'
 import { Deck } from '../../interface'
 import { ManaSymbol } from '../icon'
 import { Form } from './Form'
+import { deckActions } from '../../utils'
 
 const StyledDecks = styled.div(({ theme }) => ({
   border: '1px solid black',
@@ -37,6 +38,11 @@ export const Decks = ({ decks }: Props): ReactElement => {
   const [isUpdating, setIsUpdating] = useState({})
   const [showForm, setShowForm] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 650 })
+
+  const getDecks = async () => {
+    console.log('Decks', await deckActions.all())
+  }
+  getDecks()
 
   const updateDeckList = (newDeck): void => {
     if (newDeck?.id) {

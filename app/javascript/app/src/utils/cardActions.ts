@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Card, CardSet } from '../interface'
-import { toCamelcase } from '../utils'
+import { validateAsync } from '../utils'
 
 export const cardActions = {
   collection: {
@@ -38,9 +38,6 @@ export const cardActions = {
     },
     collection: async (query: URLSearchParams, id: number): Promise<void> => {
       try {
-        // const response = await axios(
-        //   `/api/v1/collection/set/${id}/deck/${deck.id}`
-        // )
         const response = await axios(`/api/v1/collection/set/${id}`, {
           params: query,
         })
