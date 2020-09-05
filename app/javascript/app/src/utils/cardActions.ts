@@ -1,277 +1,174 @@
-import axios from 'axios'
 import { Card, CardSet } from '../interface'
-import { validateAsync } from '../utils'
+import { request } from '../utils'
 
 export const cardActions = {
   collection: {
-    search: async (query: URLSearchParams): Promise<Array<Card>> => {
-      try {
-        const response = await axios('/api/v1/search', {
+    search: async (query: URLSearchParams): Promise<Array<Card>> =>
+      await request(
+        '/api/v1/search',
+        error => {
+          console.log('Unable to get cards: ', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
-
-        return toCamelcase(data)
-      } catch (error) {
+      ),
+    sets: async (): Promise<Array<CardSet>> =>
+      await request('/api/v1/collection', error => {
         console.log('Unable to get cards: ', error)
-      }
-    },
-    sets: async (): Promise<Array<CardSet>> => {
-      try {
-        const response = await axios('/api/v1/collection')
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
-        }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
-    collection: async (query: URLSearchParams, id: number): Promise<void> => {
-      try {
-        const response = await axios(`/api/v1/collection/set/${id}`, {
+      }),
+    collection: async (query: URLSearchParams, id: number): Promise<void> =>
+      await request(
+        `/api/v1/collection/set/${id}`,
+        error => {
+          console.log('Unable to get cards from collection', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
+      ),
+    set: async (query: URLSearchParams, id: number): Promise<void> =>
+      await request(
+        `/api/v1/sets/${id}/collection`,
 
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards from collection', error)
-      }
-    },
-    set: async (query: URLSearchParams, id: number): Promise<void> => {
-      try {
-        const response = await axios(`/api/v1/sets/${id}/collection`, {
+        error => {
+          console.log('Unable to get cards from collection', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards from collection', error)
-      }
-    },
-    add: async (id: number): Promise<Card> => {
-      try {
-        const response = await axios.post(`/api/v1/add_card/${id}`)
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+      ),
+    add: async (id: number): Promise<Card> =>
+      await request(
+        `/api/v1/add_card/${id}`,
+        error => {
+          console.log('Unable to add card to collection', error)
+        },
+        {
+          method: 'post',
         }
+      ),
+    update: async (id: number, quantity: number): Promise<Card> =>
+      await request(
+        `/api/v1/add_card/${id}?quantity=${quantity}`,
 
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to add card to collection', error)
-      }
-    },
-    update: async (id: number, quantity: number): Promise<Card> => {
-      try {
-        const response = await axios.put(
-          `/api/v1/add_card/${id}?quantity=${quantity}`
-        )
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+        error => {
+          console.log('Unable to update card collection quantity', error)
+        },
+        {
+          method: 'put',
         }
+      ),
+    remove: async (id: number): Promise<Card> =>
+      await request(
+        `/api/v1/remove_card/${id}`,
 
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to update card collection quantity', error)
-      }
-    },
-    remove: async (id: number): Promise<Card> => {
-      try {
-        const response = await axios.delete(`/api/v1/remove_card/${id}`)
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+        error => {
+          console.log('Unable to remove card to collection', error)
+        },
+        {
+          method: 'delete',
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to remove card to collection', error)
-      }
-    },
+      ),
   },
   deck: {
     search: async (
       query: URLSearchParams,
       deckId: number
-    ): Promise<Array<Card>> => {
-      try {
-        const response = await axios(`/api/v1/search/deck/${deckId}`, {
+    ): Promise<Array<Card>> =>
+      await request(
+        `/api/v1/search/deck/${deckId}`,
+
+        error => {
+          console.log('Unable to get cards: ', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
+      ),
     set: async (
       query: URLSearchParams,
       id: number,
       deckId: number
-    ): Promise<Array<CardSet>> => {
-      try {
-        const response = await axios(`/api/v1/sets/${id}/deck/${deckId}`, {
+    ): Promise<Array<CardSet>> =>
+      await request(
+        `/api/v1/sets/${id}/deck/${deckId}`,
+        error => {
+          console.log('Unable to get cards: ', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
+      ),
     collection: async (
       query: URLSearchParams,
       id: number,
       deckId: number
-    ): Promise<void> => {
-      try {
-        const response = await axios(
-          `/api/v1/collection/set/${id}/deck/${deckId}`,
-          {
-            params: query,
-          }
-        )
+    ): Promise<void> =>
+      await request(
+        `/api/v1/collection/set/${id}/deck/${deckId}`,
 
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
-        }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards from collection', error)
-      }
-    },
-    deck: async (query: URLSearchParams, id: number): Promise<Array<Card>> => {
-      try {
-        const response = await axios(`/api/v1/decked_cards/${id}`, {
+        error => {
+          console.log('Unable to get cards from collection', error)
+        },
+        {
           params: query,
-        })
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
         }
+      ),
+    deck: async (query: URLSearchParams, id: number): Promise<Array<Card>> =>
+      await request(
+        `/api/v1/decked_cards/${id}`,
 
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
-    add: async (id: number, deckId: number): Promise<Card> => {
-      try {
-        const response = await axios.post(
-          `/api/v1/add_decked_card/${deckId}/${id}`
-        )
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+        error => {
+          console.log('Unable to get cards: ', error)
+        },
+        {
+          params: query,
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to add card to deck', error)
-      }
-    },
+      ),
+    add: async (id: number, deckId: number): Promise<Card> =>
+      await request(
+        `/api/v1/add_decked_card/${deckId}/${id}`,
+        error => {
+          console.log('Unable to add card to deck', error)
+        },
+        {
+          method: 'post',
+        }
+      ),
     update: async (
       id: number,
       quantity: number,
       deckId: number
-    ): Promise<Card> => {
-      try {
-        const response = await axios.put(
-          `/api/v1/add_decked_card/${deckId}/${id}?quantity=${quantity}`
-        )
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+    ): Promise<Card> =>
+      await request(
+        `/api/v1/add_decked_card/${deckId}/${id}?quantity=${quantity}`,
+        error => {
+          console.log('Unable to remove card to collection', error)
+        },
+        {
+          method: 'put',
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to remove card to collection', error)
-      }
-    },
-    remove: async (id: number, deckId: number): Promise<Card> => {
-      try {
-        const response = await axios.delete(
-          `/api/v1/remove_decked_card/${deckId}/${id}`
-        )
-
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+      ),
+    remove: async (id: number, deckId: number): Promise<Card> =>
+      await request(
+        `/api/v1/remove_decked_card/${deckId}/${id}`,
+        error => {
+          console.log('Unable to remove card to collection', error)
+        },
+        {
+          method: 'delete',
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to remove card to collection', error)
-      }
-    },
+      ),
   },
   set: {
-    deck: async (id: number, deckId: number): Promise<Array<Card> | Card> => {
-      try {
-        const response = await axios(`/api/v1/sets/${id}/deck/${deckId}`)
+    deck: async (id: number, deckId: number): Promise<Array<Card> | Card> =>
+      await request(
+        `/api/v1/sets/${id}/deck/${deckId}`,
 
-        const { data } = response
-
-        if (data.error) {
-          throw new Error(data.error)
+        error => {
+          console.log('Unable to get cards: ', error)
         }
-
-        return toCamelcase(data)
-      } catch (error) {
-        console.log('Unable to get cards: ', error)
-      }
-    },
+      ),
   },
 }
