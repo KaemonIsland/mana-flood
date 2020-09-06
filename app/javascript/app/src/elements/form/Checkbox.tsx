@@ -46,10 +46,9 @@ interface OnChange {
 interface InputItemProps {
   onChange: OnChange
   name: string
-  options: Array<Options>
   props?: any
   value: string
-  label: string
+  label?: string
   groupValue: Array<any>
 }
 
@@ -72,8 +71,8 @@ const CheckboxItem = ({
         id={value}
         name={name}
         value={value}
-        {...props}
         checked={checked}
+        {...props}
       />
       <StyledSpan>
         <Feather size="small" icon={`${checked ? 'check-' : ''}square`} />
@@ -114,11 +113,11 @@ export const Checkbox = ({
       <OptionContainer>
         {options.map((option, index) => (
           <CheckboxItem
-            {...option}
             groupValue={value}
             name={name}
             onChange={onChange}
             key={index}
+            {...option}
           />
         ))}
       </OptionContainer>

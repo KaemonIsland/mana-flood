@@ -12,14 +12,14 @@ const InputContainer = styled.div(({ disabled }) => ({
   opacity: disabled ? 0.5 : 1,
 }))
 
-const StyledInput = styled.input(({ theme }) => ({
+const StyledTextarea = styled.textarea(({ theme }) => ({
   width: '100%',
   border: '1px solid transparent',
   borderBottom: '3px solid transparent',
   boxShadow: theme.boxShadow.single[1],
   borderRadius: theme.spaceScale(2),
   marginTop: theme.spaceScale(4),
-  padding: theme.spaceScale(2),
+  padding: theme.spaceScale(3),
   transition: 'all 250ms ease-in-out',
   '&:focus': {
     border: `1px solid black`,
@@ -55,7 +55,7 @@ interface OnChange {
   (event: FormEvent): void
 }
 
-interface InputProps {
+interface TextareaProps {
   onChange: OnChange
   name: string
   placeholder: string
@@ -66,26 +66,25 @@ interface InputProps {
   hint?: string
   removeHint?: boolean
   disabled?: boolean
+  cols?: number
 }
 
-export const Input = ({
+export const Textarea = ({
   onChange,
   name,
   placeholder,
   label,
   value,
-  type = 'text',
   autoComplete = false,
   hint,
   removeHint = false,
   disabled = false,
   ...rest
-}: InputProps): ReactElement => {
+}: TextareaProps): ReactElement => {
   return (
     <InputContainer disabled={disabled}>
-      <StyledInput
+      <StyledTextarea
         placeholder={placeholder}
-        type={type}
         onChange={onChange}
         id={name}
         name={name}

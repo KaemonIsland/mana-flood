@@ -1,12 +1,11 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Turbolinks from 'turbolinks'
 import { Button, Flex, Text } from 'warlock-ui'
-import axios from 'axios'
 import { useMediaQuery } from 'react-responsive'
 import { Deck } from '../../interface'
 import { ManaSymbol } from '../icon'
-import { Form } from './Form'
+import { DeckForm } from './DeckForm'
 import { deckActions } from '../../utils'
 
 const StyledDecks = styled.div(({ theme }) => ({
@@ -29,20 +28,18 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
   gridGap: theme.spaceScale(2),
 }))
 
-interface Props {
-  decks: Array<Deck>
-}
-
-export const Decks = ({ decks }: Props): ReactElement => {
-  const [deckList, setDeckList] = useState(decks)
+export const Decks = (): ReactElement => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [deckList, setDeckList] = useState([])
   const [isUpdating, setIsUpdating] = useState({})
-  const [showForm, setShowForm] = useState(false)
+  const [showForm, setShowForm] = useState(true)
   const isMobile = useMediaQuery({ maxWidth: 650 })
 
   const getDecks = async () => {
-    console.log('Decks', await deckActions.all())
+    const decks = await deckActions.all()
+
+    setDeckList(decks)
   }
-  getDecks()
 
   const updateDeckList = (newDeck): void => {
     if (newDeck?.id) {
@@ -55,15 +52,18 @@ export const Decks = ({ decks }: Props): ReactElement => {
   }
 
   const destroyDeck = async (id: number): Promise<void> => {
-    try {
-      await axios.delete(`api/v1/decks/${id}`)
+    await deckActions.delete(id)
 
-      const filteredDeckList = deckList.filter(deck => deck.id !== id)
-      setDeckList(filteredDeckList)
-    } catch (error) {
-      console.log('Unable to remove deck: ', error)
-    }
+    const filteredDeckList = deckList.filter(deck => deck.id !== id)
+    setDeckList(filteredDeckList)
   }
+
+  useEffect(() => {
+    if (isLoading) {
+      getDecks()
+      setIsLoading(false)
+    }
+  }, [isLoading])
 
   return (
     <Flex direction="column" alignItems="center">
@@ -71,7 +71,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
         New Deck
       </Button>
       {showForm && (
-        <Form updateInfo={isUpdating} submitCallback={updateDeckList} />
+        <DeckForm updateInfo={isUpdating} submitCallback={updateDeckList} />
       )}
       {deckList.map(deck => (
         <StyledDecks key={deck.id}>
@@ -82,7 +82,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
           >
             <div style={{ width: '100%' }}>
               <Flex alignItems="center" justifyContent="start">
-                {deck.colors.length &&
+                {(deck.colors || []).length &&
                   deck.colors.map((mana, i) => (
                     <ManaSymbol size="medium" key={i} mana={mana} />
                   ))}
@@ -130,7 +130,7 @@ export const Decks = ({ decks }: Props): ReactElement => {
                 shade={10}
                 variant="text"
               >
-                Remove
+                Delete
               </Button>
             </ButtonOptions>
           </Flex>

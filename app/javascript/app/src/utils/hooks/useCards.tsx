@@ -96,7 +96,7 @@ const defaultStats = {
 export const useCards = (
   type: string,
   scope: Deck | string,
-  options: Options
+  options: Options = {}
 ): Actions => {
   const [isLoading, setIsLoading] = useState(true)
   const [cards, setCards] = useState([])
