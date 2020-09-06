@@ -1,11 +1,14 @@
-import React, { ReactElement, useState } from 'react'
-import { Button } from 'warlock-ui'
-import { deckActions } from '../../utils'
+import React, { ReactElement, useState, useEffect } from 'react'
+import { Button, Flex, Container } from 'warlock-ui'
 import { Deck } from '../../interface'
 import { Form, Input, Textarea, Select } from '../../elements'
 
 interface SubmitCallback {
   (a: Deck): void
+}
+
+interface CancelUpdate {
+  (): void
 }
 
 interface DeckInfo {
@@ -18,6 +21,8 @@ interface DeckInfo {
 interface FormProps {
   updateInfo: DeckInfo
   submitCallback: SubmitCallback
+  cancelUpdate: CancelUpdate
+  disabled: boolean
 }
 
 const formats = [
@@ -44,7 +49,9 @@ const formats = [
  */
 export const DeckForm = ({
   updateInfo,
+  cancelUpdate,
   submitCallback,
+  disabled,
 }: FormProps): ReactElement => {
   const defaultForm = {
     name: '',
@@ -52,28 +59,16 @@ export const DeckForm = ({
     format: '',
   }
 
-  const [form, setForm] = useState(updateInfo?.name ? updateInfo : defaultForm)
-
-  const createDeck = async (): Promise<void> => {
-    const deck = await deckActions.create(form)
-
-    submitCallback(deck)
-  }
-
-  const updateDeck = async (): Promise<void> => {
-    const updatedDeck = await deckActions.update(updateInfo?.id, form)
-
-    submitCallback(updatedDeck)
-  }
+  const [form, setForm] = useState(updateInfo || defaultForm)
 
   const handleSubmit = async (e): Promise<void> => {
-    e.preventDefault()
-    if (updateInfo?.id) {
-      updateDeck()
-    } else {
-      createDeck()
+    if (!disabled) {
+      e.preventDefault()
+
+      submitCallback(form)
+
+      setForm(defaultForm)
     }
-    setForm(defaultForm)
   }
 
   const handleChange = (e): void => {
@@ -84,6 +79,14 @@ export const DeckForm = ({
       [name]: value,
     }))
   }
+
+  useEffect(() => {
+    if (updateInfo) {
+      setForm(updateInfo)
+    } else {
+      setForm(defaultForm)
+    }
+  }, [updateInfo])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -112,9 +115,41 @@ export const DeckForm = ({
         options={formats.map(format => ({ value: format }))}
         hint="What format will this be played in?"
       />
-      <Button type="submit" color="purple" variant="filled" shade={4}>
-        Submit
-      </Button>
+      <Flex alignItems="center" justifyContent="flex-end">
+        {updateInfo && (
+          <Container marginRight={4}>
+            <Button
+              color="red"
+              shade={6}
+              variant="text"
+              size="large"
+              onClick={cancelUpdate}
+            >
+              Cancel
+            </Button>
+          </Container>
+        )}
+        <Container marginRight={4}>
+          <Button
+            color="grey"
+            shade={6}
+            variant="text"
+            size="large"
+            onClick={() => setForm(updateInfo || defaultForm)}
+          >
+            {updateInfo ? 'Reset' : 'Clear'}
+          </Button>
+        </Container>
+        <Button
+          color="purple"
+          size="large"
+          isDisabled={disabled || !form.name}
+          shade={4}
+          type="submit"
+        >
+          Submit
+        </Button>
+      </Flex>
     </Form>
   )
 }

@@ -28,52 +28,23 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
   gridGap: theme.spaceScale(2),
 }))
 
-export const Decks = (): ReactElement => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [deckList, setDeckList] = useState([])
-  const [isUpdating, setIsUpdating] = useState({})
-  const [showForm, setShowForm] = useState(true)
+interface Actions {
+  update: (deck: Deck) => void
+  destroy: (id: number) => void
+}
+
+interface DecksProps {
+  decks: Array<Deck>
+  actions: Actions
+}
+
+export const Decks = ({ decks = [], actions }: DecksProps): ReactElement => {
+  const { update, destroy } = actions
   const isMobile = useMediaQuery({ maxWidth: 650 })
-
-  const getDecks = async () => {
-    const decks = await deckActions.all()
-
-    setDeckList(decks)
-  }
-
-  const updateDeckList = (newDeck): void => {
-    if (newDeck?.id) {
-      const filteredDeckList = deckList.filter(deck => deck.id !== newDeck.id)
-      setDeckList([newDeck, ...filteredDeckList])
-    } else {
-      setDeckList([newDeck, ...deckList])
-    }
-    setShowForm(false)
-  }
-
-  const destroyDeck = async (id: number): Promise<void> => {
-    await deckActions.delete(id)
-
-    const filteredDeckList = deckList.filter(deck => deck.id !== id)
-    setDeckList(filteredDeckList)
-  }
-
-  useEffect(() => {
-    if (isLoading) {
-      getDecks()
-      setIsLoading(false)
-    }
-  }, [isLoading])
 
   return (
     <Flex direction="column" alignItems="center">
-      <Button onClick={() => setShowForm(true)} color="purple" shade={7}>
-        New Deck
-      </Button>
-      {showForm && (
-        <DeckForm updateInfo={isUpdating} submitCallback={updateDeckList} />
-      )}
-      {deckList.map(deck => (
+      {decks.map(deck => (
         <StyledDecks key={deck.id}>
           <Flex
             direction={isMobile ? 'column' : 'row'}
@@ -82,10 +53,11 @@ export const Decks = (): ReactElement => {
           >
             <div style={{ width: '100%' }}>
               <Flex alignItems="center" justifyContent="start">
-                {(deck.colors || []).length &&
+                {((deck.colors || []).length &&
                   deck.colors.map((mana, i) => (
                     <ManaSymbol size="medium" key={i} mana={mana} />
-                  ))}
+                  ))) ||
+                  ''}
               </Flex>
               <Text family="roboto" weight="300" size={6}>
                 {deck.name}
@@ -114,8 +86,7 @@ export const Decks = (): ReactElement => {
                 shade={7}
                 variant="outline"
                 onClick={(): void => {
-                  setIsUpdating(deck)
-                  setShowForm(true)
+                  update(deck)
                 }}
               >
                 Edit
@@ -123,7 +94,7 @@ export const Decks = (): ReactElement => {
               <Button
                 onClick={(): void => {
                   if (confirm('Are you sure?')) {
-                    destroyDeck(deck.id)
+                    destroy(deck.id)
                   }
                 }}
                 color="grey"

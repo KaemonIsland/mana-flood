@@ -84,6 +84,7 @@ export const Select = ({
         isEmpty={value}
         disabled={disabled}
         name={name}
+        id={name}
         onChange={onChange}
         value={value}
         {...rest}
@@ -94,7 +95,7 @@ export const Select = ({
           </option>
         ))}
       </StyledSelect>
-      <StyledLabel>{capitalize(label)}</StyledLabel>
+      <StyledLabel htmlFor={name}>{capitalize(label)}</StyledLabel>
       {!removeHint && (
         <Text
           size={2}

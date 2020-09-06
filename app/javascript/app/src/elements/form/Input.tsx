@@ -43,6 +43,7 @@ const StyledInput = styled.input(({ theme }) => ({
 
 const StyledLabel = styled.label(({ theme }) => ({
   position: 'absolute',
+  cursor: 'text',
   top: 25,
   left: 10,
   userSelect: 'none',

@@ -20,12 +20,13 @@ export const Collapse = ({
   isOpen,
   color,
   shade = 3,
+  ...props
 }: CollapseProps): ReactElement => {
   const childrenWithExtraProp = React.Children.map(children, child =>
     React.cloneElement(child, { isOpen })
   )
   return (
-    <StyledCollapse color={color} shade={shade}>
+    <StyledCollapse color={color} shade={shade} {...props}>
       {childrenWithExtraProp}
     </StyledCollapse>
   )
@@ -40,6 +41,7 @@ const CollapseHeader = styled.section(({ theme, isOpen }) => ({
   padding: `${theme.spaceScale(2)} 0`,
   marginBottom: isOpen ? theme.spaceScale(2) : '0',
   transition: 'all 300ms ease-in-out',
+  visibility: !isOpen && 'hidden',
 }))
 
 Collapse.Header = ({ children, isOpen }: HeaderProps): ReactElement => (
@@ -49,6 +51,7 @@ Collapse.Header = ({ children, isOpen }: HeaderProps): ReactElement => (
 const CollapseContent = styled.section(({ isOpen }) => ({
   height: '100%',
   maxHeight: isOpen ? '100rem' : '0rem',
+  visibility: !isOpen && 'hidden',
   overflow: 'hidden',
   transition: 'all 300ms ease-in-out',
 }))
