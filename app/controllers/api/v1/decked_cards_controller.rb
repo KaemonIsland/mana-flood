@@ -14,8 +14,8 @@ class Api::V1::DeckedCardsController < ApplicationController
         @sorted_cards = @query.result.by_mana_and_name
   
         @cards = Kaminari.paginate_array(@sorted_cards)
-        .page(params[:page])
-        .per(params[:per_page] || 30)
+        .page(1)
+        .per(300)
         
         render 'api/v1/cards/deck.json.jbuilder', status: 200
       else

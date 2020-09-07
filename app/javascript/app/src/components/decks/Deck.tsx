@@ -8,11 +8,11 @@ import { deckActions, usePopup } from '../../utils'
 import { Stats } from './Stats'
 import { Deck as DeckType } from '../../interface'
 
-const ButtonOptions = styled.div(({ theme }) => ({
-  width: theme.spaceScale(11),
+const ButtonOptions = styled.div(({ theme, isMobile }) => ({
+  width: isMobile ? '100%' : theme.spaceScale(11),
   display: 'grid',
-  gridTemplateColumns: '1fr',
-  gridTemplateRows: 'repeat(2, 1fr)',
+  gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr',
+  gridTemplateRows: isMobile ? '1fr' : 'repeat(2, 1fr)',
   gridGap: theme.spaceScale(2),
 }))
 
@@ -74,22 +74,30 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           <Flex alignItems="center" justifyContent="start">
             {((deck.colors || []).length &&
               deck.colors.map((mana, i) => (
-                <ManaSymbol size="xLarge" key={i} mana={mana} />
+                <ManaSymbol
+                  size={isMobile ? 'medium' : 'xLarge'}
+                  key={i}
+                  mana={mana}
+                />
               ))) ||
               ''}
           </Flex>
-          <Flex alignItems="center" justifyContent="space-between">
+          <Flex
+            direction={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? 'stretch' : 'center'}
+            justifyContent="space-between"
+          >
             <Flex.Item>
               <Text
                 as="h1"
-                size={isMobile || isTablet ? 7 : 10}
+                size={isMobile || isTablet ? 8 : 10}
                 family="source sans"
               >
                 {deck?.name}
               </Text>
             </Flex.Item>
             <Flex.Item>
-              <ButtonOptions>
+              <ButtonOptions isMobile={isMobile}>
                 <Button
                   onClick={(): void => {
                     if (confirm('Are you sure?')) {
@@ -123,7 +131,13 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           </Collapse>
           <hr />
           <Stats stats={deck.stats} />
-          <Cards type="deck" showScope={false} />
+          <Cards
+            imageOnly
+            showPagination={false}
+            showFilter={false}
+            type="deck"
+            showScope={false}
+          />
         </>
       )}
     </Page>

@@ -39,22 +39,24 @@ interface Props {
   showScope?: boolean
   showFilter?: boolean
   imageOnly?: boolean
+  showPagination?: boolean
 }
+
 export const Cards = ({
   type,
   options,
   showScope = true,
   showFilter = true,
   imageOnly = false,
+  showPagination = true,
 }: Props): ReactElement => {
+  const isMobile = useMediaQuery({ maxWidth: 1100 })
   const { currentScope, scopes, updateScope } = useScope()
-  const { actions, cards, pagination, stats } = useCards(
+  const { actions, cards, pagination, stats, isLoading } = useCards(
     type,
     currentScope,
     options
   )
-  const isLoading = !cards.length
-  const isMobile = useMediaQuery({ maxWidth: 1100 })
   const filter = useFilter(actions.get)
 
   const results = `Showing ${30 * (pagination.page - 1) + 1} - 
@@ -67,7 +69,7 @@ export const Cards = ({
 
   return (
     <>
-      <div>{results}</div>
+      {showPagination && <div>{results}</div>}
       <CardsContainer showFilter={showFilter} isMobile={isMobile}>
         <div>
           {showScope && (
@@ -78,7 +80,7 @@ export const Cards = ({
             />
           )}
         </div>
-        <Pagination {...pagination} />
+        {showPagination && <Pagination {...pagination} />}
         {showFilter && <Filter stats={stats} {...filter} />}
         <StyledGrid imageOnly={imageOnly}>
           {isLoading ? (
@@ -94,7 +96,7 @@ export const Cards = ({
           )}
         </StyledGrid>
         <div />
-        <Pagination {...pagination} />
+        {showPagination && <Pagination {...pagination} />}
       </CardsContainer>
     </>
   )

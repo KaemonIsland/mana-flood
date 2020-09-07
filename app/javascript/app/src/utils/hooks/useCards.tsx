@@ -44,6 +44,7 @@ interface Actions {
   cards: Array<Card> | Array<[]>
   pagination: PaginationProps
   stats: CardStats
+  isLoading: boolean
 }
 
 const defaultStats = {
@@ -176,6 +177,7 @@ export const useCards = (
   }, [scope])
 
   return {
+    isLoading,
     actions: {
       get: getCards,
       add: addCard,
