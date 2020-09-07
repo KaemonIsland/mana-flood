@@ -6,6 +6,10 @@ export const deckActions = {
     await request('/api/v1/decks', error => {
       console.log(`Unable to get decks. ${error}`)
     }),
+  get: async (id: number): Promise<Deck> =>
+    await request(`/api/v1/deck/${id}`, error => {
+      console.log(`Unable to get deck. ${error}`)
+    }),
   create: async (deck: any): Promise<Deck> =>
     await request(
       'api/v1/decks',
@@ -19,7 +23,7 @@ export const deckActions = {
     ),
   update: async (id, info): Promise<Deck> =>
     await request(
-      `api/v1/decks/${id}`,
+      `/api/v1/decks/${id}`,
       error => {
         console.log('unable to update deck: ', error)
       },
@@ -31,7 +35,7 @@ export const deckActions = {
 
   delete: async (id: number): Promise<void> =>
     await request(
-      `api/v1/decks/${id}`,
+      `/api/v1/decks/${id}`,
       error => {
         console.log('Unable to remove deck: ', error)
       },

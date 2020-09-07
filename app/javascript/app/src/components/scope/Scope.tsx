@@ -24,6 +24,8 @@ const DropdownContainer = styled.div(({ theme }) => ({
   padding: theme.spaceScale(2),
   borderRadius: theme.spaceScale(2),
   boxShadow: theme.boxShadow.single[2],
+  overflowY: 'scroll',
+  height: theme.spaceScale(12),
   '& > :not(:last-child)': {
     borderBottom: '1px solid black',
   },

@@ -27,7 +27,7 @@ class Api::V1::DecksController < ApplicationController
 
     authorize! :create, @deck
         if @deck.save
-            render json: @deck
+            render 'api/v1/deck/deck.json.jbuilder', status: 200
         else
             render json: { error: 'Unable to create deck' }, status: 422
         end
@@ -36,7 +36,7 @@ class Api::V1::DecksController < ApplicationController
     def update
         authorize! :update, @deck
         if @deck.update(deck_params)
-            render json: @deck
+            render 'api/v1/deck/deck.json.jbuilder', status: 200
         else
             render json: { error: 'Unable to update deck' }, status: 422
         end
@@ -45,7 +45,7 @@ class Api::V1::DecksController < ApplicationController
     def destroy
         authorize! :destroy, @deck
         if @deck.destroy
-            render json: @deck
+            render 'api/v1/deck/deck.json.jbuilder', status: 200
         else
             render json: { error: 'Unable to update deck' }, status: 422
         end

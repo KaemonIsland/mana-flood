@@ -41,7 +41,6 @@ const CollapseHeader = styled.section(({ theme, isOpen }) => ({
   padding: `${theme.spaceScale(2)} 0`,
   marginBottom: isOpen ? theme.spaceScale(2) : '0',
   transition: 'all 300ms ease-in-out',
-  visibility: !isOpen && 'hidden',
 }))
 
 Collapse.Header = ({ children, isOpen }: HeaderProps): ReactElement => (

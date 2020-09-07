@@ -11,7 +11,7 @@ class Api::V1::DeckedCardsController < ApplicationController
 
         @query =@deck.cards.with_color(params[:colors], @deck.cards).ransack(params[:q])
   
-        @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+        @sorted_cards = @query.result.by_mana_and_name
   
         @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])

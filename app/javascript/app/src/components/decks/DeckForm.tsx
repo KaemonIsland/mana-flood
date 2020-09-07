@@ -1,28 +1,15 @@
-import React, { ReactElement, useState, useEffect } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { Button, Flex, Container } from 'warlock-ui'
-import { Deck } from '../../interface'
 import { Form, Input, Textarea, Select } from '../../elements'
+import { Deck } from '../../interface'
 
 interface SubmitCallback {
-  (a: Deck): void
-}
-
-interface CancelUpdate {
-  (): void
-}
-
-interface DeckInfo {
-  id?: number
-  name?: string
-  format?: string
-  description?: string
+  (a: any): void
 }
 
 interface FormProps {
-  updateInfo: DeckInfo
   submitCallback: SubmitCallback
-  cancelUpdate: CancelUpdate
-  disabled: boolean
+  deck?: Deck | null
 }
 
 const formats = [
@@ -48,27 +35,23 @@ const formats = [
  * Otherwise, we will create a new one.
  */
 export const DeckForm = ({
-  updateInfo,
-  cancelUpdate,
   submitCallback,
-  disabled,
+  deck = null,
 }: FormProps): ReactElement => {
   const defaultForm = {
-    name: '',
-    description: '',
-    format: '',
+    name: (deck && deck.name) || '',
+    description: (deck && deck.description) || '',
+    format: (deck && deck.format) || '',
   }
 
-  const [form, setForm] = useState(updateInfo || defaultForm)
+  const [form, setForm] = useState(defaultForm)
 
   const handleSubmit = async (e): Promise<void> => {
-    if (!disabled) {
-      e.preventDefault()
+    e.preventDefault()
 
-      submitCallback(form)
+    submitCallback(form)
 
-      setForm(defaultForm)
-    }
+    setForm(defaultForm)
   }
 
   const handleChange = (e): void => {
@@ -79,14 +62,6 @@ export const DeckForm = ({
       [name]: value,
     }))
   }
-
-  useEffect(() => {
-    if (updateInfo) {
-      setForm(updateInfo)
-    } else {
-      setForm(defaultForm)
-    }
-  }, [updateInfo])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -116,34 +91,21 @@ export const DeckForm = ({
         hint="What format will this be played in?"
       />
       <Flex alignItems="center" justifyContent="flex-end">
-        {updateInfo && (
-          <Container marginRight={4}>
-            <Button
-              color="red"
-              shade={6}
-              variant="text"
-              size="large"
-              onClick={cancelUpdate}
-            >
-              Cancel
-            </Button>
-          </Container>
-        )}
         <Container marginRight={4}>
           <Button
             color="grey"
             shade={6}
             variant="text"
             size="large"
-            onClick={() => setForm(updateInfo || defaultForm)}
+            onClick={() => setForm(defaultForm)}
           >
-            {updateInfo ? 'Reset' : 'Clear'}
+            Clear
           </Button>
         </Container>
         <Button
           color="purple"
           size="large"
-          isDisabled={disabled || !form.name}
+          isDisabled={!form.name}
           shade={4}
           type="submit"
         >
