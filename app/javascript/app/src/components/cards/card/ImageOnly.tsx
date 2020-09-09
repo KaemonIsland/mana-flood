@@ -115,6 +115,7 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
           </Button.Icon>
         </Link>
         <ActionButtons
+          collection={scope === 'deck' ? card?.collection : null}
           quantity={quantity}
           actions={{ updateCard, removeCard, addCard }}
         />

@@ -214,6 +214,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
               </Container>
               <div>
                 <ActionButtons
+                  collection={scope === 'deck' ? card?.collection : null}
                   quantity={quantity}
                   actions={{ updateCard, removeCard, addCard }}
                 />

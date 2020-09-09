@@ -131,6 +131,8 @@ export const Full = ({ id }: Props): ReactElement => {
     usdFoil: 0,
   })
 
+  // TODO add scope!
+
   const [
     {
       power,
@@ -313,6 +315,7 @@ export const Full = ({ id }: Props): ReactElement => {
                     Collection
                   </Text>
                   <ActionButtons
+                    collection={card?.collection || null}
                     quantity={quantity}
                     actions={{ updateCard, addCard, removeCard }}
                   />
