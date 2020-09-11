@@ -12,7 +12,8 @@ import {
   toCamelcase,
   cardActions,
 } from '../../../utils'
-import { Page } from '../../page'
+import { Scope } from '../../'
+import { useScope } from '../../../providers'
 import { Ruling, Card } from '../../../interface'
 import { ActionButtons } from '../../buttons'
 
@@ -123,6 +124,8 @@ const defaultCard: Card = {
 export const Full = ({ id }: Props): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 650 })
   const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
+  const { currentScope, scopes, updateScope } = useScope()
+  const scope = typeof currentScope === 'string' ? 'collection' : 'deck'
   const [img, setImg] = useState('')
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -130,8 +133,6 @@ export const Full = ({ id }: Props): ReactElement => {
     usd: 0,
     usdFoil: 0,
   })
-
-  // TODO add scope!
 
   const [
     {
@@ -155,8 +156,9 @@ export const Full = ({ id }: Props): ReactElement => {
     setCard,
   ] = useState(defaultCard)
 
-  const quantity = deck && deck >= 0 ? deck : collection
-  const { add, update, remove } = cardActions['collection']
+  const quantity = scope === 'collection' ? collection : deck
+
+  const { add, update, remove } = cardActions[scope]
 
   const getVariationInfo = async (card: Card): Promise<void> => {
     let newVariations = card.variations
@@ -256,7 +258,7 @@ export const Full = ({ id }: Props): ReactElement => {
   }
 
   return (
-    <Page>
+    <>
       {!isLoading ? (
         <Grid
           justifyContent="center"
@@ -310,12 +312,14 @@ export const Full = ({ id }: Props): ReactElement => {
           <Grid.Item area="actions">
             <CardInfo>
               <Container marginBottom={5}>
-                <Flex alignItems="start" justifyContent="space-between">
-                  <Text family="roboto" size={5}>
-                    Collection
-                  </Text>
+                <Flex alignItems="start">
+                  <Scope
+                    currentScope={currentScope}
+                    scopes={scopes}
+                    updateScope={updateScope}
+                  />
                   <ActionButtons
-                    collection={card?.collection || null}
+                    collection={scope !== 'collection' ? collection : null}
                     quantity={quantity}
                     actions={{ updateCard, addCard, removeCard }}
                   />
@@ -468,6 +472,6 @@ export const Full = ({ id }: Props): ReactElement => {
       ) : (
         <h1>...Loading</h1>
       )}
-    </Page>
+    </>
   )
 }
