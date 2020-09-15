@@ -5,7 +5,12 @@ import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
 import { ManaSymbol, Feather } from '../../icon'
 import { Dropdown } from '../../Dropdown'
-import { useDropdown, getCardImage } from '../../../utils'
+import {
+  useDropdown,
+  getCardImage,
+  getManaCost,
+  uniqueColors,
+} from '../../../utils'
 import { Card } from '../../../interface'
 import { useToasts } from '../../../providers'
 
@@ -25,22 +30,21 @@ const cardColors = {
  * Builds a linear gradient based off of the card colors
  *
  * @param {object} theme - the theme used for styled-components
- * @param {set} colors - A set of cards colors. We use a set to prevent duplicates
+ * @param {set} colors - A, array of cards colors. We use a set to prevent duplicates
  *
  * @returns formatted linear-gradient string used for a css background
  */
-const buildCardColors = (theme, colors: Set<string>): string => {
+const buildCardColors = (theme, colors: Array<string>): string => {
   const backgroundColor = []
 
-  // We use use size because colors is a set
-  if (colors.size === 0) {
+  if (colors.length === 0) {
     backgroundColor.push(
       `${theme.color[cardColors['A'].color][cardColors['A'].shade]}`
     )
     backgroundColor.push(
       `${theme.color[cardColors['A'].color][cardColors['A'].shade + 2]}`
     )
-  } else if (colors.size >= 3) {
+  } else if (colors.length >= 3) {
     backgroundColor.push(
       `${theme.color[cardColors['M'].color][cardColors['M'].shade]}`
     )
@@ -163,22 +167,11 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     setQuantity(0)
   }
 
-  // Formats the cards mana cost for us to easily use mana symbol SVGs
-  const formattedMana: Array<string> = manaCost
-    .replace(/[{ | }]/g, ' ')
-    .replace(/\//g, '')
-    .split(' ')
-    .filter(Boolean)
+  // Mana without brackets
+  const formattedMana = getManaCost(manaCost)
 
-  // Further changes the formatted mana to generate the cards colors in mana order
-  // A set is used to prevent duplicates
-  const cardColors: Set<string> = new Set(
-    formattedMana
-      .filter(char => isNaN(Number(char)) && char !== 'X')
-      .map(char => (char.length >= 2 && char.split('')) || char)
-      .flat()
-      .filter(Boolean)
-  )
+  // Unique mana colors for card theming
+  const cardColors = uniqueColors(formattedMana)
 
   const handleCardImage = async () => {
     const cardUrl = await getCardImage(scryfallId, 'normal')
@@ -200,7 +193,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
       <div>
         <CardContainer
           ref={triggerProps.ref}
-          color={isLand ? new Set(colorIdentity) : cardColors}
+          color={isLand ? colorIdentity : cardColors}
         >
           <InnerCard>
             <Flex justifyContent="space-between" alignItems="start">

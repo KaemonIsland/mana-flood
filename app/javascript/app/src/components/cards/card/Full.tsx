@@ -11,6 +11,7 @@ import {
   formatDate,
   toCamelcase,
   cardActions,
+  getManaCost,
 } from '../../../utils'
 import { Scope } from '../../'
 import { useScope } from '../../../providers'
@@ -219,12 +220,7 @@ export const Full = ({ id }: Props): ReactElement => {
     setIsLoading(false)
   }
 
-  // Formats the cards mana cost for us to easily use mana symbol svgs
-  const formattedMana = manaCost
-    .replace(/[{ | }]/g, ' ')
-    .replace(/\//g, '')
-    .split(' ')
-    .filter(Boolean)
+  const formattedMana = getManaCost(manaCost)
 
   useEffect(() => {
     initialize()
