@@ -3,6 +3,10 @@ import { request } from '../utils'
 
 export const cardActions = {
   collection: {
+    card: async (id: number): Promise<Card> =>
+      await request(`/api/v1/card/${id}`, error => {
+        console.log('Unable to get card: ', error)
+      }),
     search: async (query: URLSearchParams): Promise<Array<Card>> =>
       await request(
         '/api/v1/search',
@@ -72,6 +76,10 @@ export const cardActions = {
       ),
   },
   deck: {
+    card: async (id: number, deckId: number): Promise<Card> =>
+      await request(`card/${id}/deck/${deckId}`, error => {
+        console.log('Unable to get card: ', error)
+      }),
     search: async (
       query: URLSearchParams,
       deckId: number

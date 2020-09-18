@@ -1,7 +1,6 @@
 import React, { ReactElement, useState, useEffect } from 'react'
-import axios from 'axios'
 import { Page, Full } from '../components'
-import { getCard as getScryfallCard, getCardImage, toCamelcase } from '../utils'
+import { getCard as getScryfallCard, getCardImage, cardActions } from '../utils'
 import { Card as CardInterface } from '../interface'
 
 const defaultCard: CardInterface = {
@@ -44,22 +43,6 @@ export const Card = ({ id }: Props): ReactElement => {
     usdFoil: 0,
   })
 
-  const getCard = async (): Promise<CardInterface> => {
-    try {
-      const response = await axios(`/api/v1/card/${id}`)
-
-      const cardData: CardInterface = toCamelcase(response.data)
-
-      if (cardData) {
-        return cardData
-      } else {
-        throw new Error()
-      }
-    } catch (error) {
-      console.log('Unable to get card: ', error)
-    }
-  }
-
   const getVariationInfo = async (card: CardInterface): Promise<void> => {
     let newVariations = card.variations
     if (newVariations) {
@@ -75,7 +58,7 @@ export const Card = ({ id }: Props): ReactElement => {
   }
 
   const initialize = async (): Promise<void> => {
-    const newCard: CardInterface = await getCard()
+    const newCard: CardInterface = await cardActions.collection.card(id)
     const scryfallCard = await getScryfallCard(newCard.scryfallId)
 
     const cardUrl = scryfallCard.imageUris && scryfallCard.imageUris.large
