@@ -17,8 +17,18 @@ export const cardActions = {
           params: query,
         }
       ),
+    all: async (query: URLSearchParams): Promise<Array<CardSet>> =>
+      await request(
+        '/api/v1/collection',
+        error => {
+          console.log('Unable to get cards: ', error)
+        },
+        {
+          params: query,
+        }
+      ),
     sets: async (): Promise<Array<CardSet>> =>
-      await request('/api/v1/collection', error => {
+      await request('/api/v1/collection/sets', error => {
         console.log('Unable to get cards: ', error)
       }),
     collection: async (query: URLSearchParams, id: number): Promise<void> =>

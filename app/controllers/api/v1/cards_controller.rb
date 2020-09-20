@@ -32,7 +32,7 @@ class Api::V1::CardsController < ApplicationController
       .page(params[:page])
       .per(params[:per_page] || 30)
 
-    render 'api/v1/cards/search.json.jbuilder', status: 200
+    render 'api/v1/cards/cards.json.jbuilder', status: 200
 end
 
   def search_with_deck
@@ -48,7 +48,7 @@ end
       .page(params[:page])
       .per(params[:per_page] || 30)
 
-    render 'api/v1/cards/search.json.jbuilder', status: 200
+    render 'api/v1/cards/cards.json.jbuilder', status: 200
   end
 
   private

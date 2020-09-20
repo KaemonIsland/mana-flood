@@ -5,4 +5,7 @@ class CollectionController < ApplicationController
   def show
     @cardSet = CardSet.find(params[:id])
   end
+
+  def all
+  end
 end

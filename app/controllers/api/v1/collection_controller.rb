@@ -1,8 +1,7 @@
 class Api::V1::CollectionController < ApplicationController
   respond_to :json
 
-  def index
-
+  def sets
     if current_user
       @collection = current_user.collection
       @card_sets = CardSet.find(current_user.collection.sets).sort_by(&:release_date).reverse

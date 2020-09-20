@@ -5,6 +5,26 @@ class Api::V1::CollectedCardsController < ApplicationController
   before_action :load_collected_card, only: [:update, :destroy]
   respond_to :json
 
+  def index
+    if current_user
+      @collection = current_user.collection
+
+      @query = @collection.cards.with_color(params[:colors], @collection.cards).ransack(params[:q])
+
+      @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
+
+      @stats = Card.card_stats(@collection.cards)
+
+      @cards = Kaminari.paginate_array(@sorted_cards)
+      .page(params[:page])
+      .per(params[:per_page] || 30)
+
+      render 'api/v1/cards/cards.json.jbuilder', status: 200
+    else
+      render json: { error: 'User must be signed in' }, status: 401
+    end
+  end
+
   def collection
     if current_user
       @query = @collection.with_set_cards(params[:id]).with_color(params[:colors], @collection.with_set_cards(params[:id])).ransack(params[:q])
