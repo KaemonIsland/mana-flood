@@ -12,7 +12,7 @@ import { Deck } from '../interface'
 import axios from 'axios'
 
 const ScopeContext = createContext({
-  update: (id: string | number, options = {}): void => null,
+  update: (id: string | number): void => null,
   scopes: [],
   currentScope: '',
 })
@@ -39,6 +39,20 @@ interface ScopeProviderProps {
   children: ReactChildren | ReactChild
 }
 
+const prefix = 'mana-flood::'
+
+const setStorage = (key: string, val: any): void => {
+  const formattedVal = typeof val === 'object' ? JSON.stringify(val) : val
+
+  window.localStorage.setItem(`${prefix}${key}`, formattedVal)
+}
+
+const getStorage = (key: string): any => {
+  const val = window.localStorage.getItem(`${prefix}${key}`)
+
+  return typeof val === 'object' ? JSON.parse(val) : val
+}
+
 /**
  * Scope context provider
  * This is used to determine where cards should be added.
@@ -47,8 +61,9 @@ export const ScopeProvider = ({
   defaultScope,
   children,
 }: ScopeProviderProps): ReactElement => {
-  const [currentScope, setCurrentScope] = useState(defaultScope || 'collection')
-  const [scopes, setScopes] = useState([])
+  const currentScope = getStorage('scope') || defaultScope
+  const scopes = getStorage('scopes') || []
+  const url = getStorage('url')
   const [isLoading, setIsLoading] = useState(true)
 
   // Adds new toast to toast list
@@ -58,7 +73,7 @@ export const ScopeProvider = ({
 
       if (response.data) {
         // adds new toast to toasts
-        setScopes(toCamelcase(response.data))
+        setStorage('scopes', JSON.stringify(toCamelcase(response.data)))
       }
     } catch (error) {
       console.log('Unable to get Decks', error)
@@ -71,19 +86,23 @@ export const ScopeProvider = ({
     const scopeId = Number(id)
 
     if (!scopeId) {
-      setCurrentScope('Collection')
+      setStorage('scope', 'Collection')
     } else {
       const newScope = scopes.find(scope => scope.id === scopeId)
 
       if (newScope) {
-        setCurrentScope(newScope)
+        setStorage('scope', newScope)
       }
     }
   }
 
+  const initialize = () => {
+    getDecks()
+  }
+
   useEffect(() => {
     if (isLoading) {
-      getDecks()
+      initialize()
     }
   }, [isLoading])
 
