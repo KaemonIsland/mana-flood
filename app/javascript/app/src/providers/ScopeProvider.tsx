@@ -50,7 +50,12 @@ const setStorage = (key: string, val: any): void => {
 const getStorage = (key: string): any => {
   const val = window.localStorage.getItem(`${prefix}${key}`)
 
-  return typeof val === 'object' ? JSON.parse(val) : val
+  try {
+    return JSON.parse(val)
+  } catch (error) {
+    // Could not parse value
+    return val
+  }
 }
 
 /**
@@ -61,19 +66,23 @@ export const ScopeProvider = ({
   defaultScope,
   children,
 }: ScopeProviderProps): ReactElement => {
-  const currentScope = getStorage('scope') || defaultScope
-  const scopes = getStorage('scopes') || []
-  const url = getStorage('url')
   const [isLoading, setIsLoading] = useState(true)
+  const [url, setUrl] = useState(getStorage('url'))
+  const [scopes, setScopes] = useState(getStorage('scopes') || [])
+  const [currentScope, setCurrentScope] = useState(
+    getStorage('scope') || defaultScope
+  )
 
-  // Adds new toast to toast list
+  // Fetches and adds user decklist to scopes
   const getDecks = async (): Promise<void> => {
     try {
       const response = await axios('/api/v1/decks')
 
       if (response.data) {
-        // adds new toast to toasts
-        setStorage('scopes', JSON.stringify(toCamelcase(response.data)))
+        const decks = toCamelcase(response.data)
+        // Sets decklist to scopes
+        setScopes(decks)
+        setStorage('scopes', decks)
       }
     } catch (error) {
       console.log('Unable to get Decks', error)
@@ -86,11 +95,15 @@ export const ScopeProvider = ({
     const scopeId = Number(id)
 
     if (!scopeId) {
+      // sets scope to collection
+      setCurrentScope('Collection')
       setStorage('scope', 'Collection')
     } else {
-      const newScope = scopes.find(scope => scope.id === scopeId)
+      const newScope = scopes.find((scope) => scope.id === scopeId)
 
       if (newScope) {
+        // Updates current scope
+        setCurrentScope(newScope)
         setStorage('scope', newScope)
       }
     }
@@ -98,6 +111,17 @@ export const ScopeProvider = ({
 
   const initialize = () => {
     getDecks()
+    const pathname = window.location.pathname
+
+    if (url !== pathname) {
+      // Updates URL
+      setUrl(pathname)
+      setStorage('url', pathname)
+
+      // Updates Scope
+      setCurrentScope(defaultScope || 'Collection')
+      setStorage('scope', defaultScope || 'Collection')
+    }
   }
 
   useEffect(() => {
