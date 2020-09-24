@@ -45,6 +45,7 @@ export const Collection = (): ReactElement => {
   return (
     <Page>
       <Text size={10}>Collection</Text>
+      <div>Export Collection</div>
       <hr />
       <SetContainer href="/collection/all">
         <Text size={4} weight={500}>
