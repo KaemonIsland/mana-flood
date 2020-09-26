@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import { Text } from 'warlock-ui'
 import styled from 'styled-components'
-import { cardActions } from '../utils'
+import { cardActions, formatDate } from '../utils'
 import { Page, Sets } from '../components'
 
 const SetContainer = styled.a(({ theme }) => ({
@@ -45,7 +45,14 @@ export const Collection = (): ReactElement => {
   return (
     <Page>
       <Text size={10}>Collection</Text>
-      <a href="/api/v1/export_collection" download="collection.json">
+      <a
+        href="/api/v1/export_collection"
+        download={`mtg_collection_${formatDate(new Date(), {
+          month: 'numeric',
+          day: 'numeric',
+          year: 'numeric',
+        })}.json`}
+      >
         Export Collection
       </a>
       <hr />

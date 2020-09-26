@@ -4,6 +4,9 @@ class Api::V1::CollectionController < ApplicationController
   def export_collection
     if current_user
       @collection = current_user.collection
+      @cards = @collection.cards
+
+      render 'api/v1/cards/export.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end
