@@ -17,12 +17,15 @@ Rails.application.routes.draw do
       # Crud operations for users card collection
       get 'collection', to: 'collected_cards#index'
       get 'collection/sets', to: 'collection#sets'
-      get 'export_collection', to: 'collection#export_collection'
       get 'collection/set/:id', to: 'collected_cards#collection'
       get 'collection/set/:id/deck/:deck_id', to: 'collected_cards#deck'
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
+      
+      # Import & Export routes
+      get 'collection/export', to: 'collection#export'
+      post 'collection/import', to: 'collection#import'
 
       # Route for user Decks
       get 'decks', to: 'decks#index'

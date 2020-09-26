@@ -1,8 +1,16 @@
-import React, { useState, useEffect, ReactElement } from 'react'
-import { Text } from 'warlock-ui'
+import React, {
+  useState,
+  useEffect,
+  ReactElement,
+  FormEvent,
+  useRef,
+} from 'react'
+import { Text, Button } from 'warlock-ui'
 import styled from 'styled-components'
+import axios from 'axios'
 import { cardActions, formatDate } from '../utils'
-import { Page, Sets } from '../components'
+import { Page, Sets, Collapse } from '../components'
+import { Form, File } from '../elements'
 
 const SetContainer = styled.a(({ theme }) => ({
   display: 'block',
@@ -38,6 +46,23 @@ export const Collection = (): ReactElement => {
     setCardSets(sets)
   }
 
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
+    const file = fileInput.current && fileInput.current.files[0]
+    const content = file && JSON.parse(await file.text())
+
+    await axios.post('/api/v1/collection/import', {
+      cards: content.cards,
+    })
+  }
+
+  const handleChange = async e => {
+    const file = e.files[0]
+    const content = file && JSON.parse(await file.text())
+
+    console.log({ file, content })
+  }
+
   useEffect(() => {
     getCollectionSets()
   }, [])
@@ -46,7 +71,7 @@ export const Collection = (): ReactElement => {
     <Page>
       <Text size={10}>Collection</Text>
       <a
-        href="/api/v1/export_collection"
+        href="/api/v1/collection/export"
         download={`mtg_collection_${formatDate(new Date(), {
           month: 'numeric',
           day: 'numeric',
@@ -55,6 +80,22 @@ export const Collection = (): ReactElement => {
       >
         Export Collection
       </a>
+      <Collapse isOpen={true}>
+        <Collapse.Content>
+          <Form onSubmit={handleSubmit}>
+            <File
+              onChange={handleChange}
+              label="Import Collection"
+              name="collectionImport"
+              accept="application/json"
+              hint="Import a collection to Mana Flood"
+            />
+            <Button type="submit" color="purple" shade={4}>
+              Submit
+            </Button>
+          </Form>
+        </Collapse.Content>
+      </Collapse>
       <hr />
       <SetContainer href="/collection/all">
         <Text size={4} weight={500}>

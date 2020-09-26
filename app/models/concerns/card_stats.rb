@@ -80,6 +80,7 @@ module CardStats
         # Card types, they have been stringified so we must parse them
         card_types = JSON.parse(card.card_types)
         types = stats[:types]
+        card_subTypes = card.subtypes.kind_of?(Array) ? card.subtypes : JSON.parse(card.subtypes)
 
 
         # Counts the card types
@@ -92,7 +93,7 @@ module CardStats
           
   
             # Counts the card subTypes
-            card.subtypes.each do |subtype|
+            card_subTypes.each do |subtype|
               lower_subtype = subtype.downcase().to_sym
 
               if types[lower_type] && types[lower_type][:subtypes] && types[lower_type][:subtypes][lower_subtype]
