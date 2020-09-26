@@ -11,7 +11,7 @@
     "@reach/rect": "0.9.0",
     "@types/react": "16.9.49",
     "@types/react-dom": "16.9.8",
-    "axios": "0.19.2",
+    "axios": "0.20.0",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
     "cross-fetch": "3.0.6",
     "feather-icons": "4.28.0",
