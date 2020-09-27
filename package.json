@@ -29,7 +29,7 @@
     "ts-loader": "6.2.2",
     "turbolinks": "5.2.0",
     "typescript": "3.9.7",
-    "uuid": "7.0.3",
+    "uuid": "8.3.0",
     "warlock-ui": "0.3.0"
   },
   "scripts": {
