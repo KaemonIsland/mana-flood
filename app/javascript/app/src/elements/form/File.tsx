@@ -72,8 +72,6 @@ export const File = ({
   const inputRef = useRef(null)
   const [file, setFile] = useState(null)
 
-  // TODO Add function to clear input
-
   return (
     <InputContainer disabled={disabled}>
       <StyledInput

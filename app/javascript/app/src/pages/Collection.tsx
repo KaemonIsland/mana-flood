@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  ReactElement,
-  FormEvent,
-  useRef,
-} from 'react'
-import { Text, Button } from 'warlock-ui'
+import React, { useState, useEffect, ReactElement, FormEvent } from 'react'
+import { Text, Button, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import axios from 'axios'
 import { cardActions, formatDate } from '../utils'
@@ -39,6 +33,8 @@ const SetContainer = styled.a(({ theme }) => ({
 
 export const Collection = (): ReactElement => {
   const [cardSets, setCardSets] = useState([])
+  const [importContent, setImportContent] = useState(null)
+  const [showOptions, setShowOptions] = useState(false)
 
   const getCollectionSets = async (): Promise<void> => {
     const sets = await cardActions.collection.sets()
@@ -48,11 +44,9 @@ export const Collection = (): ReactElement => {
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
-    const file = fileInput.current && fileInput.current.files[0]
-    const content = file && JSON.parse(await file.text())
 
     await axios.post('/api/v1/collection/import', {
-      cards: content.cards,
+      cards: importContent.cards,
     })
   }
 
@@ -60,7 +54,7 @@ export const Collection = (): ReactElement => {
     const file = e.files[0]
     const content = file && JSON.parse(await file.text())
 
-    console.log({ file, content })
+    setImportContent(content)
   }
 
   useEffect(() => {
@@ -69,18 +63,35 @@ export const Collection = (): ReactElement => {
 
   return (
     <Page>
-      <Text size={10}>Collection</Text>
-      <a
-        href="/api/v1/collection/export"
-        download={`mtg_collection_${formatDate(new Date(), {
-          month: 'numeric',
-          day: 'numeric',
-          year: 'numeric',
-        })}.json`}
-      >
-        Export Collection
-      </a>
-      <Collapse isOpen={true}>
+      <Flex alignItems="end" justifyContent="space-between">
+        <Text size={10}>Collection</Text>
+        <div>
+          <Flex>
+            <Button
+              color="grey"
+              shade={1}
+              as="a"
+              href="/api/v1/collection/export"
+              download={`mtg_collection_${formatDate(new Date(), {
+                month: 'numeric',
+                day: 'numeric',
+                year: 'numeric',
+              })}.json`}
+              style={{ textDecoration: 'none', marginRight: '1rem' }}
+            >
+              Export
+            </Button>
+            <Button
+              color="grey"
+              shade={1}
+              onClick={() => setShowOptions(!showOptions)}
+            >
+              Import
+            </Button>
+          </Flex>
+        </div>
+      </Flex>
+      <Collapse isOpen={showOptions}>
         <Collapse.Content>
           <Form onSubmit={handleSubmit}>
             <File
@@ -90,9 +101,16 @@ export const Collection = (): ReactElement => {
               accept="application/json"
               hint="Import a collection to Mana Flood"
             />
-            <Button type="submit" color="purple" shade={4}>
-              Submit
-            </Button>
+            <Flex justifyContent="flex-end">
+              <Button
+                type="submit"
+                disabled={!importContent}
+                color="purple"
+                shade={4}
+              >
+                Submit
+              </Button>
+            </Flex>
           </Form>
         </Collapse.Content>
       </Collapse>
