@@ -174,7 +174,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   const cardColors = uniqueColors(formattedMana)
 
   const handleCardImage = async () => {
-    const cardUrl = await getCardImage(scryfallId, 'normal')
+    const cardUrl = await getCardImage(scryfallId, 'normal', name)
     setCardImg(cardUrl)
   }
 

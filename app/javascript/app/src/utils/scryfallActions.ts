@@ -30,10 +30,11 @@ export const getCard = async (id): Promise<Card> => {
  *
  * @param {string} id - scryfall unique id
  * @param {string} size - can be small, normal or large
+ * @param {string} name - the card name used to identify card faces, if exist
  *
  * @returns card image url
  */
-export const getCardImage = async (id, size = 'medium') => {
+export const getCardImage = async (id, size = 'medium', name = ''): Promise<string> => {
   try {
     const response = await axios(`https://api.scryfall.com/cards/${id}`)
 
@@ -41,9 +42,22 @@ export const getCardImage = async (id, size = 'medium') => {
 
     const formatted = toCamelcase(data)
 
-    const cardUrl = formatted.imageUris && formatted.imageUris[size]
+    let images
 
-    return cardUrl
+    if (formatted.imageUris) {
+      images = formatted.imageUris
+    } else if (formatted.cardFaces) {
+      const card = formatted.cardFaces.find(cardFace => 
+      cardFace.name.toLowerCase() === name.toLowerCase()
+      )
+      images = card.imageUris
+    }
+
+    if (images) {
+      return images[size] || images.first
+    } else {
+      return ''
+    }
   } catch (error) {
     console.log('Unable to fetch card', error)
   }

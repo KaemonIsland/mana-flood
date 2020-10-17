@@ -94,7 +94,7 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
   }
 
   const handleCardImage = async () => {
-    const cardUrl = await getCardImage(scryfallId, 'normal')
+    const cardUrl = await getCardImage(scryfallId, 'normal', name)
     setCardImg(cardUrl)
   }
 

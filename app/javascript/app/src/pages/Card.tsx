@@ -49,7 +49,7 @@ export const Card = ({ id }: Props): ReactElement => {
       newVariations = await Promise.all(
         card.variations.map(async variant => ({
           ...variant,
-          imgUrl: await getCardImage(variant.scryfallId, 'large'),
+          imgUrl: await getCardImage(variant.scryfallId, 'large', card.name),
         }))
       )
     }
