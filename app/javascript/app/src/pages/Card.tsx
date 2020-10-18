@@ -60,13 +60,12 @@ export const Card = ({ id }: Props): ReactElement => {
   const initialize = async (): Promise<void> => {
     const newCard: CardInterface = await cardActions.collection.card(id)
     const scryfallCard = await getScryfallCard(newCard.scryfallId)
-
-    const cardUrl = scryfallCard.imageUris && scryfallCard.imageUris.large
+    const cardImg = await getCardImage(newCard.scryfallId, 'large', newCard.name)
 
     getVariationInfo(newCard)
 
     setCard(newCard)
-    setImg(cardUrl)
+    setImg(cardImg)
     setPrices(scryfallCard.prices)
 
     setIsLoading(false)

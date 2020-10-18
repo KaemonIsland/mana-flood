@@ -64,7 +64,7 @@ end
   def set_variations
     @variations = []
 
-    if !@card.variations.nil?
+    unless @card.variations.blank?
       @card.variations.each do |variation|
         variant = Card.find_by({ uuid: variation })
 

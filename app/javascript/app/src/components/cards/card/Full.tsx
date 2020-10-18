@@ -329,7 +329,7 @@ export const Full = ({
               alignItems="center"
               justifyContent={isMobile || isTablet ? 'center' : 'start'}
             >
-              {Object.entries(legalities).map(([title, legal], i) => {
+              {Object.entries(JSON.parse(legalities)).map(([title, legal], i) => {
                 const isLegal = legal === 'Legal'
                 return (
                   <StyledLegal key={i}>
@@ -364,10 +364,10 @@ export const Full = ({
           </Flex>
         </Grid.Item>
       )}
-      {Object.values(rulings).length > 0 && (
+      {Object.values(JSON.parse(rulings)).length > 0 && (
         <Grid.Item area="rules">
           <RulesContainer>
-            {Object.values(rulings).map(({ date, text }: Ruling, i) => (
+            {Object.values(JSON.parse(rulings)).map(({ date, text }: Ruling, i) => (
               <StyledRule key={i}>
                 <Text isItalics color="grey" size={2} shade={6}>
                   {formatDate(date, {})}

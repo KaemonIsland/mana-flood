@@ -1,7 +1,7 @@
 # Returns all card attributes
 json.(@card, *@card.attributes.keys)
 
-if !@variations.nil?
+if !@variations.blank?
   json.variations @variations
 end
 

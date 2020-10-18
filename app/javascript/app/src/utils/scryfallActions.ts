@@ -50,7 +50,7 @@ export const getCardImage = async (id, size = 'medium', name = ''): Promise<stri
       const card = formatted.cardFaces.find(cardFace => 
       cardFace.name.toLowerCase() === name.toLowerCase()
       )
-      images = card.imageUris
+      images = card && card.imageUris || ''
     }
 
     if (images) {
