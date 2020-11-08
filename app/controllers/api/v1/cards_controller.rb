@@ -65,7 +65,9 @@ end
     @variations = []
 
     unless @card.variations.blank?
-      @card.variations.each do |variation|
+      @cardVariations = JSON.parse(@card.variations)
+
+      @cardVariations.each do |variation|
         variant = Card.find_by({ uuid: variation })
 
         @variations << { id: variant.id, uuid: variation, scryfall_id: variant.scryfall_id }

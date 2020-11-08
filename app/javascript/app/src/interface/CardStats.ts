@@ -1,4 +1,5 @@
 interface Colors {
+  total: number
   W: number
   U: number
   B: number

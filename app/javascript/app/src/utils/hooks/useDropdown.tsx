@@ -51,7 +51,7 @@ export const useDropdown = () => {
     isOpen,
     role: 'menu',
     id: dropdownId.current,
-    ariaLabelledby: triggerRef,
+    ariaLabelledby: dropdownId.current,
     triggerRect,
     triggerRef,
     close,

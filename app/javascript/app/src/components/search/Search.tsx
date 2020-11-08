@@ -23,15 +23,28 @@ const searchSettings = {
   rarity: 'rarity_in',
 }
 
+const defaultForm = {
+  colors: null,
+  rarity: null,
+  cardName: null,
+  cardText: null,
+  cardType: null,
+  manaCost: null,
+  flavorText: null,
+  artist: null
+}
+
 export const Search = ({ callback }: SearchProps): ReactElement => {
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const [form, setForm] = useState({})
+  const [form, setForm] = useState(defaultForm)
 
   const buildQuery = () => {
     const query = new URLSearchParams()
 
     Object.entries(form).forEach(([key, value]) => {
-      if (key === 'colors') {
+      if (!value) {
+        // Do nothing for null values
+      } else if (key === 'colors') {
         query.append('colors', String(form.colors))
       } else if (key === 'rarity') {
         form.rarity.forEach(rareVal => {
@@ -52,7 +65,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
 
     callback(query)
 
-    setForm({})
+    setForm(defaultForm)
   }
 
   const handleTextChange = e => {
@@ -92,6 +105,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
       />
       <Collapse isOpen={showAdvanced}>
         <Collapse.Content>
+        <>
           <Checkbox
             label="Colors"
             onChange={handleCheckboxChange}
@@ -162,6 +176,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             onChange={handleTextChange}
             value={form?.flavorText || ''}
           />
+          </>
         </Collapse.Content>
       </Collapse>
       <Flex alignItems="center" justifyContent="flex-end">
@@ -182,7 +197,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             shade={6}
             variant="text"
             size="large"
-            onClick={() => setForm({})}
+            onClick={() => setForm(defaultForm)}
           >
             Clear
           </Button>

@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { ReactElement, ReactChild } from 'react'
+import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 
 const StyledCollapse = styled.div(({ theme, color, shade }) => ({
@@ -9,7 +9,7 @@ const StyledCollapse = styled.div(({ theme, color, shade }) => ({
 }))
 
 interface CollapseProps {
-  children: Array<ReactChild> | ReactChild
+  children: ReactElement
   isOpen: boolean
   color?: string
   shade?: number
@@ -33,7 +33,7 @@ export const Collapse = ({
 }
 
 interface HeaderProps {
-  children: Array<ReactChild> | ReactChild
+  children: ReactElement
   isOpen?: boolean
 }
 
@@ -56,7 +56,7 @@ const CollapseContent = styled.section(({ isOpen }) => ({
 }))
 
 interface ContentProps {
-  children: Array<ReactChild> | ReactChild
+  children: ReactElement
   isOpen?: boolean
 }
 

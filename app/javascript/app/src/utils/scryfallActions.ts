@@ -1,6 +1,14 @@
 import axios from 'axios'
 import { toCamelcase } from '../utils'
-import { Card } from '../../../mtgJsonApi/cardInterface'
+
+interface Prices {
+  usd: number
+  usdFoil: number
+}
+
+interface ScryfallCard {
+  prices?: Prices
+}
 
 /**
  * Gets a card information from Scryfall
@@ -10,7 +18,7 @@ import { Card } from '../../../mtgJsonApi/cardInterface'
  *
  * @returns card image url
  */
-export const getCard = async (id): Promise<Card> => {
+export const getCard = async (id): Promise<ScryfallCard> => {
   try {
     const response = await axios(`https://api.scryfall.com/cards/${id}`)
 

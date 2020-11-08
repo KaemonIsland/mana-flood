@@ -7,6 +7,10 @@ const StyledSvg = styled.div(({ theme, size }) => ({
   width: theme.spaceScale(size),
 }))
 
+interface Theme {
+  color: any
+}
+
 interface FeatherProps {
   icon: string
   color?: string
@@ -34,7 +38,7 @@ export const Feather = ({
     large: 7,
     xLarge: 8,
   }
-  const theme = useContext(ThemeContext)
+  const theme: Theme = useContext(ThemeContext)
 
   /**
    * Obtains the svg string from feather-icons

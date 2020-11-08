@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useCallback,
   ReactElement,
-  RefObject,
+  MutableRefObject,
 } from 'react'
 import FocusLock from 'react-focus-lock'
 import styled from 'styled-components'
@@ -60,12 +60,12 @@ interface Close {
 interface DropdownProps {
   isPaddingless: boolean
   children: Array<ReactElement> | ReactElement
-  zIndex: number
+  zIndex?: number
   isOpen: boolean
   role: string
   ariaLabelledby: string
-  triggerRect: number
-  triggerRef: RefObject<ReactElement>
+  triggerRect: any
+  triggerRef: MutableRefObject<any>
   close: Close
   id: number
 }

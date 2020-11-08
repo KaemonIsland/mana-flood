@@ -23,8 +23,8 @@ export interface Card {
   toughness: number
   cardType: string
   artist: string
-  rulings: Array<Ruling> | Array<[]>
-  legalities: object
+  rulings: string
+  legalities: string
   flavorText: string
   text: string
   rarity: string

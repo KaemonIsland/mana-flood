@@ -59,21 +59,28 @@ export const Card = ({ id }: Props): ReactElement => {
 
   const initialize = async (): Promise<void> => {
     const newCard: CardInterface = await cardActions.collection.card(id)
-    const scryfallCard = await getScryfallCard(newCard.scryfallId)
-    const cardImg = await getCardImage(newCard.scryfallId, 'large', newCard.name)
+    const scryfallId = newCard && newCard.scryfallId
 
+    
     getVariationInfo(newCard)
-
     setCard(newCard)
-    setImg(cardImg)
-    setPrices(scryfallCard.prices)
-
     setIsLoading(false)
+    
+    
+      if (scryfallId) {
+        const scryfallCard = await getScryfallCard(scryfallId)
+        const cardImg = await getCardImage(scryfallId, 'large', newCard.name)
+  
+        setImg(cardImg)
+        setPrices(scryfallCard.prices)
+      }
   }
 
   useEffect(() => {
-    initialize()
-  }, [])
+    if (isLoading) {
+      initialize()
+    }
+  }, [isLoading])
 
   return (
     <Page>

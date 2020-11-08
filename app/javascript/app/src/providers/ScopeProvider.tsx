@@ -11,6 +11,16 @@ import { toCamelcase } from '../utils'
 import { Deck } from '../interface'
 import axios from 'axios'
 
+interface Update {
+  (id: string | number): void
+}
+
+interface ScopeContextTypes {
+  updateScope: Update
+  currentScope: Deck | string
+  scopes: Array<Deck>
+}
+
 const ScopeContext = createContext({
   update: (id: string | number): void => null,
   scopes: [],
@@ -24,7 +34,7 @@ const ScopeContext = createContext({
  *
  * Used to determine where card crud functionality happens.
  */
-export const useScope = () => {
+export const useScope = (): ScopeContextTypes => {
   const { update, currentScope, scopes } = useContext(ScopeContext)
 
   return {

@@ -41,7 +41,7 @@ interface Options {
 interface Actions {
   actions: CardActionFunc
   deck: Deck
-  cards: Array<Card> | Array<[]>
+  cards: Array<Card>
   pagination: PaginationProps
   stats: CardStats
   isLoading: boolean
