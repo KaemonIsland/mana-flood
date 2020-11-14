@@ -113,7 +113,7 @@ export const Full = ({
   const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const { currentScope, scopes, updateScope } = useScope()
   const scope = typeof currentScope === 'string' ? 'collection' : 'deck'
-  const isDeckScope = scope !== 'collection'
+  const deckId = (typeof currentScope !== 'string' && currentScope.id) || null
 
   const {
     id,
@@ -140,17 +140,17 @@ export const Full = ({
   const { add, update, remove } = cardActions[scope]
 
   const addCard = async (): Promise<void> => {
-    const updatedCard: Card = await add(id, isDeckScope && currentScope.id)
+    const updatedCard: Card = await add(id, deckId)
 
     setCard(updatedCard)
   }
 
   const removeCard = async (): Promise<void> => {
-    setCard(await remove(id, isDeckScope && currentScope.id))
+    setCard(await remove(id, deckId))
   }
 
   const updateCard = async (newQuantity: number): Promise<void> => {
-    setCard(await update(id, newQuantity, isDeckScope && currentScope.id))
+    setCard(await update(id, newQuantity, deckId))
   }
 
   const formattedMana = getManaCost(manaCost)

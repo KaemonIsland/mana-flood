@@ -3,7 +3,7 @@ import { cardActions } from '../cardActions'
 import { Deck, Card, CardStats } from '../../interface'
 
 interface Get {
-  (id: number, query?: {}): Promise<Array<Card>>
+  (query?: {}): Promise<void>
 }
 
 interface Add {
@@ -36,11 +36,11 @@ interface PaginationProps {
 interface Options {
   setId?: number
   query?: URLSearchParams
+  deckId?: number
 }
 
 interface Actions {
   actions: CardActionFunc
-  deck: Deck
   cards: Array<Card>
   pagination: PaginationProps
   stats: CardStats
@@ -49,6 +49,7 @@ interface Actions {
 
 const defaultStats = {
   colors: {
+    total: 0,
     W: 0,
     U: 0,
     B: 0,
@@ -105,16 +106,18 @@ export const useCards = (
   const [stats, setStats] = useState(defaultStats)
   const [query, setQuery] = useState(options?.query || new URLSearchParams())
 
+  const deckId = (typeof scope !== 'string' && scope.id) || null
+
   const actionScope = typeof scope === 'string' ? 'collection' : 'deck'
 
   const addCard = async (id: number): Promise<Card> =>
-    await cardActions[actionScope].add(id, scope.id)
+    await cardActions[actionScope].add(id, deckId)
 
   const removeCard = async (id: number): Promise<Card> =>
-    await cardActions[actionScope].remove(id, scope.id)
+    await cardActions[actionScope].remove(id, deckId)
 
   const updateCard = async (id: number, quantity: number): Promise<Card> =>
-    await cardActions[actionScope].update(id, quantity, scope.id)
+    await cardActions[actionScope].update(id, quantity, deckId)
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
     if (!cardQuery.has('page')) {
@@ -128,18 +131,15 @@ export const useCards = (
     let response
 
     if (type === 'search') {
-      response = await cardActions[actionScope][type](
-        cardQuery,
-        scope && scope.id
-      )
+      response = await cardActions[actionScope][type](cardQuery, deckId)
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await cardActions.deck.deck(cardQuery, scope.id)
+        response = await cardActions.deck.deck(cardQuery, deckId)
       } else {
         response = await cardActions.deck[type](
           cardQuery,
           options.setId,
-          scope.id
+          deckId
         )
       }
     } else {
