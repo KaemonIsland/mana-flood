@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactChildren, ReactChild } from 'react'
+import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { gutter } from './ToastElement'
 
@@ -24,7 +24,7 @@ const StyledContainer = styled.div(({ theme, hasToasts }) => ({
 
 interface ToastContainerProps {
   hasToasts: boolean
-  children: ReactChild | ReactChildren
+  children: ReactElement
 }
 
 export const ToastContainer = ({

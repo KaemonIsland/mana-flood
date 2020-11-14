@@ -1,11 +1,24 @@
-import React, { useState, useEffect, ReactElement } from 'react'
+import React, { useState, useEffect, ReactElement, ElementType } from 'react'
 import { useTimer } from '../../utils/hooks'
+
+interface ToastProps {
+  appearance?: string
+  autoDismiss?: boolean
+  autoDismissTimeout?: number
+  children?: Array<ReactElement>
+  isRunning?: boolean
+  onDismiss?: any
+  transitionDuration?: number
+  transitionState?: string
+  onMouseEnter?: any
+  onMouseLeave?: any
+}
 
 interface ToastControllerProps {
   autoDismiss?: boolean
   autoDismissTimeout?: number
   onDismiss: () => {}
-  Toast: ReactElement
+  Toast: ElementType
 }
 
 export const ToastController = ({

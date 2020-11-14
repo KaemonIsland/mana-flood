@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  ReactElement,
-  ReactChild,
-  ReactChildren,
-} from 'react'
+import React, { useEffect, useRef, useState, ReactElement } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Button } from 'warlock-ui'
 import { CheckIcon, FlameIcon, InfoIcon, CloseIcon, AlertIcon } from './icons'
@@ -139,7 +132,7 @@ interface ToastElementProps {
   transitionState?: string
   onMouseEnter?: any
   onMouseLeave?: any
-  children?: ReactChild | ReactChildren
+  children?: Array<ReactElement>
 }
 
 const ToastElement = ({
@@ -157,7 +150,7 @@ const ToastElement = ({
       setHeight(el.offsetHeight + gutter)
     }
     if (transitionState === 'exiting') {
-      setHeight(0)
+      setHeight('')
     }
   }, [transitionState])
 
@@ -204,7 +197,7 @@ interface ToastProps {
   appearance?: string
   autoDismiss?: boolean
   autoDismissTimeout?: number
-  children?: ReactChild | ReactChildren
+  children?: Array<ReactElement>
   isRunning?: boolean
   onDismiss?: any
   transitionDuration?: number
@@ -212,6 +205,7 @@ interface ToastProps {
   onMouseEnter?: any
   onMouseLeave?: any
 }
+
 export const Toast = ({
   appearance,
   autoDismiss,
