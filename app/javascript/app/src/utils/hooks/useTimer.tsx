@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export const useTimer = (callback: () => void, delay = 5000) => {
-  const [timerId, setTimerId] = useState()
+  const [timerId, setTimerId] = useState(0)
   const [startTime, setStartTime] = useState(delay)
   const [remainingTime, setRemainingTime] = useState(delay)
 
@@ -9,13 +9,15 @@ export const useTimer = (callback: () => void, delay = 5000) => {
 
   const pause = () => {
     clearTimeout(timerId)
-    setRemainingTime((remainingTime -= Date.now() - startTime))
+    setRemainingTime(remaining => (remaining -= Date.now() - startTime))
   }
 
   const resume = () => {
     setStartTime(Date.now())
     clearTimeout(timerId)
-    setTimerId(setTimeout(callback, remainingTime))
+
+    const newTimerId = Number(setTimeout(callback, remainingTime))
+    setTimerId(newTimerId)
   }
 
   return {

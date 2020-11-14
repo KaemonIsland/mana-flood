@@ -22,9 +22,11 @@ export const getManaCost = (manaCost: string): Array<string> =>
  * @returns array containing unique mana values. Any of W, U, B, R, G
  */
 export const uniqueColors = (manaCost: Array<string>): Array<string> =>
-  manaCost
-    .filter(char => isNaN(Number(char)) && char !== 'X')
-    .filter(unique)
-    .map(char => char.split(''))
-    .filter(Boolean)
-    .flat()
+                       manaCost
+                         // Removes numbers and X mana costs
+                         .filter(char => isNaN(Number(char)) && char !== 'X')
+                         .map(char => char.split(''))
+                         .filter(Boolean)
+                         .flat()
+                         // Filters out duplicate mana symbols
+                         .filter(unique)

@@ -9,7 +9,7 @@ const StyledCollapse = styled.div(({ theme, color, shade }) => ({
 }))
 
 interface CollapseProps {
-  children: ReactElement
+  children: Array<ReactElement> | ReactElement
   isOpen: boolean
   color?: string
   shade?: number
