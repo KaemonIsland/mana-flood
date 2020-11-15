@@ -206,6 +206,7 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
+    rubyzip (2.3.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -271,6 +272,7 @@ DEPENDENCIES
   ransack
   react-rails
   rspec-rails
+  rubyzip
   sass-rails (>= 6)
   spring
   spring-watcher-listen (~> 2.0.0)

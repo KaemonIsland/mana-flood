@@ -37,6 +37,8 @@ gem 'ransack'
 # Authorization
 gem 'cancancan'
 
+gem 'rubyzip'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
