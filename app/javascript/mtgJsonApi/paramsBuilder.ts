@@ -1,6 +1,4 @@
 import snakeCaseKeys from 'snakecase-keys'
-import { Card } from './cardInterface'
-import { Set } from './setInterface'
 
 // The card attributes we don't care about
 // https://mtgjson.com/structures/card/

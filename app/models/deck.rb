@@ -99,7 +99,7 @@ class Deck < ApplicationRecord
 
 
         # Card types, they have been stringified so we must parse them
-        card_types = JSON.parse(card.card_types)
+        card_types = card.card_types&.split(' ')
         types = stats[:types]
 
 
@@ -113,7 +113,7 @@ class Deck < ApplicationRecord
           
   
           # Counts the card subTypes
-          card.subtypes.each do |subtype|
+          card.subtypes&.split(' ').each do |subtype|
             lower_subtype = subtype.downcase().to_sym
 
             if types[lower_type] && types[lower_type][:subtypes] && types[lower_type][:subtypes][lower_subtype]

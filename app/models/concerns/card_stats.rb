@@ -78,9 +78,9 @@ module CardStats
         stats[:cards] += 1
 
         # Card types, they have been stringified so we must parse them
-        card_types = JSON.parse(card.card_types)
+        card_types = card.card_types&.split(' ')
         types = stats[:types]
-        card_subTypes = card.subtypes.kind_of?(Array) ? card.subtypes : JSON.parse(card.subtypes)
+        card_subTypes = card.subtypes&.split(' ')
 
 
         # Counts the card types
