@@ -11,20 +11,10 @@ class Card < ApplicationRecord
 
   # Serialize Objects/Arrays https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html
   serialize :preferences, JSON
-  serialize :color_indicator, JSON
-  serialize :colors, JSON
-  serialize :frame_effects, JSON
   serialize :leadership_skills, JSON
-  serialize :legalities, JSON
-  serialize :names, JSON
-  serialize :other_face_ids, JSON
-  serialize :prices, JSON
   serialize :printings, JSON
-  serialize :reverse_related, JSON
-  serialize :rulings, JSON
-  serialize :subtypes, JSON
-  serialize :supertypes, JSON
   serialize :variations, JSON
+  serialize :purchase_urls, JSON
 
   def collection_quantity(collection_id)
     return 0 unless collection_id

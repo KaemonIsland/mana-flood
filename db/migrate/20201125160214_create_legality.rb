@@ -4,8 +4,9 @@ class CreateLegality < ActiveRecord::Migration[6.0]
       t.string :format
       t.string :status
       t.string :uuid
-
-      t.timestamps
+      t.integer :mtgjson_id
     end
+
+    add_index :legalities, :mtgjson_id, unique: true
   end
 end

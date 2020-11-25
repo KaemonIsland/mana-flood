@@ -4,8 +4,9 @@ class CreateRule < ActiveRecord::Migration[6.0]
       t.date :date
       t.string :text
       t.string :uuid
-
-      t.timestamps
+      t.integer :mtgjson_id
     end
+    add_index :rulings, :mtgjson_id, unique: true
+    
   end
 end

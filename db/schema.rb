@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_25_160446) do
+ActiveRecord::Schema.define(version: 2020_11_25_163227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,6 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.integer "base_set_size"
     t.string "block"
     t.string "code"
-    t.string "code_v3"
     t.boolean "is_foreign_only"
     t.boolean "is_foil_only"
     t.boolean "is_online_only"
@@ -34,6 +33,7 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.integer "tcgplayer_group_id"
     t.integer "total_set_size"
     t.string "set_type"
+    t.boolean "is_non_foil_only", default: false
     t.index ["mcm_id"], name: "index_card_sets_on_mcm_id", unique: true
   end
 
@@ -49,12 +49,9 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.boolean "has_foil"
     t.boolean "has_non_foil"
     t.boolean "is_alternative"
-    t.boolean "is_arena"
     t.boolean "is_full_art"
-    t.boolean "is_mtgo"
     t.boolean "is_online_only"
     t.boolean "is_oversized"
-    t.boolean "is_paper"
     t.boolean "is_promo"
     t.boolean "is_reprint"
     t.boolean "is_reserved"
@@ -63,7 +60,6 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.boolean "is_textless"
     t.string "layout"
     t.string "leadership_skills"
-    t.string "legalities"
     t.string "loyalty"
     t.string "mana_cost"
     t.integer "mcm_id"
@@ -73,17 +69,13 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.integer "mtgo_id"
     t.integer "multiverse_id"
     t.string "name"
-    t.string "names"
     t.string "number"
     t.string "original_text"
     t.string "original_type"
     t.string "other_face_ids"
     t.string "power"
-    t.string "prices"
     t.string "printings"
     t.string "rarity"
-    t.string "reverse_related"
-    t.string "rulings"
     t.string "scryfall_id"
     t.string "scryfall_oracle_id"
     t.string "scryfall_illustration_id"
@@ -102,6 +94,23 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.string "ascii_name"
     t.string "flavor_name"
     t.string "color_identity", default: [], array: true
+    t.string "availability", default: [], array: true
+    t.string "frame_effects", default: [], array: true
+    t.string "keywords", default: [], array: true
+    t.string "promo_types", default: [], array: true
+    t.string "purchase_urls"
+    t.string "card_kingdom_foil_id"
+    t.string "card_kingdom_id"
+    t.string "duel_deck"
+    t.string "face_name"
+    t.string "frame_version"
+    t.string "hand"
+    t.boolean "has_alternative_deck_limit", default: false
+    t.boolean "has_content_warning", default: false
+    t.boolean "is_timeshifted", default: false
+    t.string "life"
+    t.string "set_code"
+    t.date "original_release_date"
     t.index ["card_set_id"], name: "index_cards_on_card_set_id"
     t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end
@@ -147,16 +156,16 @@ ActiveRecord::Schema.define(version: 2020_11_25_160446) do
     t.string "format"
     t.string "status"
     t.string "uuid"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.integer "mtgjson_id"
+    t.index ["mtgjson_id"], name: "index_legalities_on_mtgjson_id", unique: true
   end
 
   create_table "rulings", force: :cascade do |t|
     t.date "date"
     t.string "text"
     t.string "uuid"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.integer "mtgjson_id"
+    t.index ["mtgjson_id"], name: "index_rulings_on_mtgjson_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|
