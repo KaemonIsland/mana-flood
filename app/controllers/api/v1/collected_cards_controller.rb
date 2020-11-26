@@ -1,6 +1,7 @@
 class Api::V1::CollectedCardsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :load_card, :load_collection, only: [:collection, :deck, :create, :update, :destroy]
+  before_action :load_card, only: [:create, :update, :destroy]
+  before_action :load_collection, only: [:collection, :deck, :create, :update, :destroy]
   before_action :load_set, only: [:collection, :deck]
   before_action :load_collected_card, only: [:update, :destroy]
   respond_to :json

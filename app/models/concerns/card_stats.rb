@@ -78,10 +78,9 @@ module CardStats
         stats[:cards] += 1
 
         # Card types, they have been stringified so we must parse them
-        card_types = card.card_types&.split(' ')
+        card_types = card.card_types
         types = stats[:types]
-        card_subTypes = card.subtypes&.split(' ')
-
+        card_subTypes = card.subtypes
 
         # Counts the card types
         card_types.each do |type|

@@ -16,6 +16,17 @@ class Card < ApplicationRecord
   serialize :variations, JSON
   serialize :purchase_urls, JSON
 
+  # Return all Legalities for a card
+  def legalities
+    Legality.where(uuid: self.uuid)
+  end
+
+  # Return all rulings for a card
+  def rulings
+    Ruling.where(uuid: self.uuid)
+  end
+
+  # Gets the number of cards within the collection
   def collection_quantity(collection_id)
     return 0 unless collection_id
 
@@ -24,6 +35,7 @@ class Card < ApplicationRecord
     collected.empty? ? 0 : collected.first.quantity
   end
 
+  # Gets the number of the card used within a specific deck
   def deck_quantity(deck_id)
     return 0 unless deck_id
 
@@ -33,11 +45,12 @@ class Card < ApplicationRecord
   end
 
   ############## SORTING #############
-
+  # Sorts by mana cost first then alphabetical by name
   def self.by_mana_and_name
     order(converted_mana_cost: :asc, name: :asc)
   end
 
+  # Sorts cards by color White, Blue, Black, Red, Green, Colorless, Multi
   def self.sort_by_color(cards)
     # All card colors to be sorted by.
     # W = White

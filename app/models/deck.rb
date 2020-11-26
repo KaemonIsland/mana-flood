@@ -99,7 +99,7 @@ class Deck < ApplicationRecord
 
 
         # Card types, they have been stringified so we must parse them
-        card_types = card.card_types&.split(' ')
+        card_types = card.card_types
         types = stats[:types]
 
 

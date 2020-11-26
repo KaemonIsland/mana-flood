@@ -57,10 +57,6 @@ Rails.application.routes.draw do
   get 'collection/all', to: 'collection#all'
   get 'collection/set/:id', to: 'collection#show'
 
-  # Routes to update cards database
-  post 'update_cards', to: 'cards#update_card_db'
-  post 'update_card_sets', to: 'card_sets#update_card_set_db'
-
   # Methods for single cards
   get 'card/:id', to: 'cards#show'
 

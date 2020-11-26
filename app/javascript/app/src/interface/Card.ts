@@ -3,6 +3,12 @@ export interface Ruling {
   text: string
 }
 
+export interface Legality {
+  format: string
+  status: string
+  uuid: string
+}
+
 export interface Variation {
   id: number
   uuid: string
@@ -23,8 +29,8 @@ export interface Card {
   toughness: number
   cardType: string
   artist: string
-  rulings: string
-  legalities: string
+  rulings: Array<Ruling>
+  legalities: Array<Legality>
   flavorText: string
   text: string
   rarity: string

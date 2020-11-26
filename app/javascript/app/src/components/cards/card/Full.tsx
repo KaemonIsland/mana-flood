@@ -323,33 +323,35 @@ export const Full = ({
           </div>
         </CardInfo>
       </Grid.Item>
-            {Object.entries(legalities.split(',')).length > 1 && (
-      <Grid.Item area="legal">
-        <CardInfo>
-          <LegalContainer>
-            <Flex
-              flexWrap="wrap"
-              alignItems="center"
-              justifyContent={isMobile || isTablet ? 'center' : 'start'}
-            >
-              {Object.entries(legalities.split(',')).map(([title, legal], i) => {
-                const isLegal = legal === 'Legal'
-                return (
-                  <StyledLegal key={i}>
-                    <StyledLegal.Title isLegal={isLegal}>
-                      {title}
-                    </StyledLegal.Title>
-                    <StyledLegal.Status isLegal={isLegal}>
-                      {legal}
-                    </StyledLegal.Status>
-                  </StyledLegal>
-                )
-              })}
-            </Flex>
-          </LegalContainer>
-        </CardInfo>
-      </Grid.Item>
-              )}
+      {(legalities || []).length > 1 && (
+        <Grid.Item area="legal">
+          <CardInfo>
+            <LegalContainer>
+              <Flex
+                flexWrap="wrap"
+                alignItems="center"
+                justifyContent={isMobile || isTablet ? 'center' : 'start'}
+              >
+                {legalities.map(
+                  ({format, status}, i) => {
+                    const isLegal = status === 'Legal'
+                    return (
+                      <StyledLegal key={i}>
+                        <StyledLegal.Title isLegal={isLegal}>
+                          {format}
+                        </StyledLegal.Title>
+                        <StyledLegal.Status isLegal={isLegal}>
+                          {status}
+                        </StyledLegal.Status>
+                      </StyledLegal>
+                    )
+                  }
+                )}
+              </Flex>
+            </LegalContainer>
+          </CardInfo>
+        </Grid.Item>
+      )}
       {variations.length > 0 && (
         <Grid.Item area="variations">
           <Flex
@@ -368,10 +370,10 @@ export const Full = ({
           </Flex>
         </Grid.Item>
       )}
-      {/*Object.values(rulings.split(',')).length > 1 && (
+      {(rulings || []).length > 1 && (
         <Grid.Item area="rules">
           <RulesContainer>
-            {rulings.split(',').map(({ date, text }: Ruling, i) => (
+            {rulings.map(({ date, text }: Ruling, i) => (
               <StyledRule key={i}>
                 <Text isItalics color="grey" size={2} shade={6}>
                   {formatDate(date, {})}
@@ -383,7 +385,7 @@ export const Full = ({
             ))}
           </RulesContainer>
         </Grid.Item>
-            )*/}
+            )}
     </Grid>
   )
 }
