@@ -40,8 +40,6 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
   create_table "cards", force: :cascade do |t|
     t.string "artist"
     t.string "border_color"
-    t.string "color_indicator"
-    t.string "colors"
     t.float "converted_mana_cost"
     t.integer "edhrec_rank"
     t.float "face_converted_mana_cost"
@@ -72,7 +70,6 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
     t.string "number"
     t.string "original_text"
     t.string "original_type"
-    t.string "other_face_ids"
     t.string "power"
     t.string "printings"
     t.string "rarity"
@@ -80,13 +77,10 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
     t.string "scryfall_oracle_id"
     t.string "scryfall_illustration_id"
     t.string "side"
-    t.string "subtypes"
-    t.string "supertypes"
     t.integer "tcgplayer_product_id"
     t.string "text"
     t.string "toughness"
     t.string "card_type"
-    t.string "card_types"
     t.string "uuid"
     t.string "variations"
     t.string "watermark"
@@ -111,6 +105,12 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
     t.string "life"
     t.string "set_code"
     t.date "original_release_date"
+    t.string "color_indicator", default: [], array: true
+    t.string "colors", default: [], array: true
+    t.string "other_face_ids", default: [], array: true
+    t.string "subtypes", default: [], array: true
+    t.string "supertypes", default: [], array: true
+    t.string "card_types", default: [], array: true
     t.index ["card_set_id"], name: "index_cards_on_card_set_id"
     t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end

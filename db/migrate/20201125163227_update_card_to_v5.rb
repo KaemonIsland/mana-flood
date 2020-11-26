@@ -11,6 +11,13 @@ class UpdateCardToV5 < ActiveRecord::Migration[6.0]
     remove_column :cards, :reverse_related
     remove_column :cards, :rulings
 
+    remove_column :cards, :color_indicator
+    remove_column :cards, :colors
+    remove_column :cards, :other_face_ids
+    remove_column :cards, :subtypes
+    remove_column :cards, :supertypes
+    remove_column :cards, :card_types
+
     add_column :cards, :availability, :string, array: true, default: []
     add_column :cards, :frame_effects, :string, array: true, default: []
     add_column :cards, :keywords, :string, array: true, default: []
@@ -28,6 +35,13 @@ class UpdateCardToV5 < ActiveRecord::Migration[6.0]
     add_column :cards, :life, :string
     add_column :cards, :set_code, :string
     add_column :cards, :original_release_date, :date
+
+    add_column :cards, :color_indicator, :string, array: true, default: []
+    add_column :cards, :colors, :string, array: true, default: []
+    add_column :cards, :other_face_ids, :string, array: true, default: []
+    add_column :cards, :subtypes, :string, array: true, default: []
+    add_column :cards, :supertypes, :string, array: true, default: []
+    add_column :cards, :card_types, :string, array: true, default: []
   end
 
   def down
@@ -39,6 +53,13 @@ class UpdateCardToV5 < ActiveRecord::Migration[6.0]
     add_column :cards, :prices, :string
     add_column :cards, :reverse_related, :string
     add_column :cards, :rulings, :string
+
+    remove_column :cards, :color_indicator
+    remove_column :cards, :colors
+    remove_column :cards, :other_face_ids
+    remove_column :cards, :subtypes
+    remove_column :cards, :supertypes
+    remove_column :cards, :card_types
 
     remove_column :cards, :availability
     remove_column :cards, :frame_effects
@@ -57,5 +78,12 @@ class UpdateCardToV5 < ActiveRecord::Migration[6.0]
     remove_column :cards, :life
     remove_column :cards, :set_code
     remove_column :cards, :original_release_date
+
+    add_column :cards, :color_indicator, :string
+    add_column :cards, :colors, :string
+    add_column :cards, :other_face_ids, :string
+    add_column :cards, :subtypes, :string
+    add_column :cards, :supertypes, :string
+    add_column :cards, :card_types, :string
   end
 end
