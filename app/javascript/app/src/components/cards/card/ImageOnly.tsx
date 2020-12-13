@@ -32,6 +32,11 @@ const CardImgContainer = styled.div(({ theme }) => ({
   boxShadow: theme.boxShadow.single[2],
 }))
 
+const CardImagesContainer = styled.div(() => ({
+  display: 'flex',
+  alignItems: 'center',
+}))
+
 const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
@@ -65,7 +70,7 @@ interface Props {
 }
 
 export const ImageOnly = ({ actions, card }: Props): ReactElement => {
-  const [cardImg, setCardImg] = useState('')
+  const [cardImages, setCardImages] = useState([])
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [quantity, setQuantity] = useState(card[scope])
 
@@ -95,7 +100,7 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
 
   const handleCardImage = async () => {
     const cardUrl = await getCardImage(scryfallId, 'normal', name)
-    setCardImg(cardUrl)
+    setCardImages(cardUrl)
   }
 
   useEffect(() => {
@@ -120,9 +125,14 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
           actions={{ updateCard, removeCard, addCard }}
         />
       </OptionContainer>
-      <CardImgContainer>
-        <CardImg src={cardImg} alt={name} />
-      </CardImgContainer>
+      <CardImagesContainer>
+        {cardImages.length &&
+          cardImages.map((cardImg, index) => (
+            <CardImgContainer key={index}>
+              <CardImg src={cardImg} alt={name} />
+            </CardImgContainer>
+          ))}
+      </CardImagesContainer>
     </CardContainer>
   )
 }

@@ -96,7 +96,7 @@ interface CardVariant {
 
 interface Props {
   card: Card
-  img: string
+  img: Array<string>
   variations: Array<CardVariant>
   prices: Price
   setCard: any
@@ -219,9 +219,12 @@ export const Full = ({
         </Text>
       </Grid.Item>
       <Grid.Item area="mainImage" justifySelf={isMobile ? 'center' : 'start'}>
-        <CardImgContainer>
-          <CardImg src={img} alt={name} />
-        </CardImgContainer>
+        {img.length &&
+          img.map((cardImage, index) => (
+            <CardImgContainer key={index}>
+              <CardImg src={cardImage} alt={name} />
+            </CardImgContainer>
+          ))}
       </Grid.Item>
       <Grid.Item area="actions">
         <CardInfo>
@@ -332,21 +335,19 @@ export const Full = ({
                 alignItems="center"
                 justifyContent={isMobile || isTablet ? 'center' : 'start'}
               >
-                {legalities.map(
-                  ({format, status}, i) => {
-                    const isLegal = status === 'Legal'
-                    return (
-                      <StyledLegal key={i}>
-                        <StyledLegal.Title isLegal={isLegal}>
-                          {format}
-                        </StyledLegal.Title>
-                        <StyledLegal.Status isLegal={isLegal}>
-                          {status}
-                        </StyledLegal.Status>
-                      </StyledLegal>
-                    )
-                  }
-                )}
+                {legalities.map(({ format, status }, i) => {
+                  const isLegal = status === 'Legal'
+                  return (
+                    <StyledLegal key={i}>
+                      <StyledLegal.Title isLegal={isLegal}>
+                        {format}
+                      </StyledLegal.Title>
+                      <StyledLegal.Status isLegal={isLegal}>
+                        {status}
+                      </StyledLegal.Status>
+                    </StyledLegal>
+                  )
+                })}
               </Flex>
             </LegalContainer>
           </CardInfo>
@@ -385,7 +386,7 @@ export const Full = ({
             ))}
           </RulesContainer>
         </Grid.Item>
-            )}
+      )}
     </Grid>
   )
 }

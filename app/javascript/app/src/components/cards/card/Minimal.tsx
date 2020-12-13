@@ -73,6 +73,12 @@ const CardImgContainer = styled.div(({ theme }) => ({
   overflow: 'hidden',
   boxShadow: theme.boxShadow.single[2],
 }))
+
+const CardImagesContainer = styled.div(() => ({
+  display: 'flex',
+  alignItems: 'center',
+}))
+
 const CardImg = styled.img(() => ({
   maxWidth: '100%',
   width: '100%',
@@ -135,7 +141,7 @@ interface Props {
 }
 
 export const Minimal = ({ actions, card }: Props): ReactElement => {
-  const [cardImg, setCardImg] = useState('')
+  const [cardImages, setCardImages] = useState([])
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
@@ -175,7 +181,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const handleCardImage = async () => {
     const cardUrl = await getCardImage(scryfallId, 'normal', name)
-    setCardImg(cardUrl)
+    setCardImages(cardUrl)
   }
 
   useEffect(() => {
@@ -251,9 +257,15 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
           </InnerCard>
         </CardContainer>
         <Dropdown isPaddingless {...dropdownProps}>
-          <CardImgContainer>
-            <CardImg src={cardImg} alt={name} />
-          </CardImgContainer>
+          <CardImagesContainer>
+            {cardImages.length
+              ? cardImages.map((cardImage, index) => (
+                  <CardImgContainer key={index}>
+                    <CardImg src={cardImage} alt={name} />
+                  </CardImgContainer>
+                ))
+              : null}
+          </CardImagesContainer>
         </Dropdown>
       </div>
     </ThemeProvider>

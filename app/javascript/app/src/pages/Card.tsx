@@ -35,7 +35,7 @@ interface Props {
 
 export const Card = ({ id }: Props): ReactElement => {
   const [card, setCard] = useState(defaultCard)
-  const [img, setImg] = useState('')
+  const [images, setImages] = useState([])
   const [variations, setVariations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [prices, setPrices] = useState({
@@ -61,19 +61,17 @@ export const Card = ({ id }: Props): ReactElement => {
     const newCard: CardInterface = await cardActions.collection.card(id)
     const scryfallId = newCard && newCard.scryfallId
 
-    
     getVariationInfo(newCard)
     setCard(newCard)
     setIsLoading(false)
-    
-    
-      if (scryfallId) {
-        const scryfallCard = await getScryfallCard(scryfallId)
-        const cardImg = await getCardImage(scryfallId, 'large', newCard.name)
-  
-        setImg(cardImg)
-        setPrices(scryfallCard.prices)
-      }
+
+    if (scryfallId) {
+      const scryfallCard = await getScryfallCard(scryfallId)
+      const cardImgs = await getCardImage(scryfallId, 'large', newCard.name)
+
+      setImages(cardImgs)
+      setPrices(scryfallCard.prices)
+    }
   }
 
   useEffect(() => {
@@ -89,7 +87,7 @@ export const Card = ({ id }: Props): ReactElement => {
       ) : (
         <Full
           card={card}
-          img={img}
+          img={images}
           variations={variations}
           prices={prices}
           setCard={updatedCard => setCard(updatedCard)}
