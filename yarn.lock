@@ -13046,10 +13046,10 @@ warlock-config@1.2.0:
     lint-staged "^9.5.0"
     prettier "^1.19.1"
 
-warlock-ui@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/warlock-ui/-/warlock-ui-0.3.0.tgz#5117c4a7a4a5e7bacf8a8c3667b50bb1b3ae7c3e"
-  integrity sha512-En4rWjUaNHWnMm53Y9mN3HS0k0yZlk8z7mUIeG/iYKca46HiZbTFmIOJmgwqaAF/D4Wi91I020+B3i4V7ApOwQ==
+warlock-ui@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/warlock-ui/-/warlock-ui-0.3.1.tgz#beab773d075128d4d38f14ac1c13aa69f89b9eb1"
+  integrity sha512-cBouMAnN45hQrWo+5Q586anlJmGPllNQyLfoWTJBipMwXY9I4tNC0bOSqBwC1J1IVxFCsrQey6n5uLxNpvsKmw==
 
 warning@^4.0.3:
   version "4.0.3"
