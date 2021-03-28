@@ -66,31 +66,28 @@ def update_card_sets
   card_sets = CSV.parse(csv_text, headers: true)
 
   card_set_attrs = card_sets.map do |card_set|
-    if card_set && card_set["mcmId"].present?
-      {
-        base_set_size: card_set["baseSetSize"] || 0,
-        block: card_set["block"] || '',
-        code: card_set["code"] || '',
-        is_foreign_only: card_set["isForeignOnly"] === '1' ? true : false,
-        is_foil_only: card_set["isFoilOnly"] === '1' ? true : false,
-        is_non_foil_only: card_set["isNonFoilOnly"] === '1' ? true : false,
-        is_online_only: card_set["isOnlineOnly"] === '1' ? true : false,
-        is_partial_preview: card_set["isPartialPreview"] === '1' ? true : false,
-        keyrune_code: card_set["keyruneCode"] || '',
-        mcm_name: card_set["mcmName"] || '',
-        mcm_id: card_set["mcmId"]&.to_i || 0,
-        mtgo_code: card_set["mtgoCode"] || '',
-        name: card_set["name"] || '',
-        parent_code: card_set["parentCode"] || '',
-        release_date: card_set["releaseDate"] || '',
-        tcgplayer_group_id: card_set["tcgplayerGroupId"] || 0,
-        total_set_size: card_set["totalSetSize"] || 0,
-        set_type: card_set["type"] || '',
-      }
-    end
+    {
+      index: card_set["index"].to_i,
+      base_set_size: card_set["baseSetSize"] || 0,
+      block: card_set["block"] || '',
+      code: card_set["code"] || '',
+      is_foreign_only: card_set["isForeignOnly"] === '1' ? true : false,
+      is_foil_only: card_set["isFoilOnly"] === '1' ? true : false,
+      is_non_foil_only: card_set["isNonFoilOnly"] === '1' ? true : false,
+      is_online_only: card_set["isOnlineOnly"] === '1' ? true : false,
+      is_partial_preview: card_set["isPartialPreview"] === '1' ? true : false,
+      keyrune_code: card_set["keyruneCode"] || '',
+      mtgo_code: card_set["mtgoCode"] || '',
+      name: card_set["name"] || '',
+      parent_code: card_set["parentCode"] || '',
+      release_date: card_set["releaseDate"] || '',
+      tcgplayer_group_id: card_set["tcgplayerGroupId"] || 0,
+      total_set_size: card_set["totalSetSize"] || 0,
+      set_type: card_set["type"] || '',
+    }
   end
 
-  CardSet.upsert_all(card_set_attrs.compact, unique_by: [:mcm_id])
+  CardSet.upsert_all(card_set_attrs.compact, unique_by: [:index])
 end
 
 def update_cards
@@ -193,7 +190,7 @@ def connect_cards_to_sets
 end
 
 namespace :cards do
-  desc "TODO"
+  desc "Updates all card info for the app"
   task update: :environment do
     puts "Fetching CSV files from MTGJSON"
     get_card_files()

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_25_163227) do
+ActiveRecord::Schema.define(version: 2021_03_28_181046) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,8 +24,6 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
     t.boolean "is_online_only"
     t.boolean "is_partial_preview"
     t.string "keyrune_code"
-    t.string "mcm_name"
-    t.integer "mcm_id"
     t.string "mtgo_code"
     t.string "name"
     t.string "parent_code"
@@ -34,7 +32,8 @@ ActiveRecord::Schema.define(version: 2020_11_25_163227) do
     t.integer "total_set_size"
     t.string "set_type"
     t.boolean "is_non_foil_only", default: false
-    t.index ["mcm_id"], name: "index_card_sets_on_mcm_id", unique: true
+    t.integer "index"
+    t.index ["index"], name: "index_card_sets_on_index", unique: true
   end
 
   create_table "cards", force: :cascade do |t|
