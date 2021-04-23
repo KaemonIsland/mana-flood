@@ -13,16 +13,15 @@ const defaultFilters = {
 export const useFilter = cardSearch => {
   const [filters, setFilters] = useState(defaultFilters)
 
-  // Resets the current filters back to default
-  const clear = (): void => {
-    cardSearch()
-    setFilters(defaultFilters)
-  }
-
   const formatKey = (key): string => `q[${key}]`
 
-  const buildQuery = () => {
-    const { color, rarity, type, cmc } = filters
+  const buildQuery = (queryFilters = defaultFilters) => {
+    const {
+      color = [],
+      rarity = [],
+      type = '',
+      cmc = { min: null, max: null },
+    } = queryFilters
     const q = new URLSearchParams()
 
     if (color.length) {
@@ -39,15 +38,27 @@ export const useFilter = cardSearch => {
       })
     }
 
-    q.append(formatKey('converted_mana_cost_gteq'), String(cmc.min))
-    q.append(formatKey('converted_mana_cost_lteq'), String(cmc.max))
+    if (cmc.min) {
+      q.append(formatKey('converted_mana_cost_gteq'), String(cmc.min))
+    }
+
+    if (cmc.max) {
+      q.append(formatKey('converted_mana_cost_lteq'), String(cmc.max))
+    }
 
     return q
   }
 
+  // Resets the current filters back to default
+  const clear = (): void => {
+    const query = buildQuery()
+    cardSearch(query)
+    setFilters(defaultFilters)
+  }
+
   // Searches for cards with current filters
   const apply = (): void => {
-    const query = buildQuery()
+    const query = buildQuery(filters)
     cardSearch(query)
   }
 

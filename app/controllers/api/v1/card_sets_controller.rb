@@ -16,7 +16,7 @@ class Api::V1::CardSetsController < ApplicationController
     if current_user
       @collection = current_user.collection
 
-      @query =@set.cards.with_color(params[:colors], @set.cards).ransack(params[:q])
+      @query = @set.cards.with_color(params[:colors], @set.cards).ransack(params[:q])
 
       @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 

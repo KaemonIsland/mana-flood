@@ -151,25 +151,29 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const { cardType, id, manaCost, name, colorIdentity, scryfallId } = card
 
+  const cardName = String(name).split(' // ')[0]
+
   const isLand = cardType.includes('Land')
 
   const { add, update, remove } = actions
 
   const addCard = async (): Promise<void> => {
     await add(id)
-    addToast(`${name} added to collection`)
+    addToast(`${cardName} added to collection`)
     setQuantity(1)
   }
 
   const updateCard = async (quantity: number): Promise<void> => {
     await update(id, quantity)
-    addToast(`${name} quantity updated to ${quantity}`, { appearance: 'info' })
+    addToast(`${cardName} quantity updated to ${quantity}`, {
+      appearance: 'info',
+    })
     setQuantity(quantity)
   }
 
   const removeCard = async (): Promise<void> => {
     await remove(id)
-    addToast(`${name} was removed from collection`, { appearance: 'info' })
+    addToast(`${cardName} was removed from collection`, { appearance: 'info' })
     setQuantity(0)
   }
 
@@ -223,13 +227,13 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
               <Link href={`/card/${id}`}>
                 <CardInfo>
                   <TitleText
-                    title={name}
+                    title={cardName}
                     weight="500"
                     spacing={1.1}
                     family="Roboto"
                     color="black"
                   >
-                    {name}
+                    {cardName}
                   </TitleText>
                 </CardInfo>
                 <CardInfo>

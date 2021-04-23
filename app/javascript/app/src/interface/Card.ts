@@ -41,4 +41,5 @@ export interface Card {
   loyalty: string
   borderColor: string
   tcgplayerProductId: number
+  frameEffects: Array<string>
 }

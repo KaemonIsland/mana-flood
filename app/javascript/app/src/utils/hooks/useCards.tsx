@@ -126,6 +126,9 @@ export const useCards = (
 
     cardQuery.set('per_page', '30')
 
+    // Only return front side of MDFCs and Adventures
+    cardQuery.append('q[side_not_eq]', 'b')
+
     setQuery(cardQuery)
 
     let response

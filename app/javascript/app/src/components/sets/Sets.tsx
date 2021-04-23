@@ -90,7 +90,7 @@ export const Sets = ({ sets, link }: SetsProps): ReactElement => {
                 {!!unique && `${unique} / `}
                 {baseSetSize} Cards
               </Text>
-              <SetIcon setCode={keyruneCode} size="large" />
+              <SetIcon setCode={keyruneCode} size={3} />
             </StyledFlex>
           </SetContainer>
         )
