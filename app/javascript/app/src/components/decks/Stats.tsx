@@ -145,7 +145,7 @@ export const Stats = ({ stats }: StatsProps): ReactElement => {
           >
             <Grid.Item area="info">
               <StyledGridItem>
-                <Flex alignItems="start" direction="column">
+                <Flex alignItems="start" isColumn>
                   <p>Mana Ratio</p>
                   <ColorBar {...colors} total={colors.total} />
                   <p>Land Ratio</p>

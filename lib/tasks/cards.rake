@@ -182,7 +182,6 @@ def connect_cards_to_sets
       card_set = CardSet.find_by(code: card.set_code)
 
       if card_set.present?
-        puts "Adding #{card.name} to #{card_set.name}"
         card_set.cards << card
       end
     end

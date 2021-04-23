@@ -25,7 +25,7 @@ export const Decks = ({ decks = [] }: DecksProps): ReactElement => (
     {decks.map(deck => (
       <StyledDecks key={deck.id}>
         <Flex
-          direction="column"
+          isColumn
           alignItems="space-between"
           justifyContent="space-between"
         >

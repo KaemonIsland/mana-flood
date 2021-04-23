@@ -138,7 +138,7 @@ const FilterContent = ({
           <Text family="roboto">COLOR</Text>
         </Flex>
         <hr />
-        <Flex direction="column" alignItems="start" justifyContent="start">
+        <Flex isColumn alignItems="start" justifyContent="start">
           <Container width="100%">
             <StyledLabel>
               <span>
@@ -186,7 +186,7 @@ const FilterContent = ({
           <Text family="roboto">TYPE</Text>
         </Flex>
         <hr />
-        <Flex direction="column" alignItems="start" justifyContent="start">
+        <Flex isColumn alignItems="start" justifyContent="start">
           <Container width="100%">
             <StyledLabel>
               <span>
@@ -234,7 +234,7 @@ const FilterContent = ({
           <Text family="roboto">RARITY</Text>
         </Flex>
         <hr />
-        <Flex direction="column" alignItems="start" justifyContent="start">
+        <Flex isColumn alignItems="start" justifyContent="start">
           <Container width="100%">
             <StyledLabel>
               <span>
@@ -275,7 +275,7 @@ const FilterContent = ({
           <Text family="roboto">CMC</Text>
         </Flex>
         <hr />
-        <Flex direction="column" alignItems="start" justifyContent="start">
+        <Flex isColumn alignItems="start" justifyContent="start">
           <Container width="100%">
             <StyledLabel htmlFor="min">
               <span>Min: {cmc.min}</span>
