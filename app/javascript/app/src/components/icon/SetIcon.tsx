@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react'
-import { setIcons } from '../../../../packs/application.js'
 
 interface SetIconProps {
   setCode: string

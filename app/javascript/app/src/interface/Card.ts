@@ -42,4 +42,5 @@ export interface Card {
   borderColor: string
   tcgplayerProductId: number
   frameEffects: Array<string>
+  setCode: string
 }

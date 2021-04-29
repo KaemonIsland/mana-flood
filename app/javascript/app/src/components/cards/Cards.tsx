@@ -20,7 +20,7 @@ const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
 const StyledGrid = styled.div(({ theme, imageOnly }) => ({
   display: 'grid',
   gridGap: theme.spaceScale(3),
-  gridTemplateColumns: 'repeat(auto-fill, minmax(20rem, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(22rem, 1fr))',
   gridAutoRows: imageOnly ? '26rem' : '7rem',
   justifyItems: 'center',
   alignItems: 'start',

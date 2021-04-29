@@ -90,7 +90,7 @@ const CardContainer = styled.div(({ theme, color }) => {
 
   return {
     padding: theme.spaceScale(1),
-    width: '20rem',
+    width: '22rem',
     background: backgroundColors,
     borderRadius: theme.spaceScale(2),
     boxShadow: theme.boxShadow.single[2],
@@ -206,24 +206,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
           color={isLand ? colorIdentity : cardColors}
         >
           <InnerCard>
-            <Flex justifyContent="space-between" alignItems="start">
-              <Container width={[7]}>
-                <Flex alignItems="center" justifyContent="start">
-                  {formattedMana.length !== 0 &&
-                    formattedMana.map((mana, i) => (
-                      <ManaSymbol size="small" key={i} mana={mana} />
-                    ))}
-                </Flex>
-              </Container>
-              <div>
-                <ActionButtons
-                  collection={scope === 'deck' ? card?.collection : null}
-                  quantity={quantity}
-                  actions={{ updateCard, removeCard, addCard }}
-                />
-              </div>
-            </Flex>
-            <Flex alignItems="flex-end" justifyContent="space-between">
+            <Flex justifyContent="space-between" alignItems="space-between">
               <Link href={`/card/${id}`}>
                 <CardInfo>
                   <TitleText
@@ -236,18 +219,26 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                     {cardName}
                   </TitleText>
                 </CardInfo>
-                <CardInfo>
-                  <Text
-                    size={2}
-                    family="Source Sans"
-                    shade={1}
-                    color="black"
-                    title={cardType}
-                  >
-                    {cardType}
-                  </Text>
-                </CardInfo>
               </Link>
+              <Flex alignItems="center" justifyContent="end">
+                {formattedMana.length !== 0 &&
+                  formattedMana.map((mana, i) => (
+                    <ManaSymbol size="small" key={i} mana={mana} />
+                  ))}
+              </Flex>
+            </Flex>
+            <CardInfo>
+              <Text
+                size={2}
+                family="Source Sans"
+                shade={1}
+                color="black"
+                title={cardType}
+              >
+                {cardType}
+              </Text>
+            </CardInfo>
+            <Flex alignItems="flex-end" justifyContent="space-between">
               <Button.Icon color="purple" shade={1} {...triggerProps}>
                 <Feather
                   svgProps={{
@@ -257,6 +248,13 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                   size="small"
                 />
               </Button.Icon>
+              <div>
+                <ActionButtons
+                  collection={scope === 'deck' ? card?.collection : null}
+                  quantity={quantity}
+                  actions={{ updateCard, removeCard, addCard }}
+                />
+              </div>
             </Flex>
           </InnerCard>
         </CardContainer>
