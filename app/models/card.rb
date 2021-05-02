@@ -1,7 +1,8 @@
 class Card < ApplicationRecord
   include CardStats
 
-  belongs_to :card_set, optional: true
+  has_many :card_set_cards
+  has_many :card_sets, through: :card_sets_cards
   has_many :collected_cards, dependent: :destroy
   has_many :collections, through: :collected_cards
   has_many :decked_cards, dependent: :destroy

@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_28_181046) do
+ActiveRecord::Schema.define(version: 2021_05_01_175450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "card_set_cards", force: :cascade do |t|
+    t.bigint "card_id"
+    t.bigint "card_set_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["card_id"], name: "index_card_set_cards_on_card_id"
+    t.index ["card_set_id"], name: "index_card_set_cards_on_card_set_id"
+  end
 
   create_table "card_sets", force: :cascade do |t|
     t.integer "base_set_size"
@@ -83,7 +92,6 @@ ActiveRecord::Schema.define(version: 2021_03_28_181046) do
     t.string "uuid"
     t.string "variations"
     t.string "watermark"
-    t.bigint "card_set_id"
     t.string "ascii_name"
     t.string "flavor_name"
     t.string "color_identity", default: [], array: true
@@ -110,7 +118,6 @@ ActiveRecord::Schema.define(version: 2021_03_28_181046) do
     t.string "subtypes", default: [], array: true
     t.string "supertypes", default: [], array: true
     t.string "card_types", default: [], array: true
-    t.index ["card_set_id"], name: "index_cards_on_card_set_id"
     t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end
 
@@ -186,5 +193,4 @@ ActiveRecord::Schema.define(version: 2021_03_28_181046) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "cards", "card_sets"
 end

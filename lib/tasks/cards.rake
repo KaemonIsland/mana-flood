@@ -9,7 +9,7 @@ def get_card_files
   # Files required to update the card database
   file_names = ['cards.csv', 'sets.csv', 'legalities.csv', 'rulings.csv']
 
-  # Remove previous files
+  # Clean up files!
   file_names.each do |file|
     File.delete(file) if File.exist? (file)
   end
@@ -23,6 +23,17 @@ def get_card_files
         entry.extract
       end
     end
+  end
+end
+
+def remove_files
+
+  # Files required to update the card database
+  file_names = ['cards.csv', 'sets.csv', 'legalities.csv', 'rulings.csv']
+
+  # Clean up files!
+  file_names.each do |file|
+    File.delete(file) if File.exist? (file)
   end
 end
 
@@ -176,16 +187,60 @@ def update_cards
 end
 
 def connect_cards_to_sets
-  Card.all.each do |card|
-    # We need to add it to a set!
-    if card.card_set_id.blank?
-      card_set = CardSet.find_by(code: card.set_code)
+  # Fetch csv files in zip format from mtgjson
+  content = open('https://www.mtgjson.com/api/v5/AllSetFiles.zip')
 
-      if card_set.present?
-        card_set.cards << card
+  # Files required to update the card database
+  file_names = []
+
+  # Opens zip files and adds all files to root directory
+  Zip::File.open_buffer(content) do |zip|
+    zip.each do |entry|
+      File.delete(entry.name) if File.exist? (entry.name)
+      # Collect each file name
+      file_names << entry.name
+      puts "Extracting #{entry.name}"
+      # Adds file to root directory
+      entry.extract
+    end
+  end
+
+  file_names.each do |file_name|
+    # Read the set file
+    csv_text = File.read(file_name)
+
+    # Parse the file
+    card_set_json = JSON.parse(csv_text)
+
+    # Grab the related set
+    card_set = CardSet.find_by(code: card_set_json["data"]["code"])
+
+    # Now grab all the card UUIDS within the set!
+    uuids = card_set_json["data"]["cards"].map{ |card| card["uuid"] }
+
+    # Now grab all the uuids that are not already associated with the card set
+    uuids = uuids - card_set.cards.pluck(:uuid)
+
+    # if there are any UUIDS we will attempt to add the cards to the set
+    if uuids.present?
+      uuids.each do |uuid|
+        card = Card.find_by(uuid: uuid)
+
+        if card
+          begin
+            card_set.cards << card
+          rescue
+            puts "#{card.name} is already in the set #{card_set.name}"
+          end
+        end
       end
     end
   end
+
+    # Clean up files!
+    file_names.each do |file|
+      File.delete(file) if File.exist? (file)
+    end
 end
 
 namespace :cards do
@@ -205,6 +260,9 @@ namespace :cards do
 
     puts "Updating Cards"
     update_cards()
+
+    puts "Removing files"
+    remove_files()
 
     puts "Connecting Cards to Card Sets"
     connect_cards_to_sets()

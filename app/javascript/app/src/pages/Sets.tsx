@@ -19,7 +19,7 @@ export const Sets = ({ sets }: SetsProps): ReactElement => {
         <Text size={10}>Sets</Text>
       </Flex>
       <hr />
-      <SetsGroup sets={filteredSets || []} link="/sets" />
+      <SetsGroup sets={toCamelcase(sets) || []} link="/sets" />
     </Page>
   )
 }
