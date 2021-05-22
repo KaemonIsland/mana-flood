@@ -5,34 +5,31 @@ class Collection < ApplicationRecord
 
   # Lists all unique card within collection
   def unique
-    self.cards.count
+    cards.count
   end
 
   # Lists total cards in collection
   def total
     total = 0
 
-    self.collected_cards.each { |card| total = total + card.quantity }
+    collected_cards.each { |card| total = total + card.quantity }
 
     total
   end
 
   # Lists each card set id
   def sets
-    set_arr = []
-
-    self.cards.each { |card| set_arr << card.card_set_id }
-
-    set_arr.uniq
+    cards.flat_map(&:card_set_ids).uniq
   end
 
   # Returns number of unique cards in set
   def sets_unique(card_set_id)
-    self.cards.filter{ |card| card.card_set_id === card_set_id }.count
+    cards.filter{ |card| card.card_set_ids.include? card_set_id }.count
   end
 
   ############## SCOPES #################
-  def with_set_cards (set_id) 
-    self.cards.where(card_set_id: set_id)
+  def with_set_cards (set_id)
+    # cards.filter { |card| card.card_set_ids.include? set_id }
+    cards.joins(:card_set_cards).where(card_set_cards: { card_set_id: set_id })
   end
 end

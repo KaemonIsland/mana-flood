@@ -28,11 +28,17 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def collection
     if current_user
-      @query = @collection.with_set_cards(params[:id]).with_color(params[:colors], @collection.with_set_cards(params[:id])).ransack(params[:q])
+      collection_set_cards = @collection.with_set_cards(params[:id])
+
+      if params[:colors].present?
+        @query = collection_set_cards.with_color(params[:colors], collection_set_cards).ransack(params[:q])
+      else
+        @query = collection_set_cards.ransack(params[:q])
+      end
 
       @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
-      @stats = Card.card_stats(@collection.with_set_cards(params[:id]))
+      @stats = Card.card_stats(collection_set_cards)
 
         @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])
@@ -46,11 +52,17 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def deck
     if current_user
-      @query = @collection.with_set_cards(params[:id]).with_color(params[:colors], @collection.with_set_cards(params[:id])).ransack(params[:q])
+      collection_set_cards = @collection.with_set_cards(params[:id])
+
+      if params[:colors].present?
+        @query = collection_set_cards.with_color(params[:colors], collection_set_cards).ransack(params[:q])
+      else
+        @query = collection_set_cards.ransack(params[:q])
+      end
 
       @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name)
 
-      @stats = Card.card_stats(@collection.with_set_cards(params[:id]))
+      @stats = Card.card_stats(collection_set_cards)
 
       @cards = Kaminari.paginate_array(@sorted_cards)
         .page(params[:page])
