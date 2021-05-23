@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button, Text, Container } from 'warlock-ui'
+import { ThemeProvider, Flex, Button, Text } from 'warlock-ui'
 import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
 import { ManaSymbol, Feather } from '../../icon'
@@ -53,12 +53,14 @@ const buildCardColors = (theme, colors: Array<string>): string => {
     )
   } else {
     colors.forEach(color => {
-      backgroundColor.push(
-        `${theme.color[cardColors[color].color][cardColors[color].shade]}`
-      )
-      backgroundColor.push(
-        `${theme.color[cardColors[color].color][cardColors[color].shade + 3]}`
-      )
+      if (cardColors[color]) {
+        backgroundColor.push(
+          `${theme.color[cardColors[color].color][cardColors[color].shade]}`
+        )
+        backgroundColor.push(
+          `${theme.color[cardColors[color].color][cardColors[color].shade + 3]}`
+        )
+      }
     })
   }
 
@@ -85,7 +87,7 @@ const CardImg = styled.img(() => ({
   height: '100%',
 }))
 
-const CardContainer = styled.div(({ theme, color }) => {
+const CardContainer = styled.div(({ theme, color = [] }) => {
   const backgroundColors = buildCardColors(theme, color)
 
   return {

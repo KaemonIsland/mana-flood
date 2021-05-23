@@ -49,7 +49,7 @@ Collapse.Header = ({ children, isOpen }: HeaderProps): ReactElement => (
 
 const CollapseContent = styled.section(({ isOpen }) => ({
   height: '100%',
-  maxHeight: isOpen ? '100rem' : '0rem',
+  maxHeight: isOpen ? '300rem' : '0rem',
   visibility: !isOpen && 'hidden',
   overflow: 'hidden',
   transition: 'all 300ms ease-in-out',
