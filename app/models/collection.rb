@@ -17,19 +17,18 @@ class Collection < ApplicationRecord
     total
   end
 
-  # Lists each card set id
+  # Lists each card set code
   def sets
-    cards.flat_map(&:card_set_ids).uniq
+    cards.map(&:set_code).uniq
   end
 
-  # Returns number of unique cards in set
-  def sets_unique(card_set_id)
-    cards.filter{ |card| card.card_set_ids.include? card_set_id }.count
+  # Returns number of unique cards collected in set
+  def sets_unique(card_set_code)
+    cards.filter{ |card| card.set_code == card_set_code }.count
   end
 
   ############## SCOPES #################
-  def with_set_cards (set_id)
-    # cards.filter { |card| card.card_set_ids.include? set_id }
-    cards.joins(:card_set_cards).where(card_set_cards: { card_set_id: set_id })
+  def with_set_cards (set_code)
+    cards.where(set_code: set_code)
   end
 end

@@ -8,7 +8,6 @@ end
 if @set
   json.set do
     json.(@set, *@set.attributes.keys)
-    json.unique @collection.sets_unique(@set.id)
   end
 end
 

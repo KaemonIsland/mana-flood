@@ -28,7 +28,7 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def collection
     if current_user
-      collection_set_cards = @collection.with_set_cards(params[:id])
+      collection_set_cards = @collection.with_set_cards(@set.code)
 
       if params[:colors].present?
         @query = collection_set_cards.with_color(params[:colors], collection_set_cards).ransack(params[:q])
@@ -52,7 +52,7 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def deck
     if current_user
-      collection_set_cards = @collection.with_set_cards(params[:id])
+      collection_set_cards = @collection.with_set_cards(@set.code)
 
       if params[:colors].present?
         @query = collection_set_cards.with_color(params[:colors], collection_set_cards).ransack(params[:q])

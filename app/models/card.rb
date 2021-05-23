@@ -3,8 +3,10 @@ class Card < ApplicationRecord
 
   has_many :card_set_cards
   has_many :card_sets, through: :card_set_cards
+
   has_many :collected_cards, dependent: :destroy
   has_many :collections, through: :collected_cards
+
   has_many :decked_cards, dependent: :destroy
   has_many :decks, through: :decked_cards
 
