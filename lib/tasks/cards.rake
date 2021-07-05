@@ -235,4 +235,16 @@ namespace :cards do
     connect_cards_to_sets()
   end
 
+  desc "Get's price of list of cards"
+  task :price, [:cards] => :environment do |t, args|
+    cards = args[:cards] || []
+    public = Rails.application.credentials.tcg[:public]
+    private = Rails.application.credentials.tcg[:private]
+
+    access_token = HTTParty.post("https://api.tcgplayer.com/token?grant_type=client_credentials&client_id=#{public}&client_secret=#{private}")
+
+    puts access_token.body
+
+    puts "Getting card prices!"
+  end
 end
