@@ -186,65 +186,6 @@ def update_cards
   Card.upsert_all(card_attrs, unique_by: [:uuid])
 end
 
-# def connect_cards_to_sets
-#   # Fetch csv files in zip format from mtgjson
-#   content = open('https://www.mtgjson.com/api/v5/AllSetFiles.zip')
-
-#   # Files required to update the card database
-#   file_names = []
-
-#   # Opens zip files and adds all files to root directory
-#   Zip::File.open_buffer(content) do |zip|
-#     zip.each do |entry|
-#       File.delete(entry.name) if File.exist? (entry.name)
-#       # Collect each file name
-#       file_names << entry.name
-#       puts "Extracting #{entry.name}"
-#       # Adds file to root directory
-#       entry.extract
-#     end
-#   end
-
-#   file_names.each do |file_name|
-#     # Read the set file
-#     csv_text = File.read(file_name)
-
-#     # Parse the file
-#     card_set_json = JSON.parse(csv_text)
-
-#     set_code = card_set_json["data"]["code"]
-
-#     # Grab the related set
-#     card_set = CardSet.find_by(code: set_code)
-
-#     # Now grab all the card UUIDS within the set!
-#     uuids = Card.where(set_code: set_code).pluck(:uuid)
-
-#     # Now grab all the uuids that are not already associated with the card set
-#     uuids = uuids - card_set.cards.pluck(:uuid)
-
-#     # if there are any UUIDS we will attempt to add the cards to the set
-#     if uuids.present?
-#       uuids.each do |uuid|
-#         card = Card.find_by(uuid: uuid)
-
-#         if card
-#           begin
-#             card_set.cards << card
-#           rescue
-#             puts "#{card.name} is already in the set #{card_set.name}"
-#           end
-#         end
-#       end
-#     end
-#   end
-
-#     # Clean up files!
-#     file_names.each do |file|
-#       File.delete(file) if File.exist? (file)
-#     end
-# end
-
 def connect_cards_to_sets
   CardSet.all.each { |card_set|
     set_code = card_set.code
