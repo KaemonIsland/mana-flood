@@ -1,8 +1,8 @@
 type Options = {
   weekday?: string
-  year?: string
-  month?: string
-  day?: string
+  year?: string | any
+  month?: string | any
+  day?: string | any
 }
 
 /**
