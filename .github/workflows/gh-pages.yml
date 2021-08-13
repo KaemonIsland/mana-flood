@@ -17,8 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true
-          fetch-depth: 0
+          cmd: install # will run `yarn install` command
 
       - name: Use Node.js 16
         uses: actions/setup-node@v1
@@ -26,7 +25,7 @@ jobs:
           node-version: 16
 
       - name: Install TypeDoc
-        run: sudo npm install -g typedoc
+        run: sudo yarn install -g typedoc
 
       - name: Generate Documentation
         run: typedoc
