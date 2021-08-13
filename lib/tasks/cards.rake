@@ -186,27 +186,17 @@ def update_cards
   Card.upsert_all(card_attrs, unique_by: [:uuid])
 end
 
+# I've had soooooo many problems linking cards to card sets.
+# This time I think it'll work if we just clear out all cards, then re add them to the set.
 def connect_cards_to_sets
   CardSet.all.each { |card_set|
+    card_set.cards = []
+
     set_code = card_set.code
 
-    card_uuids = Card.where(set_code: set_code).pluck(:uuid)
+    cards = Card.where(set_code: set_code)
 
-    uuids = card_uuids - card_set.cards.pluck(:uuid)
-
-    if uuids.present?
-      uuids.each do |uuid|
-        card = Card.find_by(uuid: uuid)
-
-        if card
-          begin
-            card_set.cards << card
-          rescue
-            puts "#{card.name} is already in the set #{card_set.name}"
-          end
-        end
-      end
-    end
+    card_set.cards << cards
   }
 end
 
