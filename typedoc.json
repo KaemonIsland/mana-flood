@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["app/javascript/app"],
+  "out": "docs",
+  "exclude": "**/node_modules/**/*"
+}

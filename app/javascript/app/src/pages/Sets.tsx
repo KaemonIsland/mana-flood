@@ -57,6 +57,7 @@ interface SetsProps {
   sets: Array<CardSet>
 }
 
+// eslint-disable-next-line
 export const Sets = ({ sets }: SetsProps): ReactElement => {
   const formattedSets = toCamelcase(sets)
 
@@ -81,11 +82,13 @@ export const Sets = ({ sets }: SetsProps): ReactElement => {
         <Text size={10}>Sets</Text>
       </Flex>
       <hr />
-      {setTypes.map((setType, index) => (
-        <Container marginTop="6" key={`${setType}${index}`}>
-          <SetSection setType={setType} sets={sortedSets[setType]} />
-        </Container>
-      ))}
+      <div>
+        {setTypes.map((setType, index) => (
+          <Container marginTop="6" key={`${setType}${index}`}>
+            <SetSection setType={setType} sets={sortedSets[setType]} />
+          </Container>
+        ))}
+      </div>
     </Page>
   )
 }

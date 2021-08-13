@@ -27,6 +27,8 @@ const defaultCard: CardInterface = {
   loyalty: '',
   borderColor: '',
   tcgplayerProductId: 0,
+  frameEffects: [],
+  setCode: ''
 }
 
 interface Props {
