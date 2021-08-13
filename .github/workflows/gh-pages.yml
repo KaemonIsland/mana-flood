@@ -25,7 +25,7 @@ jobs:
           node-version: 16
 
       - name: Install TypeDoc
-        run: sudo yarn install -g typedoc
+        run: sudo yarn global add typedoc
 
       - name: Generate Documentation
         run: typedoc
