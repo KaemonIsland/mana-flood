@@ -1,5 +1,9 @@
 name: GitHub Pages
 
+# Generates documentation using TypeDoc
+# @see https://typedoc.org/
+# Publishes generated to GH-Pages branch
+
 on:
   push:
     branches:
