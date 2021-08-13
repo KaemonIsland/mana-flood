@@ -25,7 +25,7 @@
     "react-transition-group": "4.4.1",
     "react_ujs": "2.6.1",
     "scroll-lock": "2.1.4",
-    "snakecase-keys": "3.2.0",
+    "snakecase-keys": "3.2.1",
     "styled-components": "5.2.0",
     "ts-loader": "8.0.9",
     "turbolinks": "5.2.0",
