@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react'
-import { Text } from 'warlock-ui'
+import { Text, Container, Flex } from 'warlock-ui'
 import styled from 'styled-components'
-import { formatDate } from '../../utils'
 import { CardSet } from '../../interface'
 import { SetIcon } from '../icon'
 
@@ -23,6 +22,8 @@ const SetContainer = styled.a(({ theme }) => ({
   backgroundColor: 'white',
   borderRadius: theme.spaceScale(2),
   transition: 'all 200ms ease-in-out',
+  display: 'flex',
+  alignItems: 'center',
 
   '&:hover, &:focus': {
     backgroundColor: theme.color.purple[2],
@@ -36,65 +37,58 @@ const SetContainer = styled.a(({ theme }) => ({
   },
 }))
 
-const StyledFlex = styled.div(() => ({
-  width: '100%',
-  display: 'flex',
-  alignItems: 'end',
-  justifyContent: 'space-between',
-}))
-
 interface SetsProps {
   sets: Array<CardSet>
   link: string
+  showAddInfo?: boolean
 }
 
-export const Sets = ({ sets, link }: SetsProps): ReactElement => {
+export const Sets = ({
+  sets,
+  link,
+  showAddInfo = false,
+}: SetsProps): ReactElement => {
   return (
     <SetGrid>
-      {sets.map(
-        ({
-          id,
-          baseSetSize,
-          name,
-          releaseDate,
-          unique,
-          keyruneCode,
-          setType,
-        }: CardSet) => (
+      {sets.map(({ id, name, keyruneCode, baseSetSize, unique }: CardSet) => (
+        <>
           <SetContainer key={id} href={`${link}/${id}`}>
-            <Text size={5} display="block">
-              {name}
-            </Text>
-            <Text
-              as="span"
-              font="roboto"
-              display="inline-block"
-              shade={6}
-              size={2}
+            <div
+              style={{
+                alignItems: 'center',
+                width: '100%',
+                height: showAddInfo ? '100%' : 'auto',
+                display: 'flex',
+              }}
             >
-              {`${setType.toUpperCase()} - `}
-            </Text>
-            <Text
-              as="span"
-              font="roboto"
-              display="inline-block"
-              color="grey"
-              shade={6}
-              size={1}
-              isItalics
-            >
-              {formatDate(new Date(releaseDate), {})}
-            </Text>
-            <StyledFlex>
-              <Text font="roboto" display="block">
-                {!!unique && `${unique} / `}
-                {baseSetSize} Cards
-              </Text>
-              <SetIcon setCode={keyruneCode} size={3} />
-            </StyledFlex>
+              <Container paddingRight={5}>
+                <SetIcon setCode={keyruneCode} size={2} />
+              </Container>
+              <div
+                style={{
+                  justifyContent: 'space-between',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <Text size={5} display="block">
+                  {name}
+                </Text>
+                {showAddInfo && (
+                  <Container width="100%">
+                    <hr />
+                    <Text font="roboto" display="block">
+                      {`Cards: ${unique && `${unique} / `}${baseSetSize}`}
+                    </Text>
+                  </Container>
+                )}
+              </div>
+            </div>
           </SetContainer>
-        )
-      )}
+        </>
+      ))}
     </SetGrid>
   )
 }

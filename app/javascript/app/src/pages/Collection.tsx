@@ -3,7 +3,7 @@ import { Text, Button, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import axios from 'axios'
 import { cardActions, formatDate } from '../utils'
-import { Page, Sets, Collapse } from '../components'
+import { Page, SetGroups, Collapse } from '../components'
 import { Form, File } from '../elements'
 
 const SetContainer = styled.a(({ theme }) => ({
@@ -120,7 +120,10 @@ export const Collection = (): ReactElement => {
           All Cards
         </Text>
       </SetContainer>
-      <Sets sets={cardSets} link="/collection/set" />
+      <SetGroups
+        sets={cardSets}
+        setsOptions={{ link: '/collection/set', showAddInfo: true }}
+      />
     </Page>
   )
 }
