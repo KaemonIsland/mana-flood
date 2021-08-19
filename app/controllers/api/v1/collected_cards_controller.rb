@@ -92,7 +92,12 @@ class Api::V1::CollectedCardsController < ApplicationController
 
   def update
     if !in_collection?(@collection, @card)
-      render json: { error: 'Card not in collection' }, status: 404
+      @collection.cards << @card
+      @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
+      @collected_card.update(collected_card_params)
+      @collected_card.save
+
+      render 'api/v1/card/collection.json.jbuilder', status: 201
     elsif @collected_card.update(collected_card_params)
       render 'api/v1/card/collection.json.jbuilder', status: 200
     else

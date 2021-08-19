@@ -63,7 +63,8 @@ module CardStats
         uncommon: 0,
         rare: 0,
         mythic: 0,
-        special: 0
+        special: 0,
+        bonus: 0
       },
       cards: 0,
     }

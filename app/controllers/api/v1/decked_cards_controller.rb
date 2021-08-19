@@ -28,7 +28,7 @@ class Api::V1::DeckedCardsController < ApplicationController
         render json: { error: 'Card is already in this deck' }, status: 400
       elsif @deck.cards << @card
         @decked_card = @deck.decked_cards.find_by(card_id: @card.id)
-        @decked_card.quantity = 1
+        @decked_card.update(decked_card_params)
         @decked_card.save
 
         render 'api/v1/card/deck.json.jbuilder', status: 201
@@ -39,7 +39,12 @@ class Api::V1::DeckedCardsController < ApplicationController
     
     def update
       if !in_deck?(@deck, @card)
-        render json: { error: 'Card not in deck' }, status: 404
+        @deck.cards << @card
+        @decked_card = @deck.decked_cards.find_by(card_id: @card.id)
+        @decked_card.quantity = 1
+        @decked_card.save
+
+        render 'api/v1/card/deck.json.jbuilder', status: 201
       elsif @decked_card.update(decked_card_params)
         render 'api/v1/card/deck.json.jbuilder', status: 200
       else

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Button, Flex } from 'warlock-ui'
+import { Button } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
-import { getCardImage } from '../../../utils'
+import { getCardImage, useDebounce } from '../../../utils'
 import { Link } from '../../link'
 import { Feather } from '../../icon'
 import { Card } from '../../../interface'
@@ -70,9 +70,13 @@ interface Props {
 }
 
 export const ImageOnly = ({ actions, card }: Props): ReactElement => {
+  const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
+  const [prevQuantity, setPrevQuantity] = useState(null)
   const [quantity, setQuantity] = useState(card[scope])
+
+  const debouncedValue = useDebounce(quantity)
 
   const { addToast } = useToasts()
 
@@ -80,22 +84,37 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
 
   const { add, update, remove } = actions
 
-  const addCard = async (): Promise<void> => {
-    await add(id)
-    addToast(`${name} added to collection`)
+  const addCard = (): void => {
+    setPrevQuantity(quantity)
     setQuantity(1)
   }
 
-  const updateCard = async (quantity: number): Promise<void> => {
-    await update(id, quantity)
-    addToast(`${name} quantity updated to ${quantity}`, { appearance: 'info' })
-    setQuantity(quantity)
+  const updateCard = (newQuantity: number): void => {
+    setPrevQuantity(quantity)
+    setQuantity(newQuantity)
   }
 
-  const removeCard = async (): Promise<void> => {
-    await remove(id)
-    addToast(`${name} was removed from collection`, { appearance: 'info' })
+  const removeCard = (): void => {
+    setPrevQuantity(quantity)
     setQuantity(0)
+  }
+
+  // Updates the card quantity on the db
+  const updateCardQuantity = async (): Promise<void> => {
+    if (prevQuantity === 0 && quantity === 1) {
+      await add(id)
+      addToast(`${name} added to collection`)
+    } else if (quantity <= 0) {
+      await remove(id)
+      addToast(`${name} was removed from collection`, {
+        appearance: 'info',
+      })
+    } else {
+      await update(id, quantity)
+      addToast(`${name} quantity updated to ${quantity}`, {
+        appearance: 'info',
+      })
+    }
   }
 
   const handleCardImage = async () => {
@@ -109,6 +128,18 @@ export const ImageOnly = ({ actions, card }: Props): ReactElement => {
 
   useEffect(() => {
     handleCardImage()
+  }, [])
+
+  // Uses debounce to update card toasts and quantities
+  useEffect(() => {
+    if (!isLoading) {
+      updateCardQuantity()
+    }
+  }, [debouncedValue])
+
+  // Sets loading to false after everything is done... loading
+  useEffect(() => {
+    setIsLoading(false)
   }, [])
 
   return (

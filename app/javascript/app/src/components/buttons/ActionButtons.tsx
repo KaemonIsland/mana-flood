@@ -24,13 +24,13 @@ Button.Right = styled(Button)`
 `
 
 interface UpdateCard {
-  (newQuantity: number): Promise<void>
+  (newQuantity: number): void
 }
 interface AddCard {
-  (): Promise<void>
+  (): void
 }
 interface RemoveCard {
-  (): Promise<void>
+  (): void
 }
 
 interface Actions {

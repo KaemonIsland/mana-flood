@@ -10,6 +10,7 @@ import {
   getCardImage,
   getManaCost,
   uniqueColors,
+  useDebounce,
 } from '../../../utils'
 import { Card } from '../../../interface'
 import { useToasts } from '../../../providers'
@@ -143,11 +144,14 @@ interface Props {
 }
 
 export const Minimal = ({ actions, card }: Props): ReactElement => {
+  const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
+  const [prevQuantity, setPrevQuantity] = useState(null)
   const [quantity, setQuantity] = useState(card[scope])
   // Info used for displaying the card image
   const { dropdownProps, triggerProps, isOpen } = useDropdown()
+  const debouncedValue = useDebounce(quantity)
 
   const { addToast } = useToasts()
 
@@ -159,24 +163,37 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const { add, update, remove } = actions
 
-  const addCard = async (): Promise<void> => {
-    await add(id)
-    addToast(`${cardName} added to collection`)
+  const addCard = (): void => {
+    setPrevQuantity(quantity)
     setQuantity(1)
   }
 
-  const updateCard = async (quantity: number): Promise<void> => {
-    await update(id, quantity)
-    addToast(`${cardName} quantity updated to ${quantity}`, {
-      appearance: 'info',
-    })
-    setQuantity(quantity)
+  const updateCard = (newQuantity: number): void => {
+    setPrevQuantity(quantity)
+    setQuantity(newQuantity)
   }
 
-  const removeCard = async (): Promise<void> => {
-    await remove(id)
-    addToast(`${cardName} was removed from collection`, { appearance: 'info' })
+  const removeCard = (): void => {
+    setPrevQuantity(quantity)
     setQuantity(0)
+  }
+
+  // Updates the card quantity on the db
+  const updateCardQuantity = async (): Promise<void> => {
+    if (prevQuantity === 0 && quantity === 1) {
+      await add(id)
+      addToast(`${cardName} added to collection`)
+    } else if (quantity <= 0) {
+      await remove(id)
+      addToast(`${cardName} was removed from collection`, {
+        appearance: 'info',
+      })
+    } else {
+      await update(id, quantity)
+      addToast(`${cardName} quantity updated to ${quantity}`, {
+        appearance: 'info',
+      })
+    }
   }
 
   // Mana without brackets
@@ -190,15 +207,24 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
     setCardImages(cardUrl)
   }
 
+  // Fetches a new card image whenever the card viewer is opened
   useEffect(() => {
-    setQuantity(card[scope])
-  }, [card[scope]])
-
-  useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !cardImages.length) {
       handleCardImage()
     }
   }, [isOpen])
+
+  // Uses debounce to update card toasts and quantities
+  useEffect(() => {
+    if (!isLoading) {
+      updateCardQuantity()
+    }
+  }, [debouncedValue])
+
+  // Sets loading to false after everything is done... loading
+  useEffect(() => {
+    setIsLoading(false)
+  }, [])
 
   return (
     <ThemeProvider>
