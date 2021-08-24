@@ -7,6 +7,7 @@ import { Pagination } from '../Pagination'
 import { Scope } from '../scope'
 import { useFilter, useCards } from '../../utils'
 import { useScope } from '../../providers'
+import { Legend } from '../legend'
 
 const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
   display: 'grid',
@@ -20,7 +21,9 @@ const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
 const StyledGrid = styled.div(({ theme, imageOnly }) => ({
   display: 'grid',
   gridGap: theme.spaceScale(3),
-  gridTemplateColumns: 'repeat(auto-fill, minmax(22rem, 1fr))',
+  gridTemplateColumns: `repeat(auto-fill, minmax(${
+    imageOnly ? '16rem' : '22rem'
+  }, 1fr))`,
   gridAutoRows: imageOnly ? '26rem' : '7rem',
   justifyItems: 'center',
   alignItems: 'start',
@@ -69,6 +72,8 @@ export const Cards = ({
 
   return (
     <>
+      <Legend />
+      <hr />
       {showPagination && <div>{results}</div>}
       <CardsContainer showFilter={showFilter} isMobile={isMobile}>
         <div>

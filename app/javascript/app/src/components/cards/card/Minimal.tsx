@@ -143,6 +143,13 @@ interface Props {
   card: Card
 }
 
+// Frame Effect Symbols
+const frameEffectIcon = {
+  showcase: 'star',
+  extendedart: 'square',
+  inverted: 'rotate-cw',
+}
+
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
@@ -155,11 +162,29 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const { addToast } = useToasts()
 
-  const { cardType, id, manaCost, name, colorIdentity, scryfallId } = card
+  const {
+    cardType,
+    id,
+    manaCost,
+    name,
+    colorIdentity,
+    scryfallId,
+    frameEffects,
+  } = card
 
   const cardName = String(name).split(' // ')[0]
 
   const isLand = cardType.includes('Land')
+
+  // Grabs the first frame effect for a card if it exists
+  const frameEffect = frameEffects[0] || ''
+
+  // Determines if the card is a PROMO if the first promo type is boosterfun
+  const isPromo =
+    card &&
+    card.promoTypes &&
+    card.promoTypes.length &&
+    card.promoTypes[0] === 'boosterfun'
 
   const { add, update, remove } = actions
 
@@ -276,6 +301,17 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                   size="small"
                 />
               </Button.Icon>
+              {isPromo && frameEffectIcon[frameEffect] ? (
+                <p title={frameEffect}>
+                  <Feather
+                    svgProps={{
+                      'stroke-width': 1,
+                    }}
+                    icon={frameEffectIcon[frameEffect]}
+                    size="small"
+                  />
+                </p>
+              ) : null}
               <div>
                 <ActionButtons
                   collection={scope === 'deck' ? card?.collection : null}

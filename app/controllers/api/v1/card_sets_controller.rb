@@ -9,7 +9,7 @@ class Api::V1::CardSetsController < ApplicationController
   end
 
   def show
-    render json:  @set
+    render json: @set
   end
 
   def collection
