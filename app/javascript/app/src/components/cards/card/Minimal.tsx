@@ -1,12 +1,18 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { ThemeProvider, Flex, Button, Text } from 'warlock-ui'
+import {
+  ThemeProvider,
+  Flex,
+  Button,
+  Text,
+  Modal,
+  usePopupTrigger,
+} from 'warlock-ui'
 import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
+import { AddCardForm } from '../../forms'
 import { ManaSymbol, Feather } from '../../icon'
-import { Dropdown } from '../../Dropdown'
 import {
-  useDropdown,
   getCardImage,
   getManaCost,
   uniqueColors,
@@ -156,11 +162,11 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [prevQuantity, setPrevQuantity] = useState(null)
   const [quantity, setQuantity] = useState(card[scope])
-  // Info used for displaying the card image
-  const { dropdownProps, triggerProps, isOpen } = useDropdown()
   const debouncedValue = useDebounce(quantity)
 
   const { addToast } = useToasts()
+
+  const modal = usePopupTrigger()
 
   const {
     cardType,
@@ -234,10 +240,10 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   // Fetches a new card image whenever the card viewer is opened
   useEffect(() => {
-    if (isOpen && !cardImages.length) {
+    if (modal.isOpen && !cardImages.length) {
       handleCardImage()
     }
-  }, [isOpen])
+  }, [modal.isOpen])
 
   // Uses debounce to update card toasts and quantities
   useEffect(() => {
@@ -253,11 +259,28 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   return (
     <ThemeProvider>
+      <Modal {...modal.popup}>
+        <Flex alignItems="end" justifyContent="space-between">
+          <CardImagesContainer>
+            {cardImages.length
+              ? cardImages.map((cardImage, index) => (
+                  <CardImgContainer key={index}>
+                    <CardImg src={cardImage} alt={name} />
+                  </CardImgContainer>
+                ))
+              : null}
+          </CardImagesContainer>
+          <div>
+            <AddCardForm
+              collection={scope === 'deck' ? card?.collection : null}
+              quantity={quantity}
+              actions={{ updateCard, removeCard, addCard }}
+            />
+          </div>
+        </Flex>
+      </Modal>
       <div>
-        <CardContainer
-          ref={triggerProps.ref}
-          color={isLand ? colorIdentity : cardColors}
-        >
+        <CardContainer color={isLand ? colorIdentity : cardColors}>
           <InnerCard>
             <Flex justifyContent="space-between" alignItems="space-between">
               <Link href={`/card/${id}`}>
@@ -292,12 +315,12 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
               </Text>
             </CardInfo>
             <Flex alignItems="flex-end" justifyContent="space-between">
-              <Button.Icon color="purple" shade={1} {...triggerProps}>
+              <Button.Icon color="purple" shade={1} {...modal.trigger}>
                 <Feather
                   svgProps={{
-                    'stroke-width': 1,
+                    'stroke-width': 2,
                   }}
-                  icon={`eye${isOpen ? '-off' : ''}`}
+                  icon="info"
                   size="small"
                 />
               </Button.Icon>
@@ -322,17 +345,6 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
             </Flex>
           </InnerCard>
         </CardContainer>
-        <Dropdown isPaddingless {...dropdownProps}>
-          <CardImagesContainer>
-            {cardImages.length
-              ? cardImages.map((cardImage, index) => (
-                  <CardImgContainer key={index}>
-                    <CardImg src={cardImage} alt={name} />
-                  </CardImgContainer>
-                ))
-              : null}
-          </CardImagesContainer>
-        </Dropdown>
       </div>
     </ThemeProvider>
   )

@@ -45,81 +45,65 @@ interface OnChange {
 
 interface InputItemProps {
   onChange: OnChange
-  name: string
   props?: any
-  value: string
+  value: boolean
   label?: string
-  groupValue: Array<any>
 }
 
 const CheckboxItem = ({
   value,
-  label,
   props = {},
-  name,
   onChange,
-  groupValue,
+  label,
 }: InputItemProps): ReactElement => {
-  const checked = groupValue.includes(value)
-
   return (
     <StyledLabel htmlFor={value} disabled={props.disabled}>
-      {capitalize(label || value)}
+      {capitalize(label || '')}
       <StyledInput
         type="checkbox"
         onChange={onChange}
-        id={value}
-        name={name}
         value={value}
-        checked={checked}
+        checked={value}
         {...props}
       />
       <StyledSpan>
-        <Feather size="small" icon={`${checked ? 'check-' : ''}square`} />
+        <Feather size="small" icon={`${value ? 'check-' : ''}square`} />
       </StyledSpan>
     </StyledLabel>
   )
 }
 
-interface Options {
-  value: string
-  props?: any
-  label?: string
-}
-
 interface InputProps {
   onChange: OnChange
-  name: string
   label: string
   hint?: string
   removeHint?: boolean
   disabled?: boolean
-  options: Array<Options>
-  value: Array<any>
+  value: boolean
 }
 
-export const Checkbox = ({
+/**
+ * A confirm checkbox that only has one option that can be true or false.
+ *
+ * This is a simplified version of the checkbox component
+ *
+ * @param {func} onChange - Called when the box/label is clicked
+ * @param {string} label - Clickable text next to the checkbox
+ * @param {string} hint - Supportive text further explaining the checkbox usage.
+ * @param {boolean} removeHint - Whether room for the hint should be removed or not
+ * @param {boolean} value - the current value of the checkbox
+ */
+export const CheckboxConfirm = ({
   onChange,
   label,
-  name,
   hint,
   removeHint = false,
-  options,
   value,
 }: InputProps): ReactElement => {
   return (
     <InputContainer>
-      <Text>{label}</Text>
       <OptionContainer>
-        {options.map((option, index) => (
-          <CheckboxItem
-            groupValue={value}
-            name={name}
-            onChange={onChange}
-            key={index}
-            {...option}
-          />
-        ))}
+        <CheckboxItem value={value} onChange={onChange} label={label} />
       </OptionContainer>
       {!removeHint && (
         <Text
