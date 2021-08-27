@@ -16,6 +16,11 @@ export interface Variation {
   scryfallId?: string
 }
 
+export interface Quantity {
+  quantity: number
+  foil: number
+}
+
 export interface Card {
   isAlternative: boolean
   isPromo: boolean
@@ -35,8 +40,8 @@ export interface Card {
   text: string
   rarity: string
   number: number
-  collection: number
-  deck?: number
+  collection: Quantity
+  deck?: Quantity
   variations: Array<Variation>
   loyalty: string
   borderColor: string

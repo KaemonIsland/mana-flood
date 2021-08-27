@@ -82,6 +82,11 @@ class Api::V1::CollectedCardsController < ApplicationController
     elsif @collection.cards << @card
       @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
       @collected_card.quantity = 1
+
+      if params[:foil]
+        @collected_card.foil = 1
+      end
+
       @collected_card.save
 
       render 'api/v1/card/collection.json.jbuilder', status: 201
@@ -134,6 +139,6 @@ class Api::V1::CollectedCardsController < ApplicationController
     end
 
     def collected_card_params
-      params.permit(:quantity)
+      params.permit(:quantity, :foil)
     end
   end

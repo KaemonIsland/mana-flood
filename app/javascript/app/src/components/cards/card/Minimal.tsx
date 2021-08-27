@@ -159,9 +159,14 @@ const frameEffectIcon = {
 export const Minimal = ({ actions, card }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
-  const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [prevQuantity, setPrevQuantity] = useState(null)
-  const [quantity, setQuantity] = useState(card[scope])
+
+  const scope =
+    card && card.deck && card.deck.quantity >= 0 ? 'deck' : 'collection'
+  const cardCounts = card[scope]
+  const [quantity, setQuantity] = useState(cardCounts.quantity)
+  const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
+
   const debouncedValue = useDebounce(quantity)
 
   const { addToast } = useToasts()

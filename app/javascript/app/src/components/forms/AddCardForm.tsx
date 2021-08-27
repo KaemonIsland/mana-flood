@@ -37,9 +37,11 @@ interface ActionButtonProps {
 export const AddCardForm = ({
   actions,
   quantity,
+  foil,
   collection,
 }: ActionButtonProps): ReactElement => {
   const [isFoil, setIsFoil] = useState(false)
+
   return (
     <Container padding={4} paddingRight={0}>
       <Text family="roboto" display="inline-block">

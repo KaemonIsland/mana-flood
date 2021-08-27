@@ -39,10 +39,15 @@ interface Actions {
   removeCard: RemoveCard
 }
 
+interface Quantities {
+  quantity: number
+  foil: number
+}
+
 interface ActionButtonProps {
   actions: Actions
   quantity: number
-  collection?: number
+  collection?: Quantities
 }
 
 /**
@@ -82,14 +87,14 @@ export const ActionButtons = ({
           <Text family="roboto" display="inline-block">
             {quantity}
           </Text>
-          {collection ? (
+          {collection && collection.quantity ? (
             <Text
               family="roboto"
               display="inline-block"
               color="grey"
               shade={6}
               size={2}
-            >{`/${collection}`}</Text>
+            >{`/${collection.quantity}`}</Text>
           ) : null}
         </Button.Middle>
       </>
