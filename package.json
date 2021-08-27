@@ -40,7 +40,7 @@
   "devDependencies": {
     "cz-conventional-changelog": "3.3.0",
     "husky": "4.3.8",
-    "lint-staged": "10.5.1",
+    "lint-staged": "10.5.4",
     "react-is": "16.13.1",
     "typedoc": "^0.21.5",
     "warlock-config": "1.2.0",
