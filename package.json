@@ -44,7 +44,7 @@
     "react-is": "16.13.1",
     "typedoc": "0.21.7",
     "warlock-config": "1.2.0",
-    "webpack-dev-server": "3.11.0"
+    "webpack-dev-server": "3.11.2"
   },
   "husky": {
     "hooks": {
