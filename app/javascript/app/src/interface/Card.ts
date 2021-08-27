@@ -43,5 +43,5 @@ export interface Card {
   tcgplayerProductId: number
   frameEffects: Array<string>
   setCode: string
-  promoTypes: Array<string>
+  promoTypes?: Array<string>
 }
