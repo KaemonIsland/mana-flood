@@ -195,7 +195,6 @@ const FilterContent = ({
                   name="type"
                   value="all"
                   onChange={update}
-                  defaultChecked
                   checked={!type}
                 />
                 All

@@ -10,7 +10,7 @@ module CardSetsHelper
     return false unless collection && card
 
     if in_collection?(collection, card)
-      collection.collected_cards.find_by(card_id: card.id).quantity
+      collection.collected_cards.find_by(card_id: card.id)
     end
   end
 

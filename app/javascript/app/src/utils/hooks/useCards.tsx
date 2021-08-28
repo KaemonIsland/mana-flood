@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { cardActions } from '../cardActions'
+import { collectionActions, deckActions, setActions } from '../cardActions'
 import { Deck, Card, CardStats } from '../../interface'
 
 interface Get {
@@ -108,16 +108,33 @@ export const useCards = (
 
   const deckId = (typeof scope !== 'string' && scope.id) || null
 
-  const actionScope = typeof scope === 'string' ? 'collection' : 'deck'
+  const isCollection = typeof scope === 'string'
 
-  const addCard = async (id: number): Promise<Card> =>
-    await cardActions[actionScope].add(id, deckId)
+  const addCard = async (id: number, options?: any): Promise<Card> => {
+    if (isCollection) {
+      return await collectionActions.add(id, options)
+    }
+    return await deckActions.add(id, deckId, options)
+  }
 
-  const removeCard = async (id: number): Promise<Card> =>
-    await cardActions[actionScope].remove(id, deckId)
+  const removeCard = async (id: number, options?: any): Promise<Card> => {
+    if (isCollection) {
+      return await collectionActions.remove(id, options)
+    }
 
-  const updateCard = async (id: number, quantity: number): Promise<Card> =>
-    await cardActions[actionScope].update(id, quantity, deckId)
+    await deckActions.remove(id, deckId, options)
+  }
+
+  const updateCard = async (
+    id: number,
+    quantity: number,
+    options?: any
+  ): Promise<Card> => {
+    if (isCollection) {
+      return await collectionActions.update(id, quantity, options)
+    }
+    return await deckActions.update(id, quantity, deckId, options)
+  }
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
     if (!cardQuery.has('page')) {
@@ -134,19 +151,19 @@ export const useCards = (
     let response
 
     if (type === 'search') {
-      response = await cardActions[actionScope][type](cardQuery, deckId)
+      if (isCollection) {
+        response = await collectionActions[type](cardQuery)
+      } else {
+        response = await deckActions[type](cardQuery, deckId)
+      }
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await cardActions.deck.deck(cardQuery, deckId)
+        response = await deckActions.deck(cardQuery, deckId)
       } else {
-        response = await cardActions.deck[type](
-          cardQuery,
-          options.setId,
-          deckId
-        )
+        response = await deckActions[type](cardQuery, options.setId, deckId)
       }
     } else {
-      response = await cardActions.collection[type](cardQuery, options.setId)
+      response = await collectionActions[type](cardQuery, options.setId)
     }
 
     setIsLoading(false)

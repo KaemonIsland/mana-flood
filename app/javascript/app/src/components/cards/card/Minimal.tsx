@@ -129,13 +129,13 @@ const TitleText = styled(Text)`
 `
 
 interface Add {
-  (id: number): Promise<Card>
+  (id: number, options?: any): Promise<Card>
 }
 interface Update {
-  (id: number, quantity: number): Promise<Card>
+  (id: number, quantity: number, options?: any): Promise<Card>
 }
 interface Remove {
-  (id: number): Promise<Card>
+  (id: number, options?: any): Promise<Card>
 }
 
 interface CardActions {
@@ -166,6 +166,9 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
   const cardCounts = card[scope]
   const [quantity, setQuantity] = useState(cardCounts.quantity)
   const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
+
+  // Sets options used when making a card request.
+  const [cardOptions, setCardOptions] = useState({})
 
   const debouncedValue = useDebounce(quantity)
 
@@ -199,37 +202,86 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
 
   const { add, update, remove } = actions
 
-  const addCard = (): void => {
+  /**
+   * Updates the card quantity and foil quantity states
+   *
+   * Will also add an options setting if present
+   */
+  const addCard = (options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(1)
+
+    // Adds options if present
+    if (options) {
+      setCardOptions(options)
+    }
+
+    // Adds foil quantity if present in options
+    if (options && options.params && options.params.foil) {
+      setFoilQuantity(1)
+    }
   }
 
-  const updateCard = (newQuantity: number): void => {
+  /**
+   * Updates the card quantity and foil quantity states
+   *
+   * Will also add an options setting if present
+   */
+  const updateCard = (newQuantity: number, options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(newQuantity)
+
+    // There can never be more foils than total quantity.
+    // This ensures the user gets current information when updating counts
+    if (foilQuantity > newQuantity) {
+      setFoilQuantity(newQuantity)
+    }
+
+    if (options) {
+      setCardOptions(options)
+    }
+
+    if (options && options.params && options.params.foil !== undefined) {
+      setFoilQuantity(options.params.foil)
+    }
   }
 
-  const removeCard = (): void => {
+  /**
+   * Updates the card quantity and foil quantity states
+   *
+   * Will also add an options setting if present
+   */
+  const removeCard = (options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(0)
+
+    if (options) {
+      setCardOptions(options)
+    }
+
+    if (options && options.params && options.params.foil) {
+      setFoilQuantity(0)
+    }
   }
 
   // Updates the card quantity on the db
   const updateCardQuantity = async (): Promise<void> => {
     if (prevQuantity === 0 && quantity === 1) {
-      await add(id)
+      await add(id, cardOptions)
       addToast(`${cardName} added to collection`)
     } else if (quantity <= 0) {
-      await remove(id)
+      await remove(id, cardOptions)
       addToast(`${cardName} was removed from collection`, {
         appearance: 'info',
       })
     } else {
-      await update(id, quantity)
+      await update(id, quantity, cardOptions)
       addToast(`${cardName} quantity updated to ${quantity}`, {
         appearance: 'info',
       })
     }
+
+    setCardOptions({})
   }
 
   // Mana without brackets
@@ -279,6 +331,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
             <AddCardForm
               collection={scope === 'deck' ? card?.collection : null}
               quantity={quantity}
+              foil={foilQuantity}
               actions={{ updateCard, removeCard, addCard }}
             />
           </div>
@@ -330,15 +383,13 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
                 />
               </Button.Icon>
               {isPromo && frameEffectIcon[frameEffect] ? (
-                <p title={frameEffect}>
-                  <Feather
-                    svgProps={{
-                      'stroke-width': 1,
-                    }}
-                    icon={frameEffectIcon[frameEffect]}
-                    size="small"
-                  />
-                </p>
+                <Feather
+                  svgProps={{
+                    'stroke-width': 1,
+                  }}
+                  icon={frameEffectIcon[frameEffect]}
+                  size="small"
+                />
               ) : null}
               <div>
                 <ActionButtons

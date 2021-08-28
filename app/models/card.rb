@@ -35,7 +35,7 @@ class Card < ApplicationRecord
 
     collected = self.collected_cards.select { |col| col.collection_id === collection_id }
 
-    collected.empty? ? 0 : collected.first.quantity
+    collected.empty? ? 0 : collected.first
   end
 
   # Gets the number of the card used within a specific deck

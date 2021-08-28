@@ -4,13 +4,13 @@ import { CheckboxConfirm } from '../../elements'
 import styled from 'styled-components'
 
 interface UpdateCard {
-  (newQuantity: number): void
+  (newQuantity: number, options?: any): void
 }
 interface AddCard {
-  (): void
+  (options?: any): void
 }
 interface RemoveCard {
-  (): void
+  (options?: any): void
 }
 
 interface Actions {
@@ -22,7 +22,8 @@ interface Actions {
 interface ActionButtonProps {
   actions: Actions
   quantity: number
-  collection?: number
+  collection?: any
+  foil?: number
 }
 
 /**
@@ -42,8 +43,14 @@ export const AddCardForm = ({
 }: ActionButtonProps): ReactElement => {
   const [isFoil, setIsFoil] = useState(false)
 
+  // TODO make this file actually look good!
   return (
     <Container padding={4} paddingRight={0}>
+      {foil && (
+        <Text family="roboto" display="inline-block">
+          {`Foil: ${foil}`}
+        </Text>
+      )}
       <Text family="roboto" display="inline-block">
         {`Quantity: ${quantity ? quantity : 'Not Owned'}`}
       </Text>
@@ -67,7 +74,10 @@ export const AddCardForm = ({
             onClick={(): void => {
               const newQuantity = quantity - 1
               if (newQuantity) {
-                actions.updateCard(newQuantity)
+                actions.updateCard(
+                  newQuantity,
+                  isFoil ? { params: { foil: foil - 1 } } : null
+                )
               } else {
                 actions.removeCard()
               }
@@ -85,9 +95,12 @@ export const AddCardForm = ({
             variant="outline"
             onClick={(): void => {
               if (quantity) {
-                actions.updateCard(quantity + 1)
+                actions.updateCard(
+                  quantity + 1,
+                  isFoil ? { params: { foil: foil + 1 } } : null
+                )
               } else {
-                actions.addCard()
+                actions.addCard(isFoil ? { params: { foil: 1 } } : null)
               }
             }}
           >
