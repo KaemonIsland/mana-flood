@@ -4,7 +4,7 @@ import { request } from '../utils'
 /**
  * Contains all API calls related to the users collection
  */
-export const collectionActions = {
+export const collectionCardActions = {
   card: async (id: number): Promise<Card> =>
     await request(`/api/v1/card/${id}`, error => {
       console.log('Unable to get card: ', error)
@@ -98,7 +98,7 @@ export const collectionActions = {
 /**
  * Contains all API calls related to a users deck
  */
-export const deckActions = {
+export const deckCardActions = {
   card: async (id: number, deckId: number): Promise<Card> =>
     await request(`card/${id}/deck/${deckId}`, error => {
       console.log('Unable to get card: ', error)
@@ -177,7 +177,7 @@ export const deckActions = {
     await request(
       `/api/v1/add_decked_card/${deckId}/${id}?quantity=${quantity}`,
       error => {
-        console.log('Unable to remove card to collection', error)
+        console.log('Unable to update card in deck', error)
       },
       {
         method: 'put',
@@ -192,7 +192,7 @@ export const deckActions = {
     await request(
       `/api/v1/remove_decked_card/${deckId}/${id}`,
       error => {
-        console.log('Unable to remove card to collection', error)
+        console.log('Unable to remove card from deck', error)
       },
       {
         method: 'delete',

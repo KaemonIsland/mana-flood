@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement, FormEvent } from 'react'
 import { Text, Button, Flex } from 'warlock-ui'
 import styled from 'styled-components'
 import axios from 'axios'
-import { cardActions, formatDate } from '../utils'
+import { collectionCardActions, formatDate } from '../utils'
 import { Page, SetGroups, Collapse } from '../components'
 import { Form, File } from '../elements'
 
@@ -37,7 +37,7 @@ export const Collection = (): ReactElement => {
   const [showOptions, setShowOptions] = useState(false)
 
   const getCollectionSets = async (): Promise<void> => {
-    const sets = await cardActions.collection.sets()
+    const sets = await collectionCardActions.sets()
 
     setCardSets(sets)
   }

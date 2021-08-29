@@ -67,14 +67,18 @@ interface CardActions {
 interface Props {
   actions: CardActions
   card: Card
+  scope: any
 }
 
-export const ImageOnly = ({ actions, card }: Props): ReactElement => {
+export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
-  const scope = card && card.deck >= 0 ? 'deck' : 'collection'
   const [prevQuantity, setPrevQuantity] = useState(null)
-  const [quantity, setQuantity] = useState(card[scope])
+
+  const currentScope = typeof scope === 'string' ? 'collection' : 'deck'
+  const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
+  const [quantity, setQuantity] = useState(cardCounts.quantity)
+  const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
 
   const debouncedValue = useDebounce(quantity)
 

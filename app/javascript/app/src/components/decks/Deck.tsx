@@ -131,13 +131,7 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           </Collapse>
           <hr />
           <Stats stats={deck.stats} />
-          <Cards
-            imageOnly
-            showPagination={false}
-            showFilter={false}
-            type="deck"
-            showScope={false}
-          />
+          <Cards type="deck" showScope={false} />
         </>
       )}
     </Page>

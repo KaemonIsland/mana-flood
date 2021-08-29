@@ -44,7 +44,7 @@ class Card < ApplicationRecord
 
     decked = self.decked_cards.select { |deck| deck.deck_id === deck_id }
 
-    decked.empty? ? 0 : decked.first.quantity
+    decked.empty? ? 0 : decked.first
   end
 
   ############## SORTING #############

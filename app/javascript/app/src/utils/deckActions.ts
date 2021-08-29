@@ -18,7 +18,7 @@ export const deckActions = {
       },
       {
         method: 'post',
-        data: deck,
+        params: deck,
       }
     ),
   update: async (id, info): Promise<Deck> =>
@@ -29,7 +29,7 @@ export const deckActions = {
       },
       {
         method: 'patch',
-        data: info,
+        params: info,
       }
     ),
 

@@ -147,6 +147,7 @@ interface CardActions {
 interface Props {
   actions: CardActions
   card: Card
+  scope: any
 }
 
 // Frame Effect Symbols
@@ -156,14 +157,17 @@ const frameEffectIcon = {
   inverted: 'rotate-cw',
 }
 
-export const Minimal = ({ actions, card }: Props): ReactElement => {
+export const Minimal = ({
+  actions,
+  card,
+  scope = 'Collection',
+}: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const [prevQuantity, setPrevQuantity] = useState(null)
 
-  const scope =
-    card && card.deck && card.deck.quantity >= 0 ? 'deck' : 'collection'
-  const cardCounts = card[scope]
+  const currentScope = typeof scope === 'string' ? 'collection' : 'deck'
+  const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
   const [quantity, setQuantity] = useState(cardCounts.quantity)
   const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
 
@@ -329,7 +333,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
           </CardImagesContainer>
           <div>
             <AddCardForm
-              collection={scope === 'deck' ? card?.collection : null}
+              collection={currentScope === 'deck' ? card?.collection : null}
               quantity={quantity}
               foil={foilQuantity}
               actions={{ updateCard, removeCard, addCard }}
@@ -393,7 +397,7 @@ export const Minimal = ({ actions, card }: Props): ReactElement => {
               ) : null}
               <div>
                 <ActionButtons
-                  collection={scope === 'deck' ? card?.collection : null}
+                  collection={currentScope === 'deck' ? card?.collection : null}
                   quantity={quantity}
                   actions={{ updateCard, removeCard, addCard }}
                 />

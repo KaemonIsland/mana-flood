@@ -1,6 +1,10 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { Page, Full } from '../components'
-import { getCard as getScryfallCard, getCardImage, cardActions } from '../utils'
+import {
+  getCard as getScryfallCard,
+  getCardImage,
+  collectionCardActions,
+} from '../utils'
 import { Card as CardInterface } from '../interface'
 
 const defaultCard: CardInterface = {
@@ -21,14 +25,14 @@ const defaultCard: CardInterface = {
   text: '',
   number: 0,
   rarity: '',
-  collection: 0,
+  collection: { quantity: 0, foil: 0 },
   variations: [],
   convertedManaCost: 0,
   loyalty: '',
   borderColor: '',
   tcgplayerProductId: 0,
   frameEffects: [],
-  setCode: ''
+  setCode: '',
 }
 
 interface Props {
@@ -60,7 +64,7 @@ export const Card = ({ id }: Props): ReactElement => {
   }
 
   const initialize = async (): Promise<void> => {
-    const newCard: CardInterface = await cardActions.collection.card(id)
+    const newCard: CardInterface = await collectionCardActions.card(id)
     const scryfallId = newCard && newCard.scryfallId
 
     getVariationInfo(newCard)

@@ -28,7 +28,12 @@ class Api::V1::DeckedCardsController < ApplicationController
         render json: { error: 'Card is already in this deck' }, status: 400
       elsif @deck.cards << @card
         @decked_card = @deck.decked_cards.find_by(card_id: @card.id)
-        @decked_card.update(decked_card_params)
+        @decked_card.quantity = 1
+
+        if params[:foil]
+          @decked_card.foil = 1
+        end
+
         @decked_card.save
 
         render 'api/v1/card/deck.json.jbuilder', status: 201
@@ -41,11 +46,23 @@ class Api::V1::DeckedCardsController < ApplicationController
       if !in_deck?(@deck, @card)
         @deck.cards << @card
         @decked_card = @deck.decked_cards.find_by(card_id: @card.id)
-        @decked_card.quantity = 1
-        @decked_card.save
+        @decked_card.update(decked_card_params)
+
+        # We don't want a collection to have more foils than owned cards
+        if @decked_card.foil > @decked_card.quantity
+          @decked_card.foil = @decked_card.quantity
+          @decked_card.save
+        end
 
         render 'api/v1/card/deck.json.jbuilder', status: 201
       elsif @decked_card.update(decked_card_params)
+
+        # We don't want a collection to have more foils than owned cards
+        if @decked_card.foil > @decked_card.quantity
+          @decked_card.foil = @decked_card.quantity
+          @decked_card.save
+        end
+
         render 'api/v1/card/deck.json.jbuilder', status: 200
       else
         render json: { error: 'Unable to update card quantity' }, status: 400
@@ -83,7 +100,7 @@ class Api::V1::DeckedCardsController < ApplicationController
       end
   
       def decked_card_params
-        params.permit(:quantity)
+        params.permit(:quantity, :foil)
       end
   
 end

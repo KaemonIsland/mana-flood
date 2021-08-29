@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_26_232604) do
+ActiveRecord::Schema.define(version: 2021_08_28_222554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(version: 2021_08_26_232604) do
     t.integer "quantity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "foil"
     t.index ["card_id"], name: "index_decked_cards_on_card_id"
     t.index ["deck_id"], name: "index_decked_cards_on_deck_id"
   end

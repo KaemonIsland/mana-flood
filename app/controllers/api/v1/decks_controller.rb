@@ -22,10 +22,8 @@ class Api::V1::DecksController < ApplicationController
     end
 
     def create
-        
-    @deck = current_user.decks.create(deck_params)
+        @deck = current_user.decks.create(deck_params)
 
-    authorize! :create, @deck
         if @deck.save
             render 'api/v1/deck/deck.json.jbuilder', status: 200
         else
@@ -34,7 +32,6 @@ class Api::V1::DecksController < ApplicationController
     end
 
     def update
-        authorize! :update, @deck
         if @deck.update(deck_params)
             render 'api/v1/deck/deck.json.jbuilder', status: 200
         else
@@ -43,7 +40,6 @@ class Api::V1::DecksController < ApplicationController
     end
 
     def destroy
-        authorize! :destroy, @deck
         if @deck.destroy
             render 'api/v1/deck/deck.json.jbuilder', status: 200
         else

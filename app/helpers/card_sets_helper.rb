@@ -24,7 +24,7 @@ module CardSetsHelper
     return false unless deck && card
 
     if in_deck?(deck, card)
-      deck.decked_cards.find_by(card_id: card.id).quantity
+      deck.decked_cards.find_by(card_id: card.id)
     end
   end
 end

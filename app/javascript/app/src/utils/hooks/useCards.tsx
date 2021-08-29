@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
-import { collectionActions, deckActions, setActions } from '../cardActions'
+import {
+  collectionCardActions,
+  deckCardActions,
+  setActions,
+} from '../cardActions'
 import { Deck, Card, CardStats } from '../../interface'
 
 interface Get {
@@ -112,17 +116,17 @@ export const useCards = (
 
   const addCard = async (id: number, options?: any): Promise<Card> => {
     if (isCollection) {
-      return await collectionActions.add(id, options)
+      return await collectionCardActions.add(id, options)
     }
-    return await deckActions.add(id, deckId, options)
+    return await deckCardActions.add(id, deckId, options)
   }
 
   const removeCard = async (id: number, options?: any): Promise<Card> => {
     if (isCollection) {
-      return await collectionActions.remove(id, options)
+      return await collectionCardActions.remove(id, options)
     }
 
-    await deckActions.remove(id, deckId, options)
+    await deckCardActions.remove(id, deckId, options)
   }
 
   const updateCard = async (
@@ -131,9 +135,9 @@ export const useCards = (
     options?: any
   ): Promise<Card> => {
     if (isCollection) {
-      return await collectionActions.update(id, quantity, options)
+      return await collectionCardActions.update(id, quantity, options)
     }
-    return await deckActions.update(id, quantity, deckId, options)
+    return await deckCardActions.update(id, quantity, deckId, options)
   }
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
@@ -152,18 +156,18 @@ export const useCards = (
 
     if (type === 'search') {
       if (isCollection) {
-        response = await collectionActions[type](cardQuery)
+        response = await collectionCardActions[type](cardQuery)
       } else {
-        response = await deckActions[type](cardQuery, deckId)
+        response = await deckCardActions[type](cardQuery, deckId)
       }
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await deckActions.deck(cardQuery, deckId)
+        response = await deckCardActions.deck(cardQuery, deckId)
       } else {
-        response = await deckActions[type](cardQuery, options.setId, deckId)
+        response = await deckCardActions[type](cardQuery, options.setId, deckId)
       }
     } else {
-      response = await collectionActions[type](cardQuery, options.setId)
+      response = await collectionCardActions[type](cardQuery, options.setId)
     }
 
     setIsLoading(false)

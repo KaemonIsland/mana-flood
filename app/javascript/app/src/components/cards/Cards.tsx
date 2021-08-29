@@ -93,9 +93,19 @@ export const Cards = ({
           ) : (
             cards.map(card =>
               imageOnly ? (
-                <ImageOnly actions={actions} key={card.id} card={card} />
+                <ImageOnly
+                  actions={actions}
+                  key={card.id}
+                  card={card}
+                  scope={currentScope}
+                />
               ) : (
-                <Minimal actions={actions} key={card.id} card={card} />
+                <Minimal
+                  actions={actions}
+                  key={card.id}
+                  card={card}
+                  scope={currentScope}
+                />
               )
             )
           )}

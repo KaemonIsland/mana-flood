@@ -101,6 +101,12 @@ class Api::V1::CollectedCardsController < ApplicationController
       @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
       @collected_card.update(collected_card_params)
 
+      # We don't want a collection to have more foils than owned cards
+      if @collected_card.foil > @collected_card.quantity
+        @collected_card.foil = @collected_card.quantity
+        @collected_card.save
+      end
+
       render 'api/v1/card/collection.json.jbuilder', status: 201
     elsif @collected_card.update(collected_card_params)
 
@@ -145,6 +151,6 @@ class Api::V1::CollectedCardsController < ApplicationController
     end
 
     def collected_card_params
-      params.permit(:quantity, :foil, :id)
+      params.permit(:quantity, :foil)
     end
   end

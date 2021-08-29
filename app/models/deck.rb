@@ -85,16 +85,10 @@ class Deck < ApplicationRecord
       cards: 0,
     }
 
-    
-
     cards = self.cards
       # Iterates over every card and updates stats object
       cards.each do |card|
-        multiplier = card.deck_quantity(self.id)
-      
-        if card.is_promo || card.is_alternative
-          next
-        end
+        multiplier = card.deck_quantity(id).quantity
 
         # Increment total cards
         stats[:cards] += multiplier
@@ -115,7 +109,7 @@ class Deck < ApplicationRecord
           
   
           # Counts the card subTypes
-          card.subtypes&.split(' ').each do |subtype|
+          card.subtypes&.each do |subtype|
             lower_subtype = subtype.downcase().to_sym
 
             if types[lower_type] && types[lower_type][:subtypes] && types[lower_type][:subtypes][lower_subtype]

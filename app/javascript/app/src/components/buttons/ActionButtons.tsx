@@ -84,18 +84,20 @@ export const ActionButtons = ({
           <Feather icon="minus" size="small" />
         </Button.Left>
         <Button.Middle color="grey" shade={8} variant="outline" isDisabled>
-          <Text family="roboto" display="inline-block">
-            {quantity}
-          </Text>
-          {collection && collection.quantity ? (
-            <Text
-              family="roboto"
-              display="inline-block"
-              color="grey"
-              shade={6}
-              size={2}
-            >{`/${collection.quantity}`}</Text>
-          ) : null}
+          <Flex alignItems="center">
+            <Text family="roboto" display="inline-block">
+              {quantity}
+            </Text>
+            {collection && collection.quantity ? (
+              <Text
+                family="roboto"
+                display="inline-block"
+                color="grey"
+                shade={6}
+                size={2}
+              >{`/${collection.quantity}`}</Text>
+            ) : null}
+          </Flex>
         </Button.Middle>
       </>
     )}
