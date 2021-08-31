@@ -9,10 +9,10 @@ class Api::V1::DeckedCardsController < ApplicationController
       if current_user
         @collection = current_user.collection
 
-        @query =@deck.cards.with_color(params[:colors], @deck.cards).ransack(params[:q])
-  
+        @query = @deck.cards.with_color(params[:colors], @deck.cards).ransack(params[:q])
+
         @sorted_cards = @query.result.by_mana_and_name
-  
+
         @cards = Kaminari.paginate_array(@sorted_cards)
         .page(1)
         .per(300)
@@ -22,7 +22,7 @@ class Api::V1::DeckedCardsController < ApplicationController
         render json: { error: 'User must be signed in' }, status: 401
       end
     end
-    
+
     def create
       if in_deck?(@deck, @card)
         render json: { error: 'Card is already in this deck' }, status: 400
@@ -68,7 +68,7 @@ class Api::V1::DeckedCardsController < ApplicationController
         render json: { error: 'Unable to update card quantity' }, status: 400
       end
     end
-    
+
     def destroy
       if !in_deck?(@deck, @card)
         render json: { error: 'Card not in deck' }, status: 404
@@ -78,7 +78,7 @@ class Api::V1::DeckedCardsController < ApplicationController
         render json: { error: 'Unable to remove card from deck' }, status: 400
       end
     end
-    
+
       private
 
       def load_collection

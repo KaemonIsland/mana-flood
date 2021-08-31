@@ -19,7 +19,7 @@ module CardSetsHelper
 
     deck.decked_cards.exists?(card_id: card.id)
   end
-    
+
   def deck_quantity(deck, card)
     return false unless deck && card
 

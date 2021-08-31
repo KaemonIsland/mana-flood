@@ -5,6 +5,8 @@ class CollectedCard < ApplicationRecord
   before_save :set_quantity
   before_save :set_foil
 
+  after_save :remove_empty_quantity
+
   validates :collection_id, uniqueness: { scope: :card_id }
 
   private
@@ -15,5 +17,11 @@ class CollectedCard < ApplicationRecord
 
   def set_foil
     self.foil ||= 0
+  end
+
+  def remove_empty_quantity
+    if quantity == 0
+      self.destroy
+    end
   end
 end

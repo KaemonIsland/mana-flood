@@ -1,7 +1,8 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Button } from 'warlock-ui'
+import { Button, Modal, Flex, usePopupTrigger } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
+import { AddCardForm } from '../../forms'
 import { getCardImage, useDebounce } from '../../../utils'
 import { Link } from '../../link'
 import { Feather } from '../../icon'
@@ -49,13 +50,13 @@ Button.Icon = styled(Button)`
 `
 
 interface Add {
-  (id: number): Promise<Card>
+  (id: number, options?: any): Promise<Card>
 }
 interface Update {
-  (id: number, quantity: number): Promise<Card>
+  (id: number, quantity: number, options?: any): Promise<Card>
 }
 interface Remove {
-  (id: number): Promise<Card>
+  (id: number, options?: any): Promise<Card>
 }
 
 interface CardActions {
@@ -79,8 +80,10 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
   const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
   const [quantity, setQuantity] = useState(cardCounts.quantity)
   const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
+  const [cardOptions, setCardOptions] = useState(null)
 
   const debouncedValue = useDebounce(quantity)
+  const modal = usePopupTrigger()
 
   const { addToast } = useToasts()
 
@@ -88,36 +91,81 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
 
   const { add, update, remove } = actions
 
-  const addCard = (): void => {
+  const addCard = (options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(1)
+
+    // Adds options if present
+    if (options) {
+      setCardOptions(options)
+    }
+
+    // Adds foil quantity if present in options
+    if (options && options.params && options.params.foil) {
+      setFoilQuantity(1)
+    }
   }
 
-  const updateCard = (newQuantity: number): void => {
+  const updateCard = (newQuantity: number, options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(newQuantity)
+
+    // There can never be more foils than total quantity.
+    // This ensures the user gets current information when updating counts
+    if (foilQuantity > newQuantity) {
+      setFoilQuantity(newQuantity)
+    }
+
+    if (options) {
+      setCardOptions(options)
+    }
+
+    if (options && options.params && options.params.foil !== undefined) {
+      setFoilQuantity(options.params.foil)
+    }
   }
 
-  const removeCard = (): void => {
+  const removeCard = (options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(0)
-  }
 
+    if (options) {
+      setCardOptions(options)
+    }
+
+    if (options && options.params && options.params.foil) {
+      setFoilQuantity(0)
+    }
+  }
   // Updates the card quantity on the db
   const updateCardQuantity = async (): Promise<void> => {
     if (prevQuantity === 0 && quantity === 1) {
-      await add(id)
-      addToast(`${name} added to collection`)
+      await add(id, cardOptions)
+      addToast(
+        `${name} added to ${
+          typeof scope === 'string' ? 'Collection' : scope.name
+        }`
+      )
     } else if (quantity <= 0) {
-      await remove(id)
-      addToast(`${name} was removed from collection`, {
-        appearance: 'info',
-      })
-    } else {
-      await update(id, quantity)
-      addToast(`${name} quantity updated to ${quantity}`, {
-        appearance: 'info',
-      })
+      await remove(id, cardOptions)
+      addToast(
+        `${name} was removed from ${
+          typeof scope === 'string' ? 'Collection' : scope.name
+        }`,
+        {
+          appearance: 'info',
+        }
+      )
+    } else if (prevQuantity !== quantity) {
+      await update(id, quantity, cardOptions)
+      addToast(
+        `${name} quantity updated to ${quantity} in ${
+          typeof scope === 'string' ? 'Collection' : scope.name
+        }`,
+        {
+          appearance: 'info',
+        }
+      )
     }
   }
 
@@ -125,10 +173,6 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
     const cardUrl = await getCardImage(scryfallId, 'normal', name)
     setCardImages(cardUrl)
   }
-
-  useEffect(() => {
-    setQuantity(card[scope])
-  }, [card[scope]])
 
   useEffect(() => {
     handleCardImage()
@@ -147,27 +191,60 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
   }, [])
 
   return (
-    <CardContainer>
-      <OptionContainer>
-        <Link href={`/card/${id}`}>
-          <Button.Icon color="purple" shade={1}>
-            <Feather icon="info" size="small" />
+    <>
+      <Modal {...modal.popup}>
+        <Flex alignItems="end" justifyContent="space-between">
+          <CardImagesContainer>
+            {cardImages && cardImages.length
+              ? cardImages.map((cardImage, index) => (
+                  <CardImgContainer key={index}>
+                    <CardImg src={cardImage} alt={name} />
+                  </CardImgContainer>
+                ))
+              : null}
+          </CardImagesContainer>
+          <div>
+            <AddCardForm
+              collection={currentScope === 'deck' ? card?.collection : null}
+              quantity={quantity}
+              foil={foilQuantity}
+              actions={{ updateCard, removeCard, addCard }}
+            />
+          </div>
+        </Flex>
+      </Modal>
+      <CardContainer>
+        <OptionContainer>
+          {/* <Link href={`/card/${id}`}>
+            <Button.Icon color="purple" shade={1}>
+              <Feather icon="info" size="small" />
+            </Button.Icon>
+          </Link> */}
+          <Button.Icon color="purple" shade={1} {...modal.trigger}>
+            <Feather
+              svgProps={{
+                'stroke-width': 2,
+              }}
+              icon="info"
+              size="small"
+            />
           </Button.Icon>
-        </Link>
-        <ActionButtons
-          collection={scope === 'deck' ? card?.collection : null}
-          quantity={quantity}
-          actions={{ updateCard, removeCard, addCard }}
-        />
-      </OptionContainer>
-      <CardImagesContainer>
-        {cardImages.length &&
-          cardImages.map((cardImg, index) => (
-            <CardImgContainer key={index}>
-              <CardImg src={cardImg} alt={name} />
-            </CardImgContainer>
-          ))}
-      </CardImagesContainer>
-    </CardContainer>
+          <ActionButtons
+            collection={scope === 'deck' ? card?.collection : null}
+            quantity={quantity}
+            actions={{ updateCard, removeCard, addCard }}
+          />
+        </OptionContainer>
+        <CardImagesContainer>
+          {cardImages &&
+            cardImages.length &&
+            cardImages.map((cardImg, index) => (
+              <CardImgContainer key={index}>
+                <CardImg src={cardImg} alt={name} />
+              </CardImgContainer>
+            ))}
+        </CardImagesContainer>
+      </CardContainer>
+    </>
   )
 }
