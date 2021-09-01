@@ -43,4 +43,14 @@ export const deckActions = {
         method: 'delete',
       }
     ),
+  addCardsToCollection: async (id: number): Promise<void> =>
+    await request(
+      `/api/v1/add_cards/${id}`,
+      error => {
+        console.log('Unable to remove deck: ', error)
+      },
+      {
+        method: 'post',
+      }
+    ),
 }

@@ -131,7 +131,14 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           </Collapse>
           <hr />
           <Stats stats={deck.stats} />
-          <Cards type="deck" />
+          <br />
+          <Button
+            onClick={() => deckActions.addCardsToCollection(id)}
+            color="blueGrey"
+          >
+            Add cards to collection
+          </Button>
+          <Cards type="deck" showScope={false} />
         </>
       )}
     </Page>

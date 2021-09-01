@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       post 'add_card/:id', to: 'collected_cards#create', as: 'add_card'
       put 'add_card/:id', to: 'collected_cards#update', as: 'update_card'
       delete 'remove_card/:id', to: 'collected_cards#destroy', as: 'remove_card'
+      post 'add_cards/:id', to: 'collected_cards#update_multiple'
       
       # Import & Export routes
       get 'collection/export', to: 'collection#export'

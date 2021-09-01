@@ -1,7 +1,7 @@
 class Api::V1::CollectedCardsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :load_card, only: [:create, :update, :destroy]
-  before_action :load_collection, only: [:collection, :deck, :create, :update, :destroy]
+  before_action :load_collection, only: [:collection, :deck, :create, :update, :destroy, :update_multiple]
   before_action :load_set, only: [:collection, :deck]
   before_action :load_collected_card, only: [:update, :destroy]
   respond_to :json
@@ -120,6 +120,32 @@ class Api::V1::CollectedCardsController < ApplicationController
     else
       render json: { error: 'Unable to update card quantity' }, status: 400
     end
+  end
+
+  def update_multiple
+    @deck = Deck.find(params[:id])
+    @cards = @deck.decked_cards
+
+    @cards.each do |card_info|
+      @card = Card.find(card_info[:card_id])
+
+      if !in_collection?(@collection, @card)
+        @collection.cards << @card
+        @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
+        @collected_card.quantity = card_info[:quantity]
+        @collected_card.foil = card_info[:foil]
+        @collected_card.save
+      else
+        @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
+        @collected_card.quantity += card_info[:quantity]
+        @collected_card.foil += card_info[:foil]
+        @collected_card.save
+      end
+    end
+
+    render 'api/v1/card/collection.json.jbuilder', status: 200
+  rescue => error
+    render json: { error: 'Unable to update cards' }, status: 400
   end
 
   def destroy
