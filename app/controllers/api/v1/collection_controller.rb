@@ -17,7 +17,7 @@ class Api::V1::CollectionController < ApplicationController
     if current_user
       @collection = current_user.collection
 
-      permitted = params.permit(cards: [:uuid, :quantity])
+      permitted = params.permit(cards: [:uuid, :quantity, :foil])
 
       @cards = permitted[:cards]
 
@@ -33,16 +33,20 @@ class Api::V1::CollectionController < ApplicationController
           next
         end
 
+        quantity = card[:quantity].to_i || 0
+        foil = card[:foil].to_i || 0
+
         # Updates card quantity if already in collection
         if in_collection?(@collection, imported)
           @collected_card = @collection.collected_cards.find_by(card_id: imported.id)
 
-          updated_quantity = @collected_card.quantity + card[:quantity].to_i
+          updated_quantity = @collected_card.quantity + quantity
+          updated_foil = @collected_card.foil + foil
 
-          @collected_card.update(quantity: updated_quantity)
+          @collected_card.update(quantity: updated_quantity, foil: updated_foil)
         else
           # Add card to collection
-          @collection.collected_cards.create!({ card_id: imported.id, quantity: card[:quantity].to_i })
+          @collection.collected_cards.create!({ card_id: imported.id, quantity: quantity, foil: foil })
         end
       end
 
