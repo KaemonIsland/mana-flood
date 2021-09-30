@@ -1,14 +1,19 @@
 json.cards @cards do |card|
   # Returns card uuid
-  json.uuid card.uuid
+  json.uuid card.card.uuid
+  json.quantity card.quantity
+  json.foil card.foil
+end
 
-  # Use collection quantity if exporting collection
-  if @collection
-    json.quantity card.collection_quantity(@collection.id)
-  end
+# Use deck quantity when exporting deck
+json.decks @decks do |deck|
+  json.name deck.name
+  json.description deck.description
+  json.format deck.format
 
-  # Use deck quantity if exporting deck
-  if @deck
-    json.deck card.deck_quantity(@deck.id)
+  json.cards deck.decked_cards do |decked_card|
+    json.uuid decked_card.card.uuid
+    json.quantity decked_card.quantity
+    json.foil decked_card.foil
   end
 end

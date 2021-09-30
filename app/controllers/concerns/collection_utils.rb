@@ -2,7 +2,7 @@ module CollectionUtils
     extend ActiveSupport::Concern
   def in_collection?(collection, card)
     return false unless collection && card
-    
+
     collection.collected_cards.exists?(card_id: card.id)
   end
 

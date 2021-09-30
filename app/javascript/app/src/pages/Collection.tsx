@@ -47,6 +47,7 @@ export const Collection = (): ReactElement => {
 
     await axios.post('/api/v1/collection/import', {
       cards: importContent.cards,
+      decks: importContent.decks,
     })
   }
 
