@@ -26,7 +26,7 @@
     "react_ujs": "2.6.1",
     "scroll-lock": "2.1.5",
     "snakecase-keys": "5.1.0",
-    "styled-components": "5.3.1",
+    "styled-components": "5.3.3",
     "ts-loader": "8.3.0",
     "turbolinks": "5.2.0",
     "typescript": "4.3.5",
@@ -39,7 +39,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "cz-conventional-changelog": "3.3.0",
-    "husky": "7.0.2",
+    "husky": "7.0.4",
     "lint-staged": "10.5.4",
     "react-is": "16.13.1",
     "typedoc": "0.21.7",
