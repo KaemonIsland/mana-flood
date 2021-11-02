@@ -12739,7 +12739,7 @@ warlock-config@1.2.0:
     lint-staged "^9.5.0"
     prettier "^1.19.1"
 
-warlock-ui@^0.5.0:
+warlock-ui@0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/warlock-ui/-/warlock-ui-0.5.0.tgz#2cbfb4629c81d7b608de34c119fe475c15cbcfd2"
   integrity sha512-dozgZf6Aj3AwHPE0McET7pJ9q0bkaS4Re8iBDnzzEtspFef1TN2D/WJYFZlMVs4B8rJAUG7/O+xws9178GyYdQ==
