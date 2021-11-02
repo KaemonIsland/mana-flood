@@ -41,7 +41,7 @@
     "cz-conventional-changelog": "3.3.0",
     "husky": "7.0.4",
     "lint-staged": "11.2.6",
-    "react-is": "16.13.1",
+    "react-is": "17.0.2",
     "typedoc": "0.22.7",
     "warlock-config": "1.2.0",
     "webpack-dev-server": "4.4.0"
