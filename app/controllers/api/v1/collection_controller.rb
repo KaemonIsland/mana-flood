@@ -25,13 +25,15 @@ class Api::V1::CollectionController < ApplicationController
 
       @cards = permitted[:cards]
       @decks = permitted[:decks]
+      not_found = []
 
       # Imports all cards into a collection
       @cards.each do |card|
-        imported = Card.find_by(uuid: card[:uuid])
+        begin
+          imported = Card.find_by(uuid: card[:uuid])
 
-        quantity = card[:quantity].to_i || 0
-        foil = card[:foil].to_i || 0
+          quantity = card[:quantity].to_i || 0
+          foil = card[:foil].to_i || 0
 
           # Updates card quantity if already in collection
           if in_collection?(@collection, imported)
@@ -45,26 +47,34 @@ class Api::V1::CollectionController < ApplicationController
             # Add card to collection
             CollectedCard.create({ card_id: imported.id, quantity: quantity, foil: foil, collection_id: @collection.id })
           end
+        rescue
+          not_found << card
+        end
       end
 
       # Imports all decks and decked cards into a collection
       @decks.each do |deck|
         deck_params = { name: deck[:name], description: deck[:description], format: deck[:format] }
-
+        
         new_deck = current_user.decks.create(deck_params)
-
+        
         if new_deck
           deck[:cards].each do |card|
+            begin
+              card_id = Card.find_by(uuid: card[:uuid]).id
 
-            card_id = Card.find_by(uuid: card[:uuid]).id
+              quantity = card[:quantity].to_i || 0
+              foil = card[:foil].to_i || 0
 
-            quantity = card[:quantity].to_i || 0
-            foil = card[:foil].to_i || 0
-
-            new_deck.decked_cards.create({ card_id: card_id, quantity: quantity, foil: foil })
+              new_deck.decked_cards.create({ card_id: card_id, quantity: quantity, foil: foil })
+            rescue
+              not_found << { card_id: card_id, quantity: quantity, foil: foil, deck_id: new_deck.id }
+            end
           end
         end
       end
+
+      puts not_found
 
       render json: { success: 'Collection imported Successfully!' }, status: 201
     else
