@@ -22,4 +22,6 @@ json.cards @cards do |card|
   if @deck
     json.deck card.deck_quantity(@deck.id)
   end
+
+  json.locations card.locations(current_user.id)
 end

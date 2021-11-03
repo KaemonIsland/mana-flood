@@ -29,6 +29,42 @@ class Card < ApplicationRecord
     Ruling.where(uuid: self.uuid)
   end
 
+  # Gets the locations the card is currently used in. (Decks, Collections)
+  def locations(user_id)
+    location = []
+
+    # Find collected_card
+    collection = Collection.find_by(user_id: user_id)
+    collected = CollectedCard.find_by(card_id: self.id, collection_id: collection.id)
+
+    # Add collection type if collected_card found
+    if collected
+      location << { type: 'collection', quantity: collected.quantity, foil: collected.foil }
+    end
+
+    # Finds decks the card belongs to
+    deck_ids = User.find(user_id).decks.ids
+    decked = DeckedCard.where(deck_id: deck_ids, card_id: self.id)
+
+    # Add decked cards if decked found
+    if decked.present?
+      decked.each do |decked_card|
+        deck = decked_card.deck
+
+        location << {
+          type: 'deck',
+          quantity: decked_card.quantity,
+          foil: decked_card.foil,
+          name: deck.name,
+          description: deck.description,
+          format: deck.format
+        }
+      end
+    end
+
+    return location
+  end
+
   # Gets the number of cards within the collection
   def collection_quantity(collection_id)
     return 0 unless collection_id
