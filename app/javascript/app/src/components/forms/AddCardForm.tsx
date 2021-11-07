@@ -39,7 +39,6 @@ export const AddCardForm = ({
   actions,
   quantity,
   foil,
-  collection,
 }: ActionButtonProps): ReactElement => {
   const [isFoil, setIsFoil] = useState(false)
 

@@ -156,7 +156,6 @@ export const Minimal = ({
     scryfallId,
     frameEffects,
     locations,
-    collection,
   } = card
 
   const cardName = String(name).split(' // ')[0]
@@ -280,11 +279,10 @@ export const Minimal = ({
       <CardModal
         popupProps={...modal.popup}
         isOpen={modal.isOpen}
-        currentScope={currentScope}
         quantity={quantity}
         foilQuantity={foilQuantity}
         cardActions={{ updateCard, removeCard, addCard }}
-        cardProps={{ collection, name, scryfallId, locations }}
+        cardProps={{ name, scryfallId, locations }}
       />
       <div>
         <CardContainer color={isLand ? colorIdentity : cardColors}>

@@ -32,7 +32,6 @@ const FlexDeckContainer = styled.div(() => ({
 }))
 
 interface CardProps {
-  collection: number
   name: string
   scryfallId: string
   locations: Array<any>
@@ -41,17 +40,28 @@ interface CardProps {
 interface CardModalProps {
   popupProps: any
   isOpen: boolean
-  currentScope: any
   quantity: number
   foilQuantity: number
   cardActions: any
   cardProps: CardProps
 }
 
+/**
+ * A Modal component for extra card interactions.
+ * Used to add remove foiled cards and to view the cards current usage.
+ *
+ * @param popupProps - Props necessary for a accessible modal component
+ * @param isOpen - Props to tell if model is open
+ * @param quantity - The card quantity for the current scope
+ * @param foilQuantity - The card foil quantity for the current scope
+ * @param cardActions - CRUD actions for the card
+ * @param cardProps - Props like name, id, and locations
+ *
+ * @returns {function} A react component
+ */
 export const CardModal = ({
   popupProps,
   isOpen,
-  currentScope,
   quantity,
   foilQuantity,
   cardActions,
@@ -59,7 +69,7 @@ export const CardModal = ({
 }: CardModalProps): ReactElement => {
   const [cardImages, setCardImages] = useState([])
 
-  const { collection, name, scryfallId, locations } = cardProps
+  const { name, scryfallId, locations } = cardProps
 
   const inCollection = locations.filter(
     location => location.type === 'collection'
@@ -96,7 +106,6 @@ export const CardModal = ({
         </CardImagesContainer>
         <div>
           <AddCardForm
-            collection={currentScope === 'deck' ? collection : null}
             quantity={quantity}
             foil={foilQuantity}
             actions={...cardActions}
