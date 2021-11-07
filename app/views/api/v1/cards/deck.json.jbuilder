@@ -5,11 +5,11 @@ json.pagination do
   json.total @cards.total_count
 end
 
-json.stats @deck.card_stats
-
 json.deck do
   json.(@deck, *@deck.attributes.keys)
 end
+
+json.stats @deck.card_stats
 
 json.colors @deck.colors
 
@@ -19,4 +19,5 @@ json.cards @cards do |card|
 
   json.collection card.collection_quantity(@collection.id)
   json.deck card.deck_quantity(@deck.id)
+  json.locations card.locations(current_user.id)
 end

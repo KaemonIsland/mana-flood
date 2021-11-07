@@ -39,11 +39,10 @@ export const AddCardForm = ({
   actions,
   quantity,
   foil,
-  collection,
 }: ActionButtonProps): ReactElement => {
   const [isFoil, setIsFoil] = useState(false)
 
-  // TODO make this file actually look good!
+  // TODO make this form actually look good!
   return (
     <Container padding={4} paddingRight={0}>
       {foil && (

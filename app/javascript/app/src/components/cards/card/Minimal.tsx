@@ -1,25 +1,13 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import {
-  ThemeProvider,
-  Flex,
-  Button,
-  Text,
-  Modal,
-  usePopupTrigger,
-} from 'warlock-ui'
+import { ThemeProvider, Flex, Button, Text, usePopupTrigger } from 'warlock-ui'
 import { Link } from '../../link'
 import { ActionButtons } from '../../buttons'
-import { AddCardForm } from '../../forms'
 import { ManaSymbol, Feather } from '../../icon'
-import {
-  getCardImage,
-  getManaCost,
-  uniqueColors,
-  useDebounce,
-} from '../../../utils'
+import { getManaCost, uniqueColors, useDebounce } from '../../../utils'
 import { Card } from '../../../interface'
 import { useToasts } from '../../../providers'
+import { CardModal } from './CardModal'
 
 // Card border colors
 const cardColors = {
@@ -73,26 +61,6 @@ const buildCardColors = (theme, colors: Array<string>): string => {
 
   return `linear-gradient(to bottom right, ${backgroundColor.join(', ')})`
 }
-
-const CardImgContainer = styled.div(({ theme }) => ({
-  zIndex: 100,
-  width: '16rem',
-  height: '22rem',
-  borderRadius: theme.spaceScale(4),
-  overflow: 'hidden',
-  boxShadow: theme.boxShadow.single[2],
-}))
-
-const CardImagesContainer = styled.div(() => ({
-  display: 'flex',
-  alignItems: 'center',
-}))
-
-const CardImg = styled.img(() => ({
-  maxWidth: '100%',
-  width: '100%',
-  height: '100%',
-}))
 
 const CardContainer = styled.div(({ theme, color = [] }) => {
   const backgroundColors = buildCardColors(theme, color)
@@ -163,7 +131,6 @@ export const Minimal = ({
   scope = 'Collection',
 }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
-  const [cardImages, setCardImages] = useState([])
   const [prevQuantity, setPrevQuantity] = useState(null)
 
   const currentScope = typeof scope === 'string' ? 'collection' : 'deck'
@@ -188,6 +155,7 @@ export const Minimal = ({
     colorIdentity,
     scryfallId,
     frameEffects,
+    locations,
   } = card
 
   const cardName = String(name).split(' // ')[0]
@@ -294,18 +262,6 @@ export const Minimal = ({
   // Unique mana colors for card theming
   const cardColors = uniqueColors(formattedMana)
 
-  const handleCardImage = async () => {
-    const cardUrl = await getCardImage(scryfallId, 'normal', name)
-    setCardImages(cardUrl)
-  }
-
-  // Fetches a new card image whenever the card viewer is opened
-  useEffect(() => {
-    if (modal.isOpen && !cardImages.length) {
-      handleCardImage()
-    }
-  }, [modal.isOpen])
-
   // Uses debounce to update card toasts and quantities
   useEffect(() => {
     if (!isLoading) {
@@ -320,27 +276,14 @@ export const Minimal = ({
 
   return (
     <ThemeProvider>
-      <Modal {...modal.popup}>
-        <Flex alignItems="end" justifyContent="space-between">
-          <CardImagesContainer>
-            {cardImages.length
-              ? cardImages.map((cardImage, index) => (
-                  <CardImgContainer key={index}>
-                    <CardImg src={cardImage} alt={name} />
-                  </CardImgContainer>
-                ))
-              : null}
-          </CardImagesContainer>
-          <div>
-            <AddCardForm
-              collection={currentScope === 'deck' ? card?.collection : null}
-              quantity={quantity}
-              foil={foilQuantity}
-              actions={{ updateCard, removeCard, addCard }}
-            />
-          </div>
-        </Flex>
-      </Modal>
+      <CardModal
+        popupProps={...modal.popup}
+        isOpen={modal.isOpen}
+        quantity={quantity}
+        foilQuantity={foilQuantity}
+        cardActions={{ updateCard, removeCard, addCard }}
+        cardProps={{ name, scryfallId, locations }}
+      />
       <div>
         <CardContainer color={isLand ? colorIdentity : cardColors}>
           <InnerCard>

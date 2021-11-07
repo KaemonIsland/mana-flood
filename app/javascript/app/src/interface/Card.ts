@@ -21,6 +21,16 @@ export interface Quantity {
   foil: number
 }
 
+export interface Location {
+  type: string
+  quantity: number
+  foil: number
+  deckId?: number
+  description?: string
+  format?: string
+  name?: string
+}
+
 export interface Card {
   isAlternative: boolean
   isPromo: boolean
@@ -49,4 +59,5 @@ export interface Card {
   frameEffects: Array<string>
   setCode: string
   promoTypes?: Array<string>
+  locations?: Array<Location>
 }

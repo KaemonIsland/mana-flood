@@ -1,10 +1,9 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Button, Modal, Flex, usePopupTrigger } from 'warlock-ui'
+import { Button, usePopupTrigger } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
-import { AddCardForm } from '../../forms'
 import { getCardImage, useDebounce } from '../../../utils'
-import { Link } from '../../link'
+import { CardModal } from './CardModal'
 import { Feather } from '../../icon'
 import { Card } from '../../../interface'
 import { useToasts } from '../../../providers'
@@ -87,7 +86,7 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
 
   const { addToast } = useToasts()
 
-  const { id, name, scryfallId } = card
+  const { id, name, scryfallId, locations } = card
 
   const { add, update, remove } = actions
 
@@ -192,34 +191,16 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
 
   return (
     <>
-      <Modal {...modal.popup}>
-        <Flex alignItems="end" justifyContent="space-between">
-          <CardImagesContainer>
-            {cardImages && cardImages.length
-              ? cardImages.map((cardImage, index) => (
-                  <CardImgContainer key={index}>
-                    <CardImg src={cardImage} alt={name} />
-                  </CardImgContainer>
-                ))
-              : null}
-          </CardImagesContainer>
-          <div>
-            <AddCardForm
-              collection={currentScope === 'deck' ? card?.collection : null}
-              quantity={quantity}
-              foil={foilQuantity}
-              actions={{ updateCard, removeCard, addCard }}
-            />
-          </div>
-        </Flex>
-      </Modal>
+      <CardModal
+        popupProps={...modal.popup}
+        isOpen={modal.isOpen}
+        quantity={quantity}
+        foilQuantity={foilQuantity}
+        cardActions={{ updateCard, removeCard, addCard }}
+        cardProps={{ name, scryfallId, locations }}
+      />
       <CardContainer>
         <OptionContainer>
-          {/* <Link href={`/card/${id}`}>
-            <Button.Icon color="purple" shade={1}>
-              <Feather icon="info" size="small" />
-            </Button.Icon>
-          </Link> */}
           <Button.Icon color="purple" shade={1} {...modal.trigger}>
             <Feather
               svgProps={{
