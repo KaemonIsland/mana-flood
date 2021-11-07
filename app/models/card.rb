@@ -57,7 +57,8 @@ class Card < ApplicationRecord
           foil: decked_card.foil,
           name: deck.name,
           description: deck.description,
-          format: deck.format
+          format: deck.format,
+          deck_id: deck.id
         }
       end
     end
