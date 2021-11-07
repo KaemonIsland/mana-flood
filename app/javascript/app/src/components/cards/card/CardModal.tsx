@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Flex, Text, Modal } from 'warlock-ui'
+import { Flex, Text, Modal, FlipCard } from 'warlock-ui'
 import { AddCardForm } from '../../forms'
 import { getCardImage } from '../../../utils'
 
@@ -96,13 +96,24 @@ export const CardModal = ({
         style={{ width: '90vw' }}
       >
         <CardImagesContainer>
-          {cardImages.length
-            ? cardImages.map((cardImage, index) => (
-                <CardImgContainer key={index}>
-                  <CardImg src={cardImage} alt={name} />
+          {cardImages.length && cardImages.length === 1 ? (
+            <CardImgContainer>
+              <CardImg src={cardImages[0]} alt={name} />
+            </CardImgContainer>
+          ) : (
+            <FlipCard>
+              <FlipCard.Front style={{ position: 'relative' }}>
+                <CardImgContainer>
+                  <CardImg src={cardImages[0]} alt={name} />
                 </CardImgContainer>
-              ))
-            : null}
+              </FlipCard.Front>
+              <FlipCard.Back>
+                <CardImgContainer>
+                  <CardImg src={cardImages[1]} alt={name} />
+                </CardImgContainer>
+              </FlipCard.Back>
+            </FlipCard>
+          )}
         </CardImagesContainer>
         <div>
           <AddCardForm

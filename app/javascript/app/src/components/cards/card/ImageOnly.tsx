@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Button, usePopupTrigger } from 'warlock-ui'
+import { Button, usePopupTrigger, FlipCard } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
 import { getCardImage, useDebounce } from '../../../utils'
 import { CardModal } from './CardModal'
@@ -217,13 +217,24 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
           />
         </OptionContainer>
         <CardImagesContainer>
-          {cardImages &&
-            cardImages.length &&
-            cardImages.map((cardImg, index) => (
-              <CardImgContainer key={index}>
-                <CardImg src={cardImg} alt={name} />
-              </CardImgContainer>
-            ))}
+          {cardImages && cardImages.length && cardImages.length === 1 ? (
+            <CardImgContainer>
+              <CardImg src={cardImages[0]} alt={name} />
+            </CardImgContainer>
+          ) : (
+            <FlipCard>
+              <FlipCard.Front isPaddingless style={{ position: 'relative' }}>
+                <CardImgContainer>
+                  <CardImg src={cardImages[0]} alt={name} />
+                </CardImgContainer>
+              </FlipCard.Front>
+              <FlipCard.Back isPaddingless>
+                <CardImgContainer>
+                  <CardImg src={cardImages[1]} alt={name} />
+                </CardImgContainer>
+              </FlipCard.Back>
+            </FlipCard>
+          )}
         </CardImagesContainer>
       </CardContainer>
     </>
