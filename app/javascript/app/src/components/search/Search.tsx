@@ -1,7 +1,7 @@
 import React, { useState, FormEvent, ReactElement } from 'react'
 import { Button, Flex, Container } from 'warlock-ui'
 import { Collapse } from '../collapse'
-import { Form, Input, Checkbox } from '../../elements'
+import { Form, Input, Checkbox, CheckboxConfirm } from '../../elements'
 
 interface Callback {
   (query: URLSearchParams): void
@@ -21,6 +21,7 @@ const searchSettings = {
   artist: 'artist_cont',
   flavorText: 'flavor_text_cont',
   rarity: 'rarity_in',
+  collectionOnly: 'collection_only',
 }
 
 const defaultForm = {
@@ -31,12 +32,14 @@ const defaultForm = {
   cardType: null,
   manaCost: null,
   flavorText: null,
-  artist: null
+  artist: null,
+  collectionOnly: false,
 }
 
 export const Search = ({ callback }: SearchProps): ReactElement => {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [form, setForm] = useState(defaultForm)
+  const [resetForm, setResetForm] = useState(true)
 
   const buildQuery = () => {
     const query = new URLSearchParams()
@@ -65,7 +68,9 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
 
     callback(query)
 
-    setForm(defaultForm)
+    if (resetForm) {
+      setForm(defaultForm)
+    }
   }
 
   const handleTextChange = e => {
@@ -93,6 +98,13 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
     }))
   }
 
+  const handleCheckboxConfirmChange = (confirmName: string): void => {
+    setForm(currentForm => ({
+      ...currentForm,
+      [confirmName]: !currentForm?.collectionOnly,
+    }))
+  }
+
   return (
     <Form onSubmit={submitForm}>
       <Input
@@ -105,77 +117,96 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
       />
       <Collapse isOpen={showAdvanced}>
         <Collapse.Content>
-        <>
-          <Checkbox
-            label="Colors"
-            onChange={handleCheckboxChange}
-            hint="Selecting Multi will return cards that only contain selected colors"
-            name="colors"
-            value={form?.colors || []}
-            options={[
-              { label: 'White', value: 'W' },
-              { label: 'Blue', value: 'U' },
-              { label: 'Black', value: 'B' },
-              { label: 'Red', value: 'R' },
-              { label: 'Green', value: 'G' },
-              { label: 'Multi', value: 'M' },
-              { label: 'Colorless', value: 'C' },
-            ]}
-          />
-          <Input
-            label="Card Text"
-            name="cardText"
-            type="text"
-            placeholder="Text can match anything"
-            onChange={handleTextChange}
-            value={form?.cardText || ''}
-          />
-          <Input
-            label="Card Type"
-            name="cardType"
-            type="text"
-            placeholder="Text can match anything"
-            hint="Can be Type or Subtype"
-            onChange={handleTextChange}
-            value={form?.cardType || ''}
-          />
-          <Input
-            label="Mana Cost"
-            name="manaCost"
-            type="text"
-            placeholder="Wrap colors within curly brackets {}"
-            hint="Wrap colors within curly brackets. EX {1}{U/B}{W}"
-            onChange={handleTextChange}
-            value={form?.manaCost || ''}
-          />
-          <Checkbox
-            label="Rarity"
-            onChange={handleCheckboxChange}
-            name="rarity"
-            value={form?.rarity || []}
-            options={[
-              { value: 'common' },
-              { value: 'uncommon' },
-              { value: 'rare' },
-              { value: 'mythic' },
-            ]}
-          />
-          <Input
-            label="Artist"
-            name="artist"
-            type="text"
-            placeholder="Text can match anything"
-            onChange={handleTextChange}
-            value={form?.artist || ''}
-          />
-          <Input
-            label="Flavor Text"
-            name="flavorText"
-            type="text"
-            placeholder="Text can match anything"
-            onChange={handleTextChange}
-            value={form?.flavorText || ''}
-          />
+          <>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Container marginRight={4}>
+                <CheckboxConfirm
+                  label="Reset Form?"
+                  onChange={() => {
+                    setResetForm(!resetForm)
+                  }}
+                  value={resetForm}
+                />
+              </Container>
+              <Container marginRight={4}>
+                <CheckboxConfirm
+                  label="Collection Only"
+                  onChange={() => handleCheckboxConfirmChange('collectionOnly')}
+                  value={form?.collectionOnly}
+                />
+              </Container>
+            </Flex>
+            <br />
+            <Checkbox
+              label="Colors"
+              onChange={handleCheckboxChange}
+              hint="Selecting Multi will return cards that only contain selected colors"
+              name="colors"
+              value={form?.colors || []}
+              options={[
+                { label: 'White', value: 'W' },
+                { label: 'Blue', value: 'U' },
+                { label: 'Black', value: 'B' },
+                { label: 'Red', value: 'R' },
+                { label: 'Green', value: 'G' },
+                { label: 'Multi', value: 'M' },
+                { label: 'Colorless', value: 'C' },
+              ]}
+            />
+            <Input
+              label="Card Text"
+              name="cardText"
+              type="text"
+              placeholder="Text can match anything"
+              onChange={handleTextChange}
+              value={form?.cardText || ''}
+            />
+            <Input
+              label="Card Type"
+              name="cardType"
+              type="text"
+              placeholder="Text can match anything"
+              hint="Can be Type or Subtype"
+              onChange={handleTextChange}
+              value={form?.cardType || ''}
+            />
+            <Input
+              label="Mana Cost"
+              name="manaCost"
+              type="text"
+              placeholder="Wrap colors within curly brackets {}"
+              hint="Wrap colors within curly brackets. EX {1}{U/B}{W}"
+              onChange={handleTextChange}
+              value={form?.manaCost || ''}
+            />
+            <Checkbox
+              label="Rarity"
+              onChange={handleCheckboxChange}
+              name="rarity"
+              value={form?.rarity || []}
+              options={[
+                { value: 'common' },
+                { value: 'uncommon' },
+                { value: 'rare' },
+                { value: 'mythic' },
+              ]}
+            />
+            <Input
+              label="Artist"
+              name="artist"
+              type="text"
+              placeholder="Text can match anything"
+              onChange={handleTextChange}
+              value={form?.artist || ''}
+            />
+            <Input
+              label="Flavor Text"
+              name="flavorText"
+              type="text"
+              placeholder="Text can match anything"
+              onChange={handleTextChange}
+              value={form?.flavorText || ''}
+            />
           </>
         </Collapse.Content>
       </Collapse>

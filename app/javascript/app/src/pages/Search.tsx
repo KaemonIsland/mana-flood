@@ -1,5 +1,4 @@
 import React, { ReactElement, useState } from 'react'
-import { Text } from 'warlock-ui'
 import { Page, Cards, Search as SearchComponent } from '../components'
 
 export const Search = (): ReactElement => {
@@ -11,7 +10,6 @@ export const Search = (): ReactElement => {
 
   return (
     <Page>
-      <Text size={10}>Search</Text>
       <SearchComponent callback={submitQuery} />
       <hr />
       <Cards type="search" imageOnly showFilter={false} options={{ query }} />

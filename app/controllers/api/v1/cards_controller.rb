@@ -22,7 +22,11 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def search_with_collection
-    @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+    if params[:q][:collection_only] && @collection
+      @query = @collection.cards.with_color(params[:colors], Card).ransack(params[:q])
+    else
+      @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+    end
 
     @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
 
