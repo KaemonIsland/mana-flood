@@ -16,7 +16,7 @@ const formatKey = (key): string => `q[${key}]`
 const searchSettings = {
   cardName: 'name_cont',
   cardText: 'text_cont',
-  cardType: 'card_type_or_subtypes_cont',
+  cardType: 'card_type_cont',
   manaCost: 'mana_cost_cont',
   artist: 'artist_cont',
   flavorText: 'flavor_text_cont',
@@ -166,7 +166,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
               name="cardType"
               type="text"
               placeholder="Text can match anything"
-              hint="Can be Type or Subtype"
+              hint="Sorcery, Instant, Creature"
               onChange={handleTextChange}
               value={form?.cardType || ''}
             />

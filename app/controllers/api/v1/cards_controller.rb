@@ -2,6 +2,7 @@ class Api::V1::CardsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :load_card, :set_variations, only: [:collection, :deck]
   before_action :load_collection, only: [:collection, :search_with_collection, :search_with_deck, :deck]
+  before_action :load_query, only: [:search_with_collection, :search_with_deck]
   respond_to :json
 
   def collection
@@ -22,6 +23,26 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def search_with_collection
+    @cards = Kaminari.paginate_array(@sorted_cards)
+    .page(params[:page])
+    .per(params[:per_page] || 30)
+
+    render 'api/v1/cards/cards.json.jbuilder', status: 200
+end
+
+  def search_with_deck
+    @deck = Deck.find(params[:deck_id])
+
+    @cards = Kaminari.paginate_array(@sorted_cards)
+    .page(params[:page])
+    .per(params[:per_page] || 30)
+
+    render 'api/v1/cards/cards.json.jbuilder', status: 200
+  end
+
+  private
+
+  def load_query
     if params[:q][:collection_only] && @collection
       @query = @collection.cards.with_color(params[:colors], Card).ransack(params[:q])
     else
@@ -31,31 +52,7 @@ class Api::V1::CardsController < ApplicationController
     @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
 
     @stats = Card.card_stats(@sorted_cards)
-
-      @cards = Kaminari.paginate_array(@sorted_cards)
-      .page(params[:page])
-      .per(params[:per_page] || 30)
-
-    render 'api/v1/cards/cards.json.jbuilder', status: 200
-end
-
-  def search_with_deck
-    @query = Card.with_color(params[:colors], Card).ransack(params[:q])
-
-    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
-
-    @stats = Card.card_stats(@sorted_cards)
-
-    @deck = Deck.find(params[:deck_id])
-
-      @cards = Kaminari.paginate_array(@sorted_cards)
-      .page(params[:page])
-      .per(params[:per_page] || 30)
-
-    render 'api/v1/cards/cards.json.jbuilder', status: 200
   end
-
-  private
 
   def load_card
     @card = Card.find(params[:id])
