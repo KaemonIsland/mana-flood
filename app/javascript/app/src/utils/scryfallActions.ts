@@ -38,14 +38,12 @@ export const getCard = async (id): Promise<ScryfallCard> => {
  *
  * @param {string} id - scryfall unique id
  * @param {string} size - can be small, normal or large
- * @param {string} name - the card name used to identify card faces, if exist
  *
  * @returns card image url
  */
 export const getCardImage = async (
   id,
-  size = 'medium',
-  name = ''
+  size = 'medium'
 ): Promise<Array<string>> => {
   try {
     const response = await axios(`https://api.scryfall.com/cards/${id}`)

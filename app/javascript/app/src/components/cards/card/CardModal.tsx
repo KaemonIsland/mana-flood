@@ -1,8 +1,9 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Flex, Text, Modal, FlipCard } from 'warlock-ui'
+import { Flex, Text, Modal, FlipCard, Container } from 'warlock-ui'
 import { AddCardForm } from '../../forms'
-import { getCardImage } from '../../../utils'
+import { getCard } from '../../../utils'
+import { Prices } from '../../prices'
 
 const CardImgContainer = styled.div(({ theme }) => ({
   zIndex: 100,
@@ -68,30 +69,54 @@ export const CardModal = ({
   cardProps,
 }: CardModalProps): ReactElement => {
   const [cardImages, setCardImages] = useState([])
+  const [cardPrices, setCardPrices] = useState({})
 
-  const { name, scryfallId, locations } = cardProps
+  const { scryfallId, locations } = cardProps
 
   const inCollection = locations.filter(
     location => location.type === 'collection'
   )
   const inDecks = locations.filter(location => location.type === 'deck')
 
-  const handleCardImage = async (): Promise<void> => {
-    const cardUrl = await getCardImage(scryfallId, 'normal', name)
-    setCardImages(cardUrl)
+  const getCardImage = (cardData, size: string): void => {
+    const images = []
+
+    // Card has single face and image uris
+    if (cardData.imageUris && cardData.imageUris[size]) {
+      images.push(cardData.imageUris[size])
+      // Card has multiple faces
+    } else if (cardData.cardFaces) {
+      cardData.cardFaces.forEach(cardFace => {
+        if (cardFace.imageUris && cardFace.imageUris[size]) {
+          images.push(cardFace.imageUris[size])
+        }
+      })
+    }
+
+    setCardImages(images)
+  }
+
+  const handleFetchCard = async (): Promise<void> => {
+    const cardData = await getCard(scryfallId)
+
+    // Set card images
+    getCardImage(cardData, 'normal')
+
+    // Set card Price
+    setCardPrices(cardData && cardData.prices)
   }
 
   // Fetches a new card image whenever the card viewer is opened
   useEffect(() => {
     if (isOpen && !cardImages.length) {
-      handleCardImage()
+      handleFetchCard()
     }
   }, [isOpen])
 
   return (
     <Modal {...popupProps}>
       <Flex
-        alignItems="end"
+        alignItems="start"
         justifyContent="space-between"
         style={{ width: '90vw' }}
       >
@@ -115,13 +140,27 @@ export const CardModal = ({
             </FlipCard>
           )}
         </CardImagesContainer>
-        <div>
-          <AddCardForm
-            quantity={quantity}
-            foil={foilQuantity}
-            actions={...cardActions}
-          />
-        </div>
+        <Flex isColumn alignItems="start" justifyContent="space-between">
+          <Container width="100%">
+            <Prices
+              prices={[
+                { label: 'Normal', price: cardPrices && cardPrices.usd },
+                { label: 'Foil', price: cardPrices && cardPrices.usdFoil },
+                {
+                  label: 'Foil Etched',
+                  price: cardPrices && cardPrices.usdFoilEtched,
+                },
+              ]}
+            />
+          </Container>
+          <div>
+            <AddCardForm
+              quantity={quantity}
+              foil={foilQuantity}
+              actions={...cardActions}
+            />
+          </div>
+        </Flex>
       </Flex>
       <div>
         {inCollection.length ? (

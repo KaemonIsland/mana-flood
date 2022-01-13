@@ -55,7 +55,7 @@ export const Card = ({ id }: Props): ReactElement => {
       newVariations = await Promise.all(
         card.variations.map(async variant => ({
           ...variant,
-          imgUrl: await getCardImage(variant.scryfallId, 'large', card.name),
+          imgUrl: await getCardImage(variant.scryfallId, 'large'),
         }))
       )
     }
@@ -73,7 +73,7 @@ export const Card = ({ id }: Props): ReactElement => {
 
     if (scryfallId) {
       const scryfallCard = await getScryfallCard(scryfallId)
-      const cardImgs = await getCardImage(scryfallId, 'large', newCard.name)
+      const cardImgs = await getCardImage(scryfallId, 'large')
 
       setImages(cardImgs)
       setPrices(scryfallCard.prices)

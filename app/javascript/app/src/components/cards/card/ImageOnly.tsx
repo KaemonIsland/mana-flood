@@ -169,7 +169,7 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
   }
 
   const handleCardImage = async () => {
-    const cardUrl = await getCardImage(scryfallId, 'normal', name)
+    const cardUrl = await getCardImage(scryfallId, 'normal')
     setCardImages(cardUrl)
   }
 

@@ -45,68 +45,60 @@ export const AddCardForm = ({
   // TODO make this form actually look good!
   return (
     <Container padding={4} paddingRight={0}>
-      {foil && (
-        <Text family="roboto" display="inline-block">
-          {`Foil: ${foil}`}
-        </Text>
-      )}
-      <Text family="roboto" display="inline-block">
-        {`Quantity: ${quantity ? quantity : 'Not Owned'}`}
-      </Text>
-      <Container width="10rem">
+      <Container width="100%" paddingBottom={2}>
         <CheckboxConfirm
           label="Is Foil?"
           removeHint
           value={isFoil}
-          onChange={() => {
+          onChange={(): void => {
             setIsFoil(!isFoil)
           }}
         />
-        <Flex alignItems="center" justifyContent="space-between">
-          <Button
-            color="grey"
-            shade={8}
-            size="small"
-            variant="outline"
-            bubble={false}
-            isDisabled={!quantity}
-            onClick={(): void => {
-              const newQuantity = quantity - 1
-              if (newQuantity) {
-                actions.updateCard(
-                  newQuantity,
-                  isFoil ? { params: { foil: foil - 1 } } : null
-                )
-              } else {
-                actions.removeCard()
-              }
-            }}
-          >
-            Remove
-          </Button>
-
-          <Button
-            hasCard={quantity}
-            color="grey"
-            shade={8}
-            size="small"
-            bubble={false}
-            variant="outline"
-            onClick={(): void => {
-              if (quantity) {
-                actions.updateCard(
-                  quantity + 1,
-                  isFoil ? { params: { foil: foil + 1 } } : null
-                )
-              } else {
-                actions.addCard(isFoil ? { params: { foil: 1 } } : null)
-              }
-            }}
-          >
-            Add
-          </Button>
-        </Flex>
       </Container>
+      <Flex alignItems="center" justifyContent="space-between">
+        <Button
+          color="grey"
+          shade={8}
+          size="small"
+          variant="outline"
+          bubble={false}
+          isDisabled={!quantity}
+          onClick={(): void => {
+            const newQuantity = quantity - 1
+            if (newQuantity) {
+              actions.updateCard(
+                newQuantity,
+                isFoil ? { params: { foil: foil - 1 } } : null
+              )
+            } else {
+              actions.removeCard()
+            }
+          }}
+        >
+          Remove
+        </Button>
+
+        <Button
+          hasCard={quantity}
+          color="grey"
+          shade={8}
+          size="small"
+          bubble={false}
+          variant="outline"
+          onClick={(): void => {
+            if (quantity) {
+              actions.updateCard(
+                quantity + 1,
+                isFoil ? { params: { foil: foil + 1 } } : null
+              )
+            } else {
+              actions.addCard(isFoil ? { params: { foil: 1 } } : null)
+            }
+          }}
+        >
+          Add
+        </Button>
+      </Flex>
     </Container>
   )
 }
