@@ -42,10 +42,15 @@ export const AddCardForm = ({
 }: ActionButtonProps): ReactElement => {
   const [isFoil, setIsFoil] = useState(false)
 
-  // TODO make this form actually look good!
   return (
-    <Container padding={4} paddingRight={0}>
-      <Container width="100%" paddingBottom={2}>
+    <Container padding={4} paddingRight={0} width="100%">
+      <Text family="roboto" display="inline-block" title="Total">
+        {`Normal: ${quantity ? quantity : 0}`}
+      </Text>
+      <Text family="roboto" display="inline-block" title="Total">
+        {`Foil: ${foil ? foil : 0}`}
+      </Text>
+      <Container paddingBottom={2}>
         <CheckboxConfirm
           label="Is Foil?"
           removeHint

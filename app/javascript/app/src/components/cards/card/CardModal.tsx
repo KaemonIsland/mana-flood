@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Flex, Text, Modal, FlipCard, Container } from 'warlock-ui'
+import { Flex, Text, Modal, FlipCard, Container, Grid } from 'warlock-ui'
 import { AddCardForm } from '../../forms'
 import { getCard } from '../../../utils'
 import { Prices } from '../../prices'
@@ -75,7 +75,8 @@ export const CardModal = ({
 
   const inCollection = locations.filter(
     location => location.type === 'collection'
-  )
+  )[0]
+
   const inDecks = locations.filter(location => location.type === 'deck')
 
   const getCardImage = (cardData, size: string): void => {
@@ -115,106 +116,113 @@ export const CardModal = ({
 
   return (
     <Modal {...popupProps}>
-      <Flex
-        alignItems="start"
-        justifyContent="space-between"
-        style={{ width: '90vw' }}
-      >
-        <CardImagesContainer>
-          {cardImages.length && cardImages.length === 1 ? (
-            <CardImgContainer>
-              <CardImg src={cardImages[0]} alt={name} />
-            </CardImgContainer>
-          ) : (
-            <FlipCard>
-              <FlipCard.Front style={{ position: 'relative' }}>
+      <Container width="90vw">
+        <Grid
+          templateColumns={Grid.repeat(2, Grid.fr(1))}
+          gap={2}
+          templateRows={Grid.repeat(2, Grid.fr(1))}
+          templateAreas={['image price', 'image form']}
+        >
+          <Grid.Item area="image">
+            <CardImagesContainer>
+              {cardImages.length && cardImages.length === 1 ? (
                 <CardImgContainer>
                   <CardImg src={cardImages[0]} alt={name} />
                 </CardImgContainer>
-              </FlipCard.Front>
-              <FlipCard.Back>
-                <CardImgContainer>
-                  <CardImg src={cardImages[1]} alt={name} />
-                </CardImgContainer>
-              </FlipCard.Back>
-            </FlipCard>
-          )}
-        </CardImagesContainer>
-        <Flex isColumn alignItems="start" justifyContent="space-between">
-          <Container width="100%">
-            <Prices
-              prices={[
-                { label: 'Normal', price: cardPrices && cardPrices.usd },
-                { label: 'Foil', price: cardPrices && cardPrices.usdFoil },
-                {
-                  label: 'Foil Etched',
-                  price: cardPrices && cardPrices.usdFoilEtched,
-                },
-              ]}
-            />
-          </Container>
-          <div>
-            <AddCardForm
-              quantity={quantity}
-              foil={foilQuantity}
-              actions={...cardActions}
-            />
-          </div>
-        </Flex>
-      </Flex>
-      <div>
-        {inCollection.length ? (
-          <>
-            <hr />
-            <Flex alignItems="center" justifyContent="space-between">
-              <h6>Collection</h6>
-              <Text size={7} isBold style={{ width: 'auto' }}>
-                {inCollection[0].quantity}
-                <Text
-                  size={7}
-                  as="span"
-                  color="coolGrey"
-                  display="inline"
-                  shade={4}
-                >
-                  ({inCollection[0].foil})
+              ) : (
+                <FlipCard>
+                  <FlipCard.Front style={{ position: 'relative' }}>
+                    <CardImgContainer>
+                      <CardImg src={cardImages[0]} alt={name} />
+                    </CardImgContainer>
+                  </FlipCard.Front>
+                  <FlipCard.Back>
+                    <CardImgContainer>
+                      <CardImg src={cardImages[1]} alt={name} />
+                    </CardImgContainer>
+                  </FlipCard.Back>
+                </FlipCard>
+              )}
+            </CardImagesContainer>
+          </Grid.Item>
+          <Grid.Item area="price">
+            <Container width="100%">
+              <Prices
+                prices={[
+                  { label: 'Normal', price: cardPrices && cardPrices.usd },
+                  { label: 'Foil', price: cardPrices && cardPrices.usdFoil },
+                  {
+                    label: 'Foil Etched',
+                    price: cardPrices && cardPrices.usdFoilEtched,
+                  },
+                ]}
+              />
+            </Container>
+          </Grid.Item>
+          <Grid.Item area="form" alignSelf="end">
+            <Container width="100%">
+              <AddCardForm
+                quantity={quantity}
+                foil={foilQuantity}
+                actions={...cardActions}
+              />
+            </Container>
+          </Grid.Item>
+        </Grid>
+        <div>
+          {inCollection ? (
+            <>
+              <hr />
+              <Flex alignItems="center" justifyContent="space-between">
+                <h6>Collection</h6>
+                <Text size={7} isBold style={{ width: 'auto' }}>
+                  {inCollection.quantity}
+                  <Text
+                    size={7}
+                    as="span"
+                    color="coolGrey"
+                    display="inline"
+                    shade={4}
+                  >
+                    ({inCollection.foil})
+                  </Text>
                 </Text>
-              </Text>
-            </Flex>
-          </>
-        ) : null}
-        {inDecks.length ? (
-          <>
-            <hr />
-            <Flex isColumn>
-              {inDecks.map(inDeck => (
-                <FlexDeckContainer key={inDeck.deckId}>
-                  <div>
-                    <Text isBold>{inDeck.name}</Text>
-                    <Text size={2} isItalics>
-                      {inDeck.format}
-                    </Text>
-                  </div>
-                  <div>
-                    <Text size={7} isBold style={{ width: 'auto' }}>
-                      {inDeck.quantity}
-                      <Text
-                        size={7}
-                        as="span"
-                        color="coolGrey"
-                        display="inline"
-                        shade={4}
-                      >
-                        ({inDeck.foil})
+              </Flex>
+            </>
+          ) : null}
+          {inDecks.length ? (
+            <>
+              <hr />
+              <Flex isColumn>
+                {inDecks.map(inDeck => (
+                  <FlexDeckContainer key={inDeck.deckId}>
+                    <div>
+                      <Text isBold>{inDeck.name}</Text>
+                      <Text size={2} isItalics>
+                        {inDeck.format}
                       </Text>
-                    </Text>
-                  </div>
-                </FlexDeckContainer>
-              ))}
-            </Flex>
-          </>
-        ) : null}
-      </div>
+                    </div>
+                    <div>
+                      <Text size={7} isBold style={{ width: 'auto' }}>
+                        {inDeck.quantity}
+                        <Text
+                          size={7}
+                          as="span"
+                          color="coolGrey"
+                          display="inline"
+                          shade={4}
+                        >
+                          ({inDeck.foil})
+                        </Text>
+                      </Text>
+                    </div>
+                  </FlexDeckContainer>
+                ))}
+              </Flex>
+            </>
+          ) : null}
+        </div>
+      </Container>
     </Modal>
   )
 }
