@@ -97,6 +97,7 @@ def update_card_sets
   CardSet.upsert_all(card_set_attrs.compact, unique_by: [:index])
 end
 
+# Checks available sets for partial preview codes and returns them
 def get_partial_preview_set_codes
   csv_text = File.read('sets.csv')
 
