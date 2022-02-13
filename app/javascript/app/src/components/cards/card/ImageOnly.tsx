@@ -1,12 +1,13 @@
 import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
-import { Button, usePopupTrigger, FlipCard } from 'warlock-ui'
+import { Button, usePopupTrigger, FlipCard, Flex } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
-import { getCardImage, useDebounce } from '../../../utils'
+import { getCard, useDebounce } from '../../../utils'
 import { CardModal } from './CardModal'
 import { Feather } from '../../icon'
 import { Card } from '../../../interface'
 import { useToasts } from '../../../providers'
+import { Price } from '../../prices'
 
 const CardContainer = styled.div(({ theme }) => ({
   backgroundColor: 'transparent',
@@ -74,6 +75,7 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const [prevQuantity, setPrevQuantity] = useState(null)
+  const [cardPrices, setCardPrices] = useState({})
 
   const currentScope = typeof scope === 'string' ? 'collection' : 'deck'
   const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
@@ -168,9 +170,34 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
     }
   }
 
+  const getCardImage = (cardData, size: string): void => {
+    const images = []
+
+    // Card has single face and image uris
+    if (cardData.imageUris && cardData.imageUris[size]) {
+      images.push(cardData.imageUris[size])
+      // Card has multiple faces
+    } else if (cardData.cardFaces) {
+      cardData.cardFaces.forEach(cardFace => {
+        if (cardFace.imageUris && cardFace.imageUris[size]) {
+          images.push(cardFace.imageUris[size])
+        }
+      })
+    }
+
+    console.log(images, cardData.imageUris)
+
+    setCardImages(images)
+  }
+
   const handleCardImage = async () => {
-    const cardUrl = await getCardImage(scryfallId, 'normal')
-    setCardImages(cardUrl)
+    const cardData = await getCard(scryfallId)
+
+    // Set card images
+    getCardImage(cardData, 'normal')
+
+    // Set card Price
+    setCardPrices(cardData && cardData.prices)
   }
 
   useEffect(() => {
@@ -236,6 +263,10 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
             </FlipCard>
           )}
         </CardImagesContainer>
+        <Flex alignItems="center" justifyContent="space-between">
+          {cardPrices && cardPrices.usd ? (<Price label="Normal" price={cardPrices && cardPrices.usd} />) : null}
+          {cardPrices && cardPrices.usdFoil ? (<Price label="Foil" price={cardPrices && cardPrices.usdFoil} />) : null}
+        </Flex>
       </CardContainer>
     </>
   )
