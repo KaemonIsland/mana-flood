@@ -3,7 +3,14 @@ import styled from 'styled-components'
 import Turbolinks from 'turbolinks'
 import { Text, Flex, Container, Button } from 'warlock-ui'
 import { useMediaQuery } from 'react-responsive'
-import { ManaSymbol, Cards, Page, Collapse, DeckForm } from '../'
+import {
+  ManaSymbol,
+  Cards,
+  Page,
+  Collapse,
+  DeckForm,
+  SearchCollapse,
+} from '../'
 import { deckActions, usePopup } from '../../utils'
 import { Stats } from './Stats'
 import { Deck as DeckType } from '../../interface'
@@ -65,6 +72,8 @@ export const Deck = ({ id }: DeckType): ReactElement => {
     }
   }, [isLoading])
 
+  const searchCollapse = usePopup()
+
   return (
     <Page defaultScope={deck}>
       {isLoading ? (
@@ -72,15 +81,17 @@ export const Deck = ({ id }: DeckType): ReactElement => {
       ) : (
         <>
           <Flex alignItems="center" justifyContent="start">
-            {((deck.colors || []).length &&
+            {(deck.colors || []).length ? (
               deck.colors.map((mana, i) => (
                 <ManaSymbol
                   size={isMobile ? 'medium' : 'xLarge'}
                   key={i}
                   mana={mana}
                 />
-              ))) ||
-              ''}
+              ))
+            ) : (
+              <ManaSymbol size={isMobile ? 'medium' : 'xLarge'} mana="C" />
+            )}
           </Flex>
           <Flex
             direction={isMobile ? 'column' : 'row'}
@@ -132,13 +143,14 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           <hr />
           <Stats stats={deck.stats} />
           <br />
-          <Button
-            onClick={() => deckActions.addCardsToCollection(id)}
-            color="blueGrey"
-          >
-            Add cards to collection
-          </Button>
-          <Cards type="deck" showScope={false} />
+          <Button {...searchCollapse.triggerProps}>Add Cards</Button>
+          <Collapse {...searchCollapse.popupProps}>
+            <Collapse.Content>
+              <SearchCollapse />
+            </Collapse.Content>
+          </Collapse>
+          <br />
+          <Cards type="deck" showScope={false} imageOnly showFilter={false} />
         </>
       )}
     </Page>

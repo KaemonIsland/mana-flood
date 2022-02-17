@@ -219,7 +219,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
             size="large"
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
-            {showAdvanced ? 'Hide' : 'Show'} Advanced Search
+            Advanced
           </Button>
         </Container>
         <Container marginRight={4}>

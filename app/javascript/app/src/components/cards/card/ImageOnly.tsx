@@ -185,8 +185,6 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
       })
     }
 
-    console.log(images, cardData.imageUris)
-
     setCardImages(images)
   }
 
@@ -264,8 +262,12 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
           )}
         </CardImagesContainer>
         <Flex alignItems="center" justifyContent="space-between">
-          {cardPrices && cardPrices.usd ? (<Price label="Normal" price={cardPrices && cardPrices.usd} />) : null}
-          {cardPrices && cardPrices.usdFoil ? (<Price label="Foil" price={cardPrices && cardPrices.usdFoil} />) : null}
+          {cardPrices && cardPrices.usd ? (
+            <Price label="Normal" price={cardPrices && cardPrices.usd} />
+          ) : null}
+          {cardPrices && cardPrices.usdFoil ? (
+            <Price label="Foil" price={cardPrices && cardPrices.usdFoil} />
+          ) : null}
         </Flex>
       </CardContainer>
     </>

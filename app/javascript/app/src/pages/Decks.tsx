@@ -36,7 +36,7 @@ export const Decks = (): ReactElement => {
     <Page>
       <Text size={10}>Decks</Text>
       <Button {...triggerProps} color="purple" shade={7}>
-        {isOpen ? 'Hide' : 'Show'} Form
+        {isOpen ? 'Hide' : 'Show'} Create Form
       </Button>
       <Collapse {...popupProps}>
         <Collapse.Content>

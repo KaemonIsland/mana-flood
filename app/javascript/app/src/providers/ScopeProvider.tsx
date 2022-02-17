@@ -77,7 +77,6 @@ export const ScopeProvider = ({
   children,
 }: ScopeProviderProps): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
-  const [url, setUrl] = useState(getStorage('url'))
   const [scopes, setScopes] = useState(getStorage('scopes') || [])
   const [currentScope, setCurrentScope] = useState(
     getStorage('scope') || defaultScope
@@ -109,7 +108,7 @@ export const ScopeProvider = ({
       setCurrentScope('Collection')
       setStorage('scope', 'Collection')
     } else {
-      const newScope = scopes.find((scope) => scope.id === scopeId)
+      const newScope = scopes.find(scope => scope.id === scopeId)
 
       if (newScope) {
         // Updates current scope
@@ -122,16 +121,16 @@ export const ScopeProvider = ({
   const initialize = () => {
     getDecks()
     const pathname = window.location.pathname
+    // Updates URL
+    setStorage('url', pathname)
 
-    if (url !== pathname) {
-      // Updates URL
-      setUrl(pathname)
-      setStorage('url', pathname)
+    const newScope = scopes.find(
+      scope => scope.id === defaultScope && defaultScope.id
+    )
 
-      // Updates Scope
-      setCurrentScope(defaultScope || 'Collection')
-      setStorage('scope', defaultScope || 'Collection')
-    }
+    // Updates Scope
+    setCurrentScope(newScope || 'Collection')
+    setStorage('scope', defaultScope || 'Collection')
   }
 
   useEffect(() => {

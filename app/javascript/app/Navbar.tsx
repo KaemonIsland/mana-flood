@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import fetch from 'cross-fetch'
 import Turbolinks from 'turbolinks'
@@ -17,7 +17,7 @@ const NavContainer = styled.div(({ theme }) => ({
   backgroundColor: theme.color.purple[2],
   boxShadow: theme.boxShadow.single[2],
   borderBottom: '1px solid black',
-  zIndex: 100000000,
+  zIndex: 1000,
 }))
 
 const NavBar = styled.nav(({ theme, isMobile }) => ({

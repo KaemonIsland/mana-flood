@@ -1,7 +1,7 @@
 import { CardStats } from './CardStats'
 
 export interface Deck {
-  id: number
+  id: number | string
   user_id?: number
   name?: string
   format?: string
