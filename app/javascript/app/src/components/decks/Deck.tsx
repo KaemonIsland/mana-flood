@@ -14,6 +14,7 @@ import {
 import { deckActions, usePopup } from '../../utils'
 import { Stats } from './Stats'
 import { Deck as DeckType } from '../../interface'
+import { Drawer } from '..'
 
 const ButtonOptions = styled.div(({ theme, isMobile }) => ({
   width: isMobile ? '100%' : theme.spaceScale(11),
@@ -24,6 +25,7 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
 }))
 
 export const Deck = ({ id }: DeckType): ReactElement => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const defaultDeck: DeckType = {
     id,
   }
@@ -71,8 +73,6 @@ export const Deck = ({ id }: DeckType): ReactElement => {
       getDeck()
     }
   }, [isLoading])
-
-  const searchCollapse = usePopup()
 
   return (
     <Page defaultScope={deck}>
@@ -143,12 +143,18 @@ export const Deck = ({ id }: DeckType): ReactElement => {
           <hr />
           <Stats stats={deck.stats} />
           <br />
-          <Button {...searchCollapse.triggerProps}>Add Cards</Button>
-          <Collapse {...searchCollapse.popupProps}>
-            <Collapse.Content>
+          <Button onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+            Add Cards
+          </Button>
+          <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+            <Container padding={4}>
+              <Button onClick={() => setIsDrawerOpen(false)}>
+                Close Drawer
+              </Button>
+
               <SearchCollapse />
-            </Collapse.Content>
-          </Collapse>
+            </Container>
+          </Drawer>
           <br />
           <Cards type="deck" showScope={false} imageOnly showFilter={false} />
         </>

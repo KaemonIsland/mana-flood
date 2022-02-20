@@ -64,9 +64,9 @@ export const SetGroups = ({ sets, setsOptions }: SetsProps): ReactElement => {
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-between">
+      <Flex alignItems="center" justifyContent="start" flexWrap="wrap">
         {setTypes.map(setType => (
-          <Container key={setType} padding="0.25rem">
+          <Container key={setType} padding={1} margin={1}>
             <Button
               onClick={(): void => {
                 setCurrentSetType(setType)
