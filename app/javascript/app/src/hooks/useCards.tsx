@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react'
-import {
-  collectionCardActions,
-  deckCardActions,
-  setActions,
-} from '../cardActions'
-import { Deck, Card, CardStats } from '../../interface'
+import { collectionCardActions, deckCardActions } from '../utils/cardActions'
+import { Deck, Card, CardStats } from '../interface'
 
 interface Get {
   (query?: {}): Promise<void>
@@ -158,11 +154,11 @@ export const useCards = (
       if (isCollection) {
         response = await collectionCardActions[type](cardQuery)
       } else {
-        response = await deckCardActions[type](cardQuery, deckId)
+        response = await deckCardActions[type](cardQuery, Number(deckId))
       }
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await deckCardActions.deck(cardQuery, deckId)
+        response = await deckCardActions.deck(cardQuery, Number(deckId))
       } else {
         response = await deckCardActions[type](cardQuery, options.setId, deckId)
       }

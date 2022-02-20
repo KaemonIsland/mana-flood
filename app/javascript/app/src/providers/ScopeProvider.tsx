@@ -125,7 +125,7 @@ export const ScopeProvider = ({
     setStorage('url', pathname)
 
     const newScope = scopes.find(
-      scope => scope.id === defaultScope && defaultScope.id
+      scope => scope.id === (defaultScope && defaultScope.id)
     )
 
     // Updates Scope

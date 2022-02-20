@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement, ElementType } from 'react'
-import { useTimer } from '../../utils/hooks'
+import { useTimer } from '../../hooks'
 
 interface ToastProps {
   appearance?: string
