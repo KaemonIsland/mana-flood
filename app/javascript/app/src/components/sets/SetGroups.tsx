@@ -1,5 +1,5 @@
-import React, { ReactElement } from 'react'
-import { Text, Flex, Container } from 'warlock-ui'
+import React, { useState, ReactElement } from 'react'
+import { Text, Flex, Container, Button } from 'warlock-ui'
 import { toCamelcase } from '../../utils'
 import { CardSet } from '../../interface'
 import { Sets as SetsGroup } from '../'
@@ -45,6 +45,7 @@ interface SetsProps {
  */
 export const SetGroups = ({ sets, setsOptions }: SetsProps): ReactElement => {
   const formattedSets = toCamelcase(sets)
+  const [currentSetType, setCurrentSetType] = useState(null)
 
   // Sort all sets by their set type
   const sortedSets = formattedSets.reduce((acc, cur) => {
@@ -63,15 +64,28 @@ export const SetGroups = ({ sets, setsOptions }: SetsProps): ReactElement => {
 
   return (
     <>
-      {setTypes.map((setType, index) => (
-        <Container marginTop="6" key={`${setType}${index}`}>
+      <Flex alignItems="center" justifyContent="space-between">
+        {setTypes.map(setType => (
+          <Container key={setType} padding="0.25rem">
+            <Button
+              onClick={(): void => {
+                setCurrentSetType(setType)
+              }}
+            >
+              {setType.replace(/_/g, ' ')}
+            </Button>
+          </Container>
+        ))}
+      </Flex>
+      {currentSetType ? (
+        <Container marginTop="6">
           <SetSection
-            setType={setType}
-            sets={sortedSets[setType]}
+            setType={currentSetType}
+            sets={sortedSets[currentSetType]}
             setsOptions={...setsOptions}
           />
         </Container>
-      ))}
+      ) : null}
     </>
   )
 }
