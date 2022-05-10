@@ -6,7 +6,7 @@
     "@babel/preset-react": "7.12.5",
     "@babel/preset-typescript": "7.12.1",
     "@rails/actioncable": "6.1.6",
-    "@rails/activestorage": "6.1.5",
+    "@rails/activestorage": "6.1.6",
     "@rails/ujs": "6.1.5",
     "@rails/webpacker": "4.3.0",
     "@reach/rect": "0.16.0",
