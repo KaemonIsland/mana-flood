@@ -136,19 +136,19 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0704)
     mini_mime (1.1.0)
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.8.0)
     minitest (5.14.4)
     msgpack (1.4.2)
     multi_xml (0.6.0)
     nio4r (2.5.8)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.4)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.2.3)
-    puma (5.5.2)
+    puma (5.6.4)
       nio4r (~> 2.0)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-proxy (0.7.0)
       rack
@@ -275,7 +275,7 @@ DEPENDENCIES
   kaminari
   listen (>= 3.0.5, < 3.3)
   pg (>= 0.18, < 2.0)
-  puma (~> 5.0)
+  puma (~> 5.6)
   rails (~> 6.1.4.0, >= 6.1.4.1)
   ransack
   react-rails
