@@ -100,7 +100,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    ffi (1.15.3)
+    ffi (1.15.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
     httparty (0.18.1)
@@ -122,7 +122,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    listen (3.2.1)
+    listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.17.0)
@@ -185,7 +185,7 @@ GEM
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
       i18n
-    rb-fsevent (0.11.0)
+    rb-fsevent (0.11.1)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     react-rails (2.6.1)
@@ -273,7 +273,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.7)
   kaminari
-  listen (>= 3.0.5, < 3.3)
+  listen (>= 3.0.5, < 3.7.2)
   pg (>= 0.18, < 2.0)
   puma (~> 5.6)
   rails (~> 6.1.0, >= 6.1.6)
