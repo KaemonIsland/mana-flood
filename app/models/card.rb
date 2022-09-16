@@ -110,7 +110,7 @@ class Card < ApplicationRecord
       C: [],
     }
 
-    cards.each do |card| 
+    cards.each do |card|
       card_colors = card.color_identity
 
       if card_colors.empty?

@@ -28,7 +28,7 @@ class Api::V1::CardsController < ApplicationController
     .per(params[:per_page] || 30)
 
     render 'api/v1/cards/cards.json.jbuilder', status: 200
-end
+  end
 
   def search_with_deck
     @deck = Deck.find(params[:deck_id])
@@ -44,9 +44,9 @@ end
 
   def load_query
     if params[:q][:collection_only] && @collection
-      @query = @collection.cards.with_color(params[:colors], Card).ransack(params[:q])
+      @query = @collection.cards.with_color(params[:colors], Card).order("original_release_date ASC").ransack(params[:q])
     else
-      @query = Card.with_color(params[:colors], Card).ransack(params[:q])
+      @query = Card.with_color(params[:colors], Card).order("original_release_date ASC").ransack(params[:q])
     end
 
     @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))

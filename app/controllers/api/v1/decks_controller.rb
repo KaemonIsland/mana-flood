@@ -6,7 +6,7 @@ class Api::V1::DecksController < ApplicationController
 
     def index
         if current_user
-            @decks = current_user.decks.order(updated_at:  :desc)
+            @decks = current_user.decks.order(updated_at: :desc)
             render 'api/v1/decks/decks.json.jbuilder', status: 200
         else
             render json: { error: 'User must be signed in' }, status: 401
