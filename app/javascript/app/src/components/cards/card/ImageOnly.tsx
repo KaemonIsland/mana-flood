@@ -222,7 +222,7 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
         quantity={quantity}
         foilQuantity={foilQuantity}
         cardActions={{ updateCard, removeCard, addCard }}
-        cardProps={{ name, scryfallId, locations }}
+        cardProps={...card}
       />
       <CardContainer>
         <OptionContainer>

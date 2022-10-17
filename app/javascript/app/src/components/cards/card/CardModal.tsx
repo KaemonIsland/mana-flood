@@ -32,19 +32,13 @@ const FlexDeckContainer = styled.div(() => ({
   width: '100%',
 }))
 
-interface CardProps {
-  name: string
-  scryfallId: string
-  locations: Array<any>
-}
-
 interface CardModalProps {
   popupProps: any
   isOpen: boolean
   quantity: number
   foilQuantity: number
   cardActions: any
-  cardProps: CardProps
+  cardProps: any
 }
 
 /**
@@ -158,6 +152,12 @@ export const CardModal = ({
                 ]}
               />
             </Container>
+          </Grid.Item>
+          <Grid.Item>
+            {cardProps &&
+              cardProps.promoTypes.map((promo, i) => (
+                <Text key={i}>{promo}</Text>
+              ))}
           </Grid.Item>
           <Grid.Item area="form" alignSelf="end">
             <Container width="100%">

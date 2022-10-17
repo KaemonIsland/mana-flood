@@ -282,7 +282,7 @@ export const Minimal = ({
         quantity={quantity}
         foilQuantity={foilQuantity}
         cardActions={{ updateCard, removeCard, addCard }}
-        cardProps={{ name, scryfallId, locations }}
+        cardProps={...card}
       />
       <div>
         <CardContainer color={isLand ? colorIdentity : cardColors}>

@@ -38,22 +38,11 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "cz-conventional-changelog": "3.3.0",
     "husky": "7.0.4",
     "lint-staged": "10.5.4",
     "react-is": "16.13.1",
     "typedoc": "0.22.15",
     "warlock-config": "1.2.0",
     "webpack-dev-server": "3.11.3"
-  },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
   }
 }
