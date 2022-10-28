@@ -115,7 +115,7 @@ export const Navbar = () => {
         },
       })
 
-      Turbolinks.visit('/')
+      Turbolinks.visit('/login')
     } catch (error) {
       console.log("Couldn't logout", error)
     }

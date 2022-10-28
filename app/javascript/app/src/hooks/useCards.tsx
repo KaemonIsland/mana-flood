@@ -114,7 +114,7 @@ export const useCards = (
     if (isCollection) {
       return await collectionCardActions.add(id, options)
     }
-    return await deckCardActions.add(id, deckId, options)
+    return await deckCardActions.add(id, options.deckId, options)
   }
 
   const removeCard = async (id: number, options?: any): Promise<Card> => {
@@ -122,7 +122,7 @@ export const useCards = (
       return await collectionCardActions.remove(id, options)
     }
 
-    await deckCardActions.remove(id, deckId, options)
+    await deckCardActions.remove(id, options.deckId, options)
   }
 
   const updateCard = async (
@@ -133,7 +133,7 @@ export const useCards = (
     if (isCollection) {
       return await collectionCardActions.update(id, quantity, options)
     }
-    return await deckCardActions.update(id, quantity, deckId, options)
+    return await deckCardActions.update(id, quantity, options.deckId, options)
   }
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
@@ -148,17 +148,22 @@ export const useCards = (
 
     setQuery(cardQuery)
 
+    console.log({ type, cardQuery, options })
+
     let response
 
     if (type === 'search') {
       if (isCollection) {
         response = await collectionCardActions[type](cardQuery)
       } else {
-        response = await deckCardActions[type](cardQuery, Number(deckId))
+        response = await deckCardActions[type](
+          cardQuery,
+          Number(options.deckId)
+        )
       }
     } else if (typeof scope === 'object' || options.deckId) {
       if (type === 'deck') {
-        response = await deckCardActions.deck(cardQuery, Number(deckId))
+        response = await deckCardActions.deck(cardQuery, Number(options.deckId))
       } else {
         response = await deckCardActions[type](cardQuery, options.setId, deckId)
       }
