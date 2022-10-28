@@ -39,34 +39,38 @@ Rails.application.routes.draw do
       # Routes for single cards
       get 'card/:id', to: 'cards#collection'
       get 'card/:id/deck/:deck_id', to: 'cards#deck'
+
+      # Get user information
+      get 'user', to: 'users#show'
     end
   end
 
-  # Deck Routes
-  get 'decks', to: 'decks#index'
-  get 'deck/:id', to: 'decks#show'
+  # # Deck Routes
+  # get 'decks', to: 'decks#index'
+  # get 'deck/:id', to: 'decks#show'
 
-  # Search Route
-  get 'search', to: 'cards#search'
+  # # Search Route
+  # get 'search', to: 'cards#search'
 
-  # Set Routes
-  get 'sets', to: 'card_sets#index'
-  get 'sets/:id', to: 'card_sets#show'
+  # # Set Routes
+  # get 'sets', to: 'card_sets#index'
+  # get 'sets/:id', to: 'card_sets#show'
 
-  # Collection Routes
-  get 'collection', to: 'collection#index'
-  get 'collection/all', to: 'collection#all'
-  get 'collection/set/:id', to: 'collection#show'
+  # # Collection Routes
+  # get 'collection', to: 'collection#index'
+  # get 'collection/all', to: 'collection#all'
+  # get 'collection/set/:id', to: 'collection#show'
 
-  # Methods for single cards
-  get 'card/:id', to: 'cards#show'
+  # # Methods for single cards
+  # get 'card/:id', to: 'cards#show'
 
-
+  
   # Revised routes for auth
-  devise_for :users, 
-    path: '', 
-    controllers: { registrations: 'users/registrations' },
-    path_names: { sign_in: 'login', sign_out: 'logout', sign_up: 'register' }
-
+  devise_for :users,
+  path: '',
+  controllers: { registrations: 'users/registrations' },
+  path_names: { sign_in: 'login', sign_out: 'logout', sign_up: 'register' }
+  
+  get '*path', to: 'pages#home', via: :all
   root "pages#home"
 end

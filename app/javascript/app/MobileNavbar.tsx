@@ -116,7 +116,7 @@ AuthContainer.Link = styled('li')(({ theme }) => ({
  * Navigation bar that should always be present on webpage.
  * It shows the current action link.
  */
-export const MobileNavbar = ({ signedIn, links }) => {
+export const MobileNavbar = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   const openNav = () => {
@@ -175,39 +175,35 @@ export const MobileNavbar = ({ signedIn, links }) => {
         </OuterNavbarLink>
         <FocusLock disabled={!isOpen}>
           <MobileNavContainer isOpen={isOpen} role="menu" id="navbar-menu">
-            {links.map(({ path, title, isExact, type }, i) => (
-              <MobileNavContainer.Link
-                tabIndex={i + 1}
-                key={path}
-                isActive={isActiveLink(path, isExact)}
-                type={type}
-                onClick={closeNav}
-              >
-                <a href={path}>{title}</a>
-              </MobileNavContainer.Link>
-            ))}
             <AuthContainer>
-              {signedIn ? (
-                <AuthContainer.Link tabIndex={4} onClick={() => handleLogout()}>
+              <AuthContainer.Link tabIndex={4} onClick={() => handleLogout()}>
+                <Text size={2}>
+                  <a>Logout</a>
+                </Text>
+              </AuthContainer.Link>
+              //{' '}
+              <>
+                //{' '}
+                <AuthContainer.Link tabIndex={5}>
+                  //{' '}
                   <Text size={2}>
-                    <a>Logout</a>
+                    // <a href="/login">Login</a>
+                    //{' '}
                   </Text>
+                  //{' '}
                 </AuthContainer.Link>
-              ) : (
-                <>
-                  <AuthContainer.Link tabIndex={5}>
-                    <Text size={2}>
-                      <a href="/login">Login</a>
-                    </Text>
-                  </AuthContainer.Link>
-                  {' - '}
-                  <AuthContainer.Link tabIndex={6}>
-                    <Text size={2}>
-                      <a href="/register">Sign Up</a>
-                    </Text>
-                  </AuthContainer.Link>
-                </>
-              )}
+                // {' - '}
+                //{' '}
+                <AuthContainer.Link tabIndex={6}>
+                  //{' '}
+                  <Text size={2}>
+                    // <a href="/register">Sign Up</a>
+                    //{' '}
+                  </Text>
+                  //{' '}
+                </AuthContainer.Link>
+                //{' '}
+              </>
             </AuthContainer>
           </MobileNavContainer>
         </FocusLock>

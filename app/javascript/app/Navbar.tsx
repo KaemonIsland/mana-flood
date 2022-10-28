@@ -97,34 +97,11 @@ AuthContainer.Link = styled('li')(({ theme }) => ({
   },
 }))
 
-const links = [
-  {
-    path: '/collection',
-    isExact: false,
-    title: 'Collection',
-  },
-  {
-    path: '/decks',
-    isExact: true,
-    title: 'Decks',
-  },
-  {
-    path: '/sets',
-    isExact: false,
-    title: 'Sets',
-  },
-  {
-    path: '/search',
-    isExact: false,
-    title: 'Search',
-  },
-]
-
 /**
  * Navigation bar that should always be present on webpage.
  * It shows the current action link.
  */
-export const Navbar = ({ signedIn }) => {
+export const Navbar = () => {
   const handleLogout = async () => {
     const csrfToken = document
       .querySelector('meta[name=csrf-token]')
@@ -158,7 +135,7 @@ export const Navbar = ({ signedIn }) => {
       <NavContainer>
         <NavBar isMobile={isMobile}>
           {isMobile ? (
-            <MobileNavbar links={links} signedIn={signedIn} />
+            <MobileNavbar />
           ) : (
             <ul>
               <li tabIndex={1}>
@@ -166,28 +143,16 @@ export const Navbar = ({ signedIn }) => {
                   Mana Flood
                 </NavContainer.Logo>
               </li>
-              {links.map(({ path, title, isExact }, i) => (
-                <li tabIndex={i + 1} key={path}>
-                  <NavContainer.Link
-                    isActive={isActiveLink(path, isExact)}
-                    href={path}
-                  >
-                    {title}
-                  </NavContainer.Link>
-                </li>
-              ))}
               <AuthContainer>
-                {signedIn ? (
-                  <AuthContainer.Link
-                    tabIndex={10}
-                    onClick={() => handleLogout()}
-                  >
-                    <Text size={2}>
-                      <a>Logout</a>
-                    </Text>
-                  </AuthContainer.Link>
-                ) : (
-                  <>
+                <AuthContainer.Link
+                  tabIndex={10}
+                  onClick={() => handleLogout()}
+                >
+                  <Text size={2}>
+                    <a>Logout</a>
+                  </Text>
+                </AuthContainer.Link>
+                {/* <>
                     <AuthContainer.Link tabIndex={11}>
                       <Text size={2}>
                         <a href="/login">Login</a>
@@ -199,8 +164,7 @@ export const Navbar = ({ signedIn }) => {
                         <a href="/register">Sign Up</a>
                       </Text>
                     </AuthContainer.Link>
-                  </>
-                )}
+                  </> */}
               </AuthContainer>
             </ul>
           )}
