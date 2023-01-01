@@ -1,5 +1,7 @@
-export const deckLoader = ({ params }) => {
-  console.log(params)
-
-  return { id: params.deckId }
+interface DeckLoaderProps {
+  id: string
 }
+
+export const deckLoader = ({ params }): DeckLoaderProps => ({
+  id: params.deckId,
+})

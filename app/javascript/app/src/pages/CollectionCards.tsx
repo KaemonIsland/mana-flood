@@ -7,7 +7,7 @@ export const CollectionCards = (): ReactElement => {
     <Page>
       <Text size={10}>Full Collection</Text>
       <hr />
-      <Cards type="all" showFilter />
+      <Cards showFilter />
     </Page>
   )
 }

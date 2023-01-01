@@ -17,7 +17,7 @@ export const SearchCollapse = (): ReactElement => {
     <div>
       <SearchComponent callback={submitQuery} />
       <hr />
-      <Cards type="search" imageOnly showFilter={false} options={{ query }} />
+      <Cards imageOnly showFilter={false} options={{ query }} />
     </div>
   )
 }

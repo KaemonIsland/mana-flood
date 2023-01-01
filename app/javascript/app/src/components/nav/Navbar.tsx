@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import fetch from 'cross-fetch'
-import Turbolinks from 'turbolinks'
-import { ThemeProvider, Text } from 'warlock-ui'
-import { useMediaQuery } from 'react-responsive'
-import { MobileNavbar } from './MobileNavbar'
+import { Link, useNavigate } from 'react-router-dom'
+import { ThemeProvider, Text, Container, Button } from 'warlock-ui'
+import { SearchCollapse, Drawer } from '../'
 
 const NavContainer = styled.div(({ theme }) => ({
   position: 'fixed',
@@ -12,6 +11,7 @@ const NavContainer = styled.div(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   top: 0,
+  left: 0,
   width: '100%',
   height: '54px',
   backgroundColor: theme.color.purple[2],
@@ -20,15 +20,13 @@ const NavContainer = styled.div(({ theme }) => ({
   zIndex: 1000,
 }))
 
-const NavBar = styled.nav(({ theme, isMobile }) => ({
+const NavBar = styled.nav(({ theme }) => ({
   position: 'fixed',
   top: 0,
   width: '100%',
   maxWidth: '1400px',
   backgroundColor: theme.color.purple[2],
-  padding: isMobile
-    ? theme.spaceScale(2)
-    : `${theme.spaceScale(2)} ${theme.spaceScale(4)}`,
+  padding: `${theme.spaceScale(2)} ${theme.spaceScale(4)}`,
   borderBottom: '1px solid black',
   zIndex: 100000000,
   '& ul': {
@@ -42,7 +40,7 @@ const NavPadding = styled.div`
   margin-bottom: ${({ theme }) => theme.spaceScale(8)};
 `
 
-NavContainer.Link = styled('a')(({ theme, isActive }) => ({
+NavContainer.Link = styled(Link)(({ theme, isActive }) => ({
   cursor: 'pointer',
   transition: 'all 200ms ease-in',
   padding: [
@@ -102,6 +100,9 @@ AuthContainer.Link = styled('li')(({ theme }) => ({
  * It shows the current action link.
  */
 export const Navbar = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const navigate = useNavigate()
+
   const handleLogout = async () => {
     const csrfToken = document
       .querySelector('meta[name=csrf-token]')
@@ -115,7 +116,7 @@ export const Navbar = () => {
         },
       })
 
-      Turbolinks.visit('/login')
+      navigate('/login')
     } catch (error) {
       console.log("Couldn't logout", error)
     }
@@ -127,32 +128,29 @@ export const Navbar = () => {
     return isExact ? pathname === path : pathname.includes(path)
   }
 
-  const isMobile = useMediaQuery({ maxWidth: 650 })
-
   return (
     <ThemeProvider>
       <NavPadding />
       <NavContainer>
-        <NavBar isMobile={isMobile}>
-          {isMobile ? (
-            <MobileNavbar />
-          ) : (
-            <ul>
-              <li tabIndex={1}>
-                <NavContainer.Logo isActive={isActiveLink('/', true)} href="/">
-                  Mana Flood
-                </NavContainer.Logo>
-              </li>
-              <AuthContainer>
-                <AuthContainer.Link
-                  tabIndex={10}
-                  onClick={() => handleLogout()}
-                >
-                  <Text size={2}>
-                    <a>Logout</a>
-                  </Text>
-                </AuthContainer.Link>
-                {/* <>
+        <NavBar>
+          <ul>
+            <li tabIndex={1}>
+              <NavContainer.Logo isActive={isActiveLink('/', true)} to="/">
+                Mana Flood
+              </NavContainer.Logo>
+            </li>
+            <li>
+              <Button onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+                Search Cards
+              </Button>
+            </li>
+            <AuthContainer>
+              <AuthContainer.Link tabIndex={10} onClick={() => handleLogout()}>
+                <Text size={2}>
+                  <a>Logout</a>
+                </Text>
+              </AuthContainer.Link>
+              {/* <>
                     <AuthContainer.Link tabIndex={11}>
                       <Text size={2}>
                         <a href="/login">Login</a>
@@ -165,11 +163,21 @@ export const Navbar = () => {
                       </Text>
                     </AuthContainer.Link>
                   </> */}
-              </AuthContainer>
-            </ul>
-          )}
+            </AuthContainer>
+          </ul>
         </NavBar>
       </NavContainer>
+
+      <Drawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        style={{ width: '100%', boxShadow: 'none' }}
+      >
+        <Container padding={4}>
+          <Button onClick={() => setIsDrawerOpen(false)}>Close Drawer</Button>
+          <SearchCollapse />
+        </Container>
+      </Drawer>
     </ThemeProvider>
   )
 }

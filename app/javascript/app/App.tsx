@@ -2,14 +2,20 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Turbolinks from 'turbolinks'
 import { getUser } from './src/utils'
-import { Main } from './Main'
-import { Navbar } from './Navbar'
-import { Deck } from './src/pages/Deck'
+import { Main } from './src/pages/Main'
+import { DeckPage } from './src/pages/Deck'
 import { deckLoader } from './loaders'
 
 const router = createBrowserRouter([
-  { path: '/', element: <Main /> },
-  { path: '/deck/:deckId', element: <Deck />, loader: deckLoader },
+  {
+    path: '/',
+    element: <Main />,
+  },
+  {
+    path: '/deck/:deckId',
+    element: <DeckPage />,
+    loader: deckLoader,
+  },
 ])
 
 export const App = (): ReactElement => {
@@ -36,10 +42,5 @@ export const App = (): ReactElement => {
     Turbolinks.visit('/login')
   }
 
-  return (
-    <>
-      <Navbar />
-      <RouterProvider router={router} />
-    </>
-  )
+  return <RouterProvider router={router} />
 }

@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
-import Turbolinks from 'turbolinks'
+import { useNavigate } from 'react-router-dom'
 import { Button, Flex, Text, Container } from 'warlock-ui'
 import { Deck } from '../../interface'
 import { ManaSymbol } from '../icon'
 
-const StyledDecks = styled.div(({ theme }) => ({
+const StyledDecksPreview = styled.div(({ theme }) => ({
   border: '1px solid black',
   backgroundColor: 'white',
   margin: theme.spaceScale(4),
@@ -20,7 +20,8 @@ interface DecksProps {
   decks: Array<Deck>
 }
 
-export const Decks = ({ decks = [] }: DecksProps): ReactElement => {
+export const DecksPreview = ({ decks = [] }: DecksProps): ReactElement => {
+  const navigate = useNavigate()
   // Converts decks to on object with the key being the format
   const decksByFormat = decks.reduce((deckFormats, deck) => {
     const { format } = deck
@@ -47,7 +48,7 @@ export const Decks = ({ decks = [] }: DecksProps): ReactElement => {
               alignItems="center"
             >
               {(decksInFormat || []).map(deck => (
-                <StyledDecks key={deck.id}>
+                <StyledDecksPreview key={deck.id}>
                   <Flex
                     isColumn
                     alignItems="space-between"
@@ -75,16 +76,16 @@ export const Decks = ({ decks = [] }: DecksProps): ReactElement => {
                         color="green"
                         shade={7}
                         variant="outline"
-                        onClick={(): void => {
-                          Turbolinks.visit(`/deck/${deck.id}`)
-                        }}
                         style={{ width: '100%' }}
+                        onClick={() => {
+                          navigate(`/deck/${deck.id}`)
+                        }}
                       >
                         View
                       </Button>
                     </Container>
                   </Flex>
-                </StyledDecks>
+                </StyledDecksPreview>
               ))}
             </Flex>
           </>

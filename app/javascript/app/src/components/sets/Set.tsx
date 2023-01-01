@@ -19,6 +19,6 @@ export const Set = ({ id, name }: SetProps): ReactElement => (
       {name}
     </Text>
     <hr />
-    <Cards type="set" options={{ setId: id }} />
+    <Cards options={{ setId: id }} />
   </Page>
 )

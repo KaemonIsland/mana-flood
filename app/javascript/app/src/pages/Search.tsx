@@ -12,7 +12,7 @@ export const Search = (): ReactElement => {
     <Page>
       <SearchComponent callback={submitQuery} />
       <hr />
-      <Cards type="search" imageOnly showFilter={false} options={{ query }} />
+      <Cards imageOnly showFilter={false} options={{ query }} />
     </Page>
   )
 }

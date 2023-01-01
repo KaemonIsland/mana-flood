@@ -1,6 +1,6 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { Text, Button } from 'warlock-ui'
-import { Page, Decks as DeckList, Collapse, DeckForm } from '../components'
+import { Page, DecksPreview, Collapse, DeckForm } from '../components'
 import { deckActions, usePopup } from '../utils'
 
 export const Decks = (): ReactElement => {
@@ -44,7 +44,7 @@ export const Decks = (): ReactElement => {
         </Collapse.Content>
       </Collapse>
       <hr />
-      <>{isLoading ? '...Loading' : <DeckList decks={decks} />}</>
+      <>{isLoading ? '...Loading' : <DecksPreview decks={decks} />}</>
     </Page>
   )
 }

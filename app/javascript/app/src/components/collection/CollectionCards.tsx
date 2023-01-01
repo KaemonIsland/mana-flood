@@ -14,7 +14,7 @@ export const CollectionCards = ({
     <Page>
       <Text size={10}>My Collection</Text>
       <hr />
-      <Cards type="collection" options={{ setId }} />
+      <Cards options={{ setId }} />
     </Page>
   )
 }

@@ -4,9 +4,7 @@ import { useMediaQuery } from 'react-responsive'
 import { Filter } from '../filter'
 import { Minimal, ImageOnly } from './card'
 import { Pagination } from '../Pagination'
-import { Scope } from '../scope'
-import { useFilter, useCards } from '../../utils'
-import { useScope } from '../../providers'
+import { useFilter, useCards, useCardActions } from '../../utils'
 import { Legend } from '../legend'
 
 const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
@@ -38,7 +36,6 @@ interface Options {
 
 interface Props {
   options?: Options
-  type: string
   showScope?: boolean
   showFilter?: boolean
   imageOnly?: boolean
@@ -46,21 +43,15 @@ interface Props {
 }
 
 export const Cards = ({
-  type,
   options,
-  showScope = true,
   showFilter = true,
   imageOnly = false,
   showPagination = true,
 }: Props): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
-  const { currentScope, scopes, updateScope } = useScope()
-  const { actions, cards, pagination, stats, isLoading } = useCards(
-    type,
-    currentScope,
-    options
-  )
-  const filter = useFilter(actions.get)
+  const { getCards, cards, pagination, stats, isLoading } = useCards(options)
+  const { actions } = useCardActions()
+  const filter = useFilter(getCards)
 
   const results = `Showing ${30 * (pagination.page - 1) + 1} - 
   ${
@@ -76,15 +67,6 @@ export const Cards = ({
       <hr />
       {showPagination && <div>{results}</div>}
       <CardsContainer showFilter={showFilter} isMobile={isMobile}>
-        <div>
-          {showScope && (
-            <Scope
-              currentScope={currentScope}
-              scopes={scopes}
-              updateScope={updateScope}
-            />
-          )}
-        </div>
         {showPagination && <Pagination {...pagination} />}
         {showFilter && <Filter stats={stats} {...filter} />}
         <StyledGrid imageOnly={imageOnly}>
@@ -93,19 +75,9 @@ export const Cards = ({
           ) : (
             cards.map(card =>
               imageOnly ? (
-                <ImageOnly
-                  actions={actions}
-                  key={card.id}
-                  card={card}
-                  scope={currentScope}
-                />
+                <ImageOnly actions={actions} key={card.id} card={card} />
               ) : (
-                <Minimal
-                  actions={actions}
-                  key={card.id}
-                  card={card}
-                  scope={currentScope}
-                />
+                <Minimal actions={actions} key={card.id} card={card} />
               )
             )
           )}

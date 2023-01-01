@@ -1,28 +1,9 @@
 import { useState, useEffect } from 'react'
 import { collectionCardActions, deckCardActions } from '../utils/cardActions'
-import { Deck, Card, CardStats } from '../interface'
+import { Card, CardStats } from '../interface'
 
 interface Get {
   (query?: {}): Promise<void>
-}
-
-interface Add {
-  (id: number, deckId?: number): Promise<Card>
-}
-
-interface Update {
-  (id: number, quantity: number, deckId?: number): Promise<Card>
-}
-
-interface Remove {
-  (id: number, deckId?: number): Promise<Card>
-}
-
-interface CardActionFunc {
-  get: Get
-  add: Add
-  update: Update
-  remove: Remove
 }
 
 interface PaginationProps {
@@ -37,10 +18,12 @@ interface Options {
   setId?: number
   query?: URLSearchParams
   deckId?: number
+  isCollection?: boolean
+  isDeck?: boolean
 }
 
 interface Actions {
-  actions: CardActionFunc
+  getCards: Get
   cards: Array<Card>
   pagination: PaginationProps
   stats: CardStats
@@ -95,46 +78,12 @@ const defaultStats = {
  * This makes it a lot easier to dynamically set where we update
  * card information for User Collection or Sets.
  */
-export const useCards = (
-  type: string,
-  scope: Deck | string,
-  options: Options = {}
-): Actions => {
+export const useCards = (options: Options = {}): Actions => {
   const [isLoading, setIsLoading] = useState(true)
   const [cards, setCards] = useState([])
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 })
   const [stats, setStats] = useState(defaultStats)
   const [query, setQuery] = useState(options?.query || new URLSearchParams())
-
-  const deckId = (typeof scope !== 'string' && scope.id) || null
-
-  const isCollection = typeof scope === 'string'
-
-  const addCard = async (id: number, options?: any): Promise<Card> => {
-    if (isCollection) {
-      return await collectionCardActions.add(id, options)
-    }
-    return await deckCardActions.add(id, options.deckId, options)
-  }
-
-  const removeCard = async (id: number, options?: any): Promise<Card> => {
-    if (isCollection) {
-      return await collectionCardActions.remove(id, options)
-    }
-
-    await deckCardActions.remove(id, options.deckId, options)
-  }
-
-  const updateCard = async (
-    id: number,
-    quantity: number,
-    options?: any
-  ): Promise<Card> => {
-    if (isCollection) {
-      return await collectionCardActions.update(id, quantity, options)
-    }
-    return await deckCardActions.update(id, quantity, options.deckId, options)
-  }
 
   const getCards = async (cardQuery = new URLSearchParams()): Promise<void> => {
     if (!cardQuery.has('page')) {
@@ -148,27 +97,31 @@ export const useCards = (
 
     setQuery(cardQuery)
 
-    console.log({ type, cardQuery, options })
-
     let response
+    const { setId, deckId, isDeck } = options
 
-    if (type === 'search') {
-      if (isCollection) {
-        response = await collectionCardActions[type](cardQuery)
-      } else {
-        response = await deckCardActions[type](
+    // Get cards from a set or from a deck
+    if (setId || deckId) {
+      // Get cards from a set with deck quantities
+      if (setId && deckId) {
+        response = await deckCardActions.set(
           cardQuery,
-          Number(options.deckId)
+          options.setId,
+          options.deckId
         )
+        // Get cards from a deck
+      } else if (deckId && isDeck) {
+        response = await deckCardActions.deck(cardQuery, deckId)
+        // get cards with deck quantities
+      } else if (deckId) {
+        response = await deckCardActions.search(cardQuery, deckId)
+        // get set cards without deck quantities
+      } else if (setId) {
+        response = await collectionCardActions.set(cardQuery, setId)
       }
-    } else if (typeof scope === 'object' || options.deckId) {
-      if (type === 'deck') {
-        response = await deckCardActions.deck(cardQuery, Number(options.deckId))
-      } else {
-        response = await deckCardActions[type](cardQuery, options.setId, deckId)
-      }
+      // Otherwise get cards by collection
     } else {
-      response = await collectionCardActions[type](cardQuery, options.setId)
+      response = await collectionCardActions.search(cardQuery)
     }
 
     setIsLoading(false)
@@ -196,19 +149,9 @@ export const useCards = (
     setIsLoading(true)
   }, [options.query])
 
-  useEffect(() => {
-    setCards([])
-    setIsLoading(true)
-  }, [scope])
-
   return {
     isLoading,
-    actions: {
-      get: getCards,
-      add: addCard,
-      update: updateCard,
-      remove: removeCard,
-    },
+    getCards,
     cards,
     pagination: {
       ...pagination,

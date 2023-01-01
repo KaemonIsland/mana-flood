@@ -68,27 +68,32 @@ interface CardActions {
 interface Props {
   actions: CardActions
   card: Card
-  scope: any
+  deckId?: number
+  options?: any
 }
 
-export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
+export const ImageOnly = ({
+  actions,
+  card,
+  options = {},
+}: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const [prevQuantity, setPrevQuantity] = useState(null)
   const [cardPrices, setCardPrices] = useState({})
 
-  const currentScope = typeof scope === 'string' ? 'collection' : 'deck'
+  const currentScope = options && options.deckId ? 'deck' : 'collection'
   const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
   const [quantity, setQuantity] = useState(cardCounts.quantity)
   const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
-  const [cardOptions, setCardOptions] = useState(null)
+  const [cardOptions, setCardOptions] = useState(options)
 
   const debouncedValue = useDebounce(quantity)
   const modal = usePopupTrigger()
 
   const { addToast } = useToasts()
 
-  const { id, name, scryfallId, locations } = card
+  const { id, name, scryfallId } = card
 
   const { add, update, remove } = actions
 
@@ -143,16 +148,16 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
     if (prevQuantity === 0 && quantity === 1) {
       await add(id, cardOptions)
       addToast(
-        `${name} added to ${
-          typeof scope === 'string' ? 'Collection' : scope.name
-        }`
+        `${name} added to ${(options && options.deckId && options.name) ||
+          'Collection'}`
       )
     } else if (quantity <= 0) {
       await remove(id, cardOptions)
       addToast(
-        `${name} was removed from ${
-          typeof scope === 'string' ? 'Collection' : scope.name
-        }`,
+        `${name} was removed from ${(options &&
+          options.deckId &&
+          options.name) ||
+          'Collection'}`,
         {
           appearance: 'info',
         }
@@ -160,9 +165,10 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
     } else if (prevQuantity !== quantity) {
       await update(id, quantity, cardOptions)
       addToast(
-        `${name} quantity updated to ${quantity} in ${
-          typeof scope === 'string' ? 'Collection' : scope.name
-        }`,
+        `${name} quantity updated to ${quantity} in ${(options &&
+          options.deckId &&
+          options.name) ||
+          'Collection'}`,
         {
           appearance: 'info',
         }
@@ -236,7 +242,6 @@ export const ImageOnly = ({ actions, card, scope }: Props): ReactElement => {
             />
           </Button.Icon>
           <ActionButtons
-            collection={scope === 'deck' ? card?.collection : null}
             quantity={quantity}
             actions={{ updateCard, removeCard, addCard }}
           />
