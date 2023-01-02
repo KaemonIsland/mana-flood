@@ -17,7 +17,7 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
 
 export const Deck = ({ deckId }): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 650 })
-  const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
+  // const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const { triggerProps, popupProps, isOpen, close } = usePopup()
   const [deck, setDeck] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -74,23 +74,13 @@ export const Deck = ({ deckId }): ReactElement => {
               <Flex alignItems="center" justifyContent="start">
                 {(deck.colors || []).length ? (
                   deck.colors.map((mana, i) => (
-                    <ManaSymbol
-                      size={isMobile ? 'medium' : 'xLarge'}
-                      key={i}
-                      mana={mana}
-                    />
+                    <ManaSymbol size="medium" key={i} mana={mana} />
                   ))
                 ) : (
                   <ManaSymbol size={isMobile ? 'medium' : 'xLarge'} mana="C" />
                 )}
               </Flex>
-            </Flex.Item>
-            <Flex.Item>
-              <Text
-                as="h1"
-                size={isMobile || isTablet ? 8 : 10}
-                family="source sans"
-              >
+              <Text as="h1" size={8} family="source sans">
                 {deck?.name}
               </Text>
             </Flex.Item>
@@ -119,9 +109,11 @@ export const Deck = ({ deckId }): ReactElement => {
               </ButtonOptions>
             </Flex.Item>
           </Flex>
-          <Container marginVertical={3}>
-            <Text>{deck?.description}</Text>
-          </Container>
+          {deck?.descriptions && (
+            <Container marginVertical={3}>
+              <Text>{deck?.description}</Text>
+            </Container>
+          )}
           <Collapse {...popupProps}>
             <Collapse.Content>
               <DeckForm deck={deck} submitCallback={update} />

@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
 import { ImageOnly } from './card'
 import { useCardActions, useCards } from '../../utils'
-import { Legend } from '../legend'
 import { Deck } from '../../interface'
 
 const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
@@ -36,25 +35,21 @@ export const DeckCards = ({ deck }: Props): ReactElement => {
   const { actions } = useCardActions()
 
   return (
-    <>
-      <Legend />
-      <hr />
-      <CardsContainer isMobile={isMobile}>
-        <StyledGrid imageOnly>
-          {isLoading ? (
-            <h1>...Loading!</h1>
-          ) : (
-            cards.map(card => (
-              <ImageOnly
-                actions={actions}
-                key={card.id}
-                card={card}
-                options={{ name: deck.name, deckId: deck.id }}
-              />
-            ))
-          )}
-        </StyledGrid>
-      </CardsContainer>
-    </>
+    <CardsContainer isMobile={isMobile}>
+      <StyledGrid imageOnly>
+        {isLoading ? (
+          <h1>...Loading!</h1>
+        ) : (
+          cards.map(card => (
+            <ImageOnly
+              actions={actions}
+              key={card.id}
+              card={card}
+              options={{ name: deck.name, deckId: deck.id }}
+            />
+          ))
+        )}
+      </StyledGrid>
+    </CardsContainer>
   )
 }

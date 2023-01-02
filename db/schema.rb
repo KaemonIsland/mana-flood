@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_014715) do
+ActiveRecord::Schema.define(version: 2023_01_02_164855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,14 @@ ActiveRecord::Schema.define(version: 2021_09_30_014715) do
     t.index ["uuid"], name: "index_cards_on_uuid", unique: true
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "included_in_deck", default: true
+    t.boolean "included_in_price", default: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "collected_cards", force: :cascade do |t|
     t.bigint "collection_id"
     t.bigint "card_id"
@@ -145,6 +153,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_014715) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "foil"
+    t.string "categories", default: [], array: true
     t.index ["card_id"], name: "index_decked_cards_on_card_id"
     t.index ["deck_id"], name: "index_decked_cards_on_deck_id"
   end
