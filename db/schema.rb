@@ -125,8 +125,10 @@ ActiveRecord::Schema.define(version: 2023_01_02_164855) do
     t.string "name", null: false
     t.boolean "included_in_deck", default: true
     t.boolean "included_in_price", default: true
+    t.bigint "deck_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["deck_id"], name: "index_categories_on_deck_id"
   end
 
   create_table "collected_cards", force: :cascade do |t|

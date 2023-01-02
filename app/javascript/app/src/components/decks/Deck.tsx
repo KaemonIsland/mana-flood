@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive'
 import { ManaSymbol, DeckCards, Collapse, DeckForm } from '../'
 import { deckActions, usePopup } from '../../utils'
 import { Stats } from './Stats'
+import { useNavigate } from 'react-router'
 
 const ButtonOptions = styled.div(({ theme, isMobile }) => ({
   width: isMobile ? '100%' : theme.spaceScale(11),
@@ -16,6 +17,7 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
 }))
 
 export const Deck = ({ deckId }): ReactElement => {
+  const navigate = useNavigate()
   const isMobile = useMediaQuery({ maxWidth: 650 })
   // const isTablet = useMediaQuery({ maxWidth: 950, minWidth: 651 })
   const { triggerProps, popupProps, isOpen, close } = usePopup()
@@ -41,7 +43,7 @@ export const Deck = ({ deckId }): ReactElement => {
   const destroy = async (id: number): Promise<void> => {
     await deckActions.delete(id)
 
-    Turbolinks.visit('/decks')
+    navigate('/')
   }
 
   /**

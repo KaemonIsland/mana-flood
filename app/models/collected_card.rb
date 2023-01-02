@@ -20,8 +20,6 @@ class CollectedCard < ApplicationRecord
   end
 
   def remove_empty_quantity
-    if quantity == 0
-      self.destroy
-    end
+    quantity.zero? && destroy
   end
 end

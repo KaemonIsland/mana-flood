@@ -4,6 +4,7 @@ class CreateCategories < ActiveRecord::Migration[6.1]
       t.string :name, null: false
       t.boolean :included_in_deck, default: true
       t.boolean :included_in_price, default: true
+      t.belongs_to :deck
 
       t.timestamps
     end

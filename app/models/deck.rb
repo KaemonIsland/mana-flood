@@ -1,10 +1,28 @@
 class Deck < ApplicationRecord
   belongs_to :user
   has_many :decked_cards, dependent: :destroy
-  has_many :categories, depenent: :destroy
+  has_many :categories, dependent: :destroy
   has_many :cards, -> { distinct }, through: :decked_cards
 
+  after_create :add_default_categories
+
   validates :name, presence: true
+
+  def add_default_categories
+    # Categories that should be included with the deck and price calculations
+    included = %w[Commander Land Planeswalker Enchantment Sorcery Instant Creature Artifact]
+
+    included.each do |category|
+      categories.create!(name: category, included_in_deck: true, included_in_price: true)
+    end
+
+    # Default categories that should not be included with the deck and price calculations
+    not_included = %w[Maybeboard Sideboard]
+
+    not_included.each do |category|
+      categories.create!(name: category, included_in_deck: false, included_in_price: false)
+    end
+  end
 
   def colors
     order = ['W', 'U', 'B', 'R', 'G']
