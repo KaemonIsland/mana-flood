@@ -70,7 +70,7 @@ class Card < ApplicationRecord
   def collection_quantity(collection_id)
     return 0 unless collection_id
 
-    collected = self.collected_cards.select { |col| col.collection_id === collection_id }
+    collected = collected_cards.select { |col| col.collection_id == collection_id }
 
     collected.empty? ? 0 : collected.first
   end
@@ -79,7 +79,7 @@ class Card < ApplicationRecord
   def deck_quantity(deck_id)
     return 0 unless deck_id
 
-    decked = self.decked_cards.select { |deck| deck.deck_id === deck_id }
+    decked = decked_cards.select { |deck| deck.deck_id == deck_id }
 
     decked.empty? ? 0 : decked.first
   end

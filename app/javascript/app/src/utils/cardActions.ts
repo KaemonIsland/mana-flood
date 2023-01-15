@@ -54,7 +54,7 @@ export const collectionCardActions = {
         params: query,
       }
     ),
-  add: async (id: number, options: any = {}): Promise<Card> =>
+  add: async (id: number, params: any = {}): Promise<Card> =>
     await request(
       `/api/v1/add_card/${id}`,
       error => {
@@ -62,26 +62,22 @@ export const collectionCardActions = {
       },
       {
         method: 'post',
-        ...options,
+        params,
       }
     ),
-  update: async (
-    id: number,
-    quantity: number,
-    options: any = {}
-  ): Promise<Card> =>
+  update: async (id: number, params: any = {}): Promise<Card> =>
     await request(
-      `/api/v1/add_card/${id}?quantity=${quantity}`,
+      `/api/v1/add_card/${id}`,
 
       error => {
         console.log('Unable to update card collection quantity', error)
       },
       {
         method: 'put',
-        ...options,
+        params,
       }
     ),
-  remove: async (id: number, options: any = {}): Promise<Card> =>
+  remove: async (id: number, params: any = {}): Promise<Card> =>
     await request(
       `/api/v1/remove_card/${id}`,
 
@@ -90,7 +86,7 @@ export const collectionCardActions = {
       },
       {
         method: 'delete',
-        ...options,
+        params,
       }
     ),
 }
@@ -157,7 +153,7 @@ export const deckCardActions = {
         params: query,
       }
     ),
-  add: async (id: number, deckId: number, options: any = {}): Promise<Card> =>
+  add: async (id: number, deckId: number, params: any = {}): Promise<Card> =>
     await request(
       `/api/v1/add_decked_card/${deckId}/${id}`,
       error => {
@@ -165,30 +161,21 @@ export const deckCardActions = {
       },
       {
         method: 'post',
-        ...options,
+        params,
       }
     ),
-  update: async (
-    id: number,
-    quantity: number,
-    deckId: number,
-    options: any = {}
-  ): Promise<Card> =>
+  update: async (id: number, deckId: number, params: any = {}): Promise<Card> =>
     await request(
-      `/api/v1/add_decked_card/${deckId}/${id}?quantity=${quantity}`,
+      `/api/v1/add_decked_card/${deckId}/${id}`,
       error => {
         console.log('Unable to update card in deck', error)
       },
       {
         method: 'put',
-        ...options,
+        params,
       }
     ),
-  remove: async (
-    id: number,
-    deckId: number,
-    options: any = {}
-  ): Promise<Card> =>
+  remove: async (id: number, deckId: number, params: any = {}): Promise<Card> =>
     await request(
       `/api/v1/remove_decked_card/${deckId}/${id}`,
       error => {
@@ -196,7 +183,7 @@ export const deckCardActions = {
       },
       {
         method: 'delete',
-        ...options,
+        params,
       }
     ),
 }

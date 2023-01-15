@@ -1,6 +1,7 @@
 class Api::V1::DecksController < ApplicationController
     skip_before_action :verify_authenticity_token
     before_action :load_deck, only: [:show, :update, :destroy]
+    before_action :load_collection, only: [:show, :update, :destroy]
     before_action :check_current_user
     respond_to :json
 
@@ -60,6 +61,9 @@ class Api::V1::DecksController < ApplicationController
     def load_deck
         @deck = current_user.decks.find(params[:id])
     end
-  
+
+    def load_collection
+        @collection = current_user.collection
+    end
 end
   

@@ -7,4 +7,12 @@ end
 
 json.collection @card.collection_quantity(@collection.id)
 
-json.deck @card.deck_quantity(@deck.id)
+decked_card = @card.decked_cards.find_by(deck_id: @deck.id)
+
+if decked_card
+  json.deck do
+    json.quantity decked_card.quantity
+    json.foil decked_card.foil
+    json.categories decked_card.categories
+  end
+end

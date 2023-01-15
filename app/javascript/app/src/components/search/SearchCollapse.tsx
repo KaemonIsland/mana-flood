@@ -6,7 +6,7 @@ import { Cards, Search as SearchComponent } from '..'
  *
  * Use this when you want to be able to view a deck and still be able to search/add new cards.
  */
-export const SearchCollapse = (): ReactElement => {
+export const SearchCollapse = ({ cardOptions }): ReactElement => {
   const [query, setQuery] = useState(new URLSearchParams())
 
   const submitQuery = (query: URLSearchParams): void => {
@@ -17,7 +17,7 @@ export const SearchCollapse = (): ReactElement => {
     <div>
       <SearchComponent callback={submitQuery} />
       <hr />
-      <Cards imageOnly showFilter={false} options={{ query }} />
+      <Cards imageOnly showFilter={false} options={{ query, ...cardOptions }} />
     </div>
   )
 }

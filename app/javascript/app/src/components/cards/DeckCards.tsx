@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useMediaQuery } from 'react-responsive'
 import { ImageOnly } from './card'
-import { useCardActions, useCards } from '../../utils'
 import { Deck } from '../../interface'
 
 const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
@@ -27,29 +26,55 @@ const StyledGrid = styled.div(({ theme, imageOnly }) => ({
 
 interface Props {
   deck: Deck
+  updateDeck: () => {}
 }
 
-export const DeckCards = ({ deck }: Props): ReactElement => {
+export const DeckCards = ({ deck, updateDeck }: Props): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
-  const { cards, isLoading } = useCards({ deckId: deck.id, isDeck: true })
-  const { actions } = useCardActions()
+
+  // Converts cards to on object with the key being the category
+  const cardsByCategory =
+    deck &&
+    deck.cards.reduce((categories, card) => {
+      const category = card.categories[0]
+
+      if (categories[category]) {
+        categories[category].push(card)
+      } else {
+        categories[category] = [card]
+      }
+
+      return categories
+    }, {})
 
   return (
-    <CardsContainer isMobile={isMobile}>
-      <StyledGrid imageOnly>
-        {isLoading ? (
-          <h1>...Loading!</h1>
-        ) : (
-          cards.map(card => (
-            <ImageOnly
-              actions={actions}
-              key={card.id}
-              card={card}
-              options={{ name: deck.name, deckId: deck.id }}
-            />
-          ))
-        )}
-      </StyledGrid>
-    </CardsContainer>
+    <>
+      {Object.entries(cardsByCategory).map(([category, cardsInCategory]) => {
+        return (
+          <>
+            <br />
+            <h2>
+              {category.toUpperCase()}({`${cardsInCategory.length}`})
+            </h2>
+            <hr />
+            <CardsContainer isMobile={isMobile}>
+              <StyledGrid imageOnly>
+                {(cardsInCategory || []).map(card => (
+                  <ImageOnly
+                    key={card.id}
+                    card={card}
+                    options={{
+                      name: deck.name,
+                      deckId: deck.id,
+                      updateDeck,
+                    }}
+                  />
+                ))}
+              </StyledGrid>
+            </CardsContainer>
+          </>
+        )
+      })}
+    </>
   )
 }

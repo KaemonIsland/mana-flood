@@ -64,28 +64,21 @@ class Api::V1::CollectedCardsController < ApplicationController
 
       @stats = Card.card_stats(collection_set_cards)
 
-      @cards = Kaminari.paginate_array(@sorted_cards)
-        .page(params[:page])
-        .per(params[:per_page] || 30)
+      @cards = Kaminari.paginate_array(@sorted_cards).page(params[:page]).per(params[:per_page] || 30)
 
-      
       @deck = current_user.decks.find(params[:deck_id])
       render 'api/v1/cards/cards.json.jbuilder', status: 200
     else
       render json: { error: 'User must be signed in' }, status: 401
     end
   end
-  
+
   def create
     if in_collection?(@collection, @card)
       render json: { error: 'Card already exists in collection' }, status: 400
     elsif @collection.cards << @card
       @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
-      @collected_card.quantity = 1
-
-      if params[:foil]
-        @collected_card.foil = 1
-      end
+      @collected_card.update(collected_card_params)
 
       @collected_card.save
 
@@ -157,26 +150,26 @@ class Api::V1::CollectedCardsController < ApplicationController
       render json: { error: 'Unable to remove card from collection' }, status: 400
     end
   end
-  
-    private
-  
-    def load_card
-      @card = Card.find(params[:id])
-    end
 
-    def load_set
-      @set = CardSet.find(params[:id])
-    end
-  
-    def load_collection
-      @collection = current_user.collection
-    end
-  
-    def load_collected_card
-      @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
-    end
+  private
 
-    def collected_card_params
-      params.permit(:quantity, :foil)
-    end
+  def load_card
+    @card = Card.find(params[:id])
   end
+
+  def load_set
+    @set = CardSet.find(params[:id])
+  end
+
+  def load_collection
+    @collection = current_user.collection
+  end
+
+  def load_collected_card
+    @collected_card = @collection.collected_cards.find_by(card_id: @card.id)
+  end
+
+  def collected_card_params
+    params.permit(:quantity, :foil)
+  end
+end

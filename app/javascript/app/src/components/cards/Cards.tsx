@@ -4,7 +4,7 @@ import { useMediaQuery } from 'react-responsive'
 import { Filter } from '../filter'
 import { Minimal, ImageOnly } from './card'
 import { Pagination } from '../Pagination'
-import { useFilter, useCards, useCardActions } from '../../utils'
+import { useFilter, useCards } from '../../utils'
 import { Legend } from '../legend'
 
 const CardsContainer = styled.section(({ theme, isMobile, showFilter }) => ({
@@ -50,7 +50,6 @@ export const Cards = ({
 }: Props): ReactElement => {
   const isMobile = useMediaQuery({ maxWidth: 1100 })
   const { getCards, cards, pagination, stats, isLoading } = useCards(options)
-  const { actions } = useCardActions()
   const filter = useFilter(getCards)
 
   const results = `Showing ${30 * (pagination.page - 1) + 1} - 
@@ -73,13 +72,9 @@ export const Cards = ({
           {isLoading ? (
             <h1>...Loading!</h1>
           ) : (
-            cards.map(card =>
-              imageOnly ? (
-                <ImageOnly actions={actions} key={card.id} card={card} />
-              ) : (
-                <Minimal actions={actions} key={card.id} card={card} />
-              )
-            )
+            cards.map(card => (
+              <ImageOnly key={card.id} card={card} options={options} />
+            ))
           )}
         </StyledGrid>
         <div />

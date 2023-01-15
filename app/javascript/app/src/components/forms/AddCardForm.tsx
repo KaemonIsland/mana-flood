@@ -1,7 +1,6 @@
 import React, { ReactElement, useState } from 'react'
 import { Button, Flex, Text, Container } from 'warlock-ui'
 import { CheckboxConfirm } from '../../elements'
-import styled from 'styled-components'
 
 interface UpdateCard {
   (newQuantity: number, options?: any): void
@@ -73,7 +72,7 @@ export const AddCardForm = ({
             if (newQuantity) {
               actions.updateCard(
                 newQuantity,
-                isFoil ? { params: { foil: foil - 1 } } : null
+                isFoil ? { foil: foil - 1 } : null
               )
             } else {
               actions.removeCard()
@@ -94,10 +93,10 @@ export const AddCardForm = ({
             if (quantity) {
               actions.updateCard(
                 quantity + 1,
-                isFoil ? { params: { foil: foil + 1 } } : null
+                isFoil ? { foil: foil + 1 } : null
               )
             } else {
-              actions.addCard(isFoil ? { params: { foil: 1 } } : null)
+              actions.addCard(isFoil ? { foil: 1 } : null)
             }
           }}
         >

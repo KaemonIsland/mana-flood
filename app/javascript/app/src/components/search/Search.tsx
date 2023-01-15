@@ -69,7 +69,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
     callback(query)
 
     if (resetForm) {
-      setForm(defaultForm)
+      setForm({ ...defaultForm, collectionOnly: form.collectionOnly })
     }
   }
 

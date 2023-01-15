@@ -4,6 +4,7 @@ class DeckedCard < ApplicationRecord
 
   before_save :set_quantity
   before_save :set_foil
+  before_save :set_default_category
 
   after_save :remove_empty_quantity
 
@@ -19,9 +20,16 @@ class DeckedCard < ApplicationRecord
     self.foil ||= 0
   end
 
-  def remove_empty_quantity
-    if quantity == 0
-      self.destroy
+  def set_default_category
+    if categories.empty?
+      card_type = card.card_types.first
+      self.categories ||= [card_type]
+    else
+      self.categories
     end
+  end
+
+  def remove_empty_quantity
+    quantity.zero? && destroy
   end
 end

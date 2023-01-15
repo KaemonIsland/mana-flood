@@ -1,9 +1,15 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import Turbolinks from 'turbolinks'
 import { Text, Flex, Container, Button } from 'warlock-ui'
 import { useMediaQuery } from 'react-responsive'
-import { ManaSymbol, DeckCards, Collapse, DeckForm } from '../'
+import {
+  ManaSymbol,
+  DeckCards,
+  Collapse,
+  DeckForm,
+  SearchCollapse,
+  Drawer,
+} from '../'
 import { deckActions, usePopup } from '../../utils'
 import { Stats } from './Stats'
 import { useNavigate } from 'react-router'
@@ -23,6 +29,7 @@ export const Deck = ({ deckId }): ReactElement => {
   const { triggerProps, popupProps, isOpen, close } = usePopup()
   const [deck, setDeck] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const getDeck = async (): Promise<void> => {
     try {
@@ -122,9 +129,32 @@ export const Deck = ({ deckId }): ReactElement => {
             </Collapse.Content>
           </Collapse>
           <hr />
+          <Button onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+            Search Cards
+          </Button>
+          <hr />
           <Stats stats={deck.stats} />
           <br />
-          <DeckCards deck={deck} />
+          <DeckCards deck={deck} updateDeck={getDeck} />
+
+          <Drawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            style={{ width: '100%', boxShadow: 'none' }}
+          >
+            <Container padding={4}>
+              <Button onClick={() => setIsDrawerOpen(false)}>
+                Close Drawer
+              </Button>
+              <SearchCollapse
+                cardOptions={{
+                  deckId: deck.id,
+                  name: deck.name,
+                  updateDeck: getDeck,
+                }}
+              />
+            </Container>
+          </Drawer>
         </>
       )}
     </>

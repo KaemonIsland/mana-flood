@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import { Button, usePopupTrigger, FlipCard, Flex } from 'warlock-ui'
 import { ActionButtons } from '../../buttons'
-import { getCard, useDebounce } from '../../../utils'
+import { getCard, useCardActions, useDebounce } from '../../../utils'
 import { CardModal } from './CardModal'
 import { Feather } from '../../icon'
 import { Card } from '../../../interface'
@@ -49,34 +49,13 @@ Button.Icon = styled(Button)`
   background-color: transparent;
 `
 
-interface Add {
-  (id: number, options?: any): Promise<Card>
-}
-interface Update {
-  (id: number, quantity: number, options?: any): Promise<Card>
-}
-interface Remove {
-  (id: number, options?: any): Promise<Card>
-}
-
-interface CardActions {
-  add: Add
-  update: Update
-  remove: Remove
-}
-
 interface Props {
-  actions: CardActions
   card: Card
   deckId?: number
   options?: any
 }
 
-export const ImageOnly = ({
-  actions,
-  card,
-  options = {},
-}: Props): ReactElement => {
+export const ImageOnly = ({ card, options = {} }: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState(true)
   const [cardImages, setCardImages] = useState([])
   const [prevQuantity, setPrevQuantity] = useState(null)
@@ -86,7 +65,6 @@ export const ImageOnly = ({
   const cardCounts = card[currentScope] || { quantity: 0, foil: 0 }
   const [quantity, setQuantity] = useState(cardCounts.quantity)
   const [foilQuantity, setFoilQuantity] = useState(cardCounts.foil)
-  const [cardOptions, setCardOptions] = useState(options)
 
   const debouncedValue = useDebounce(quantity)
   const modal = usePopupTrigger()
@@ -95,19 +73,14 @@ export const ImageOnly = ({
 
   const { id, name, scryfallId } = card
 
-  const { add, update, remove } = actions
+  const { add, update, remove } = useCardActions()
 
   const addCard = (options?: any): void => {
     setPrevQuantity(quantity)
     setQuantity(1)
 
-    // Adds options if present
-    if (options) {
-      setCardOptions(options)
-    }
-
     // Adds foil quantity if present in options
-    if (options && options.params && options.params.foil) {
+    if (options && options.foil) {
       setFoilQuantity(1)
     }
   }
@@ -122,57 +95,57 @@ export const ImageOnly = ({
       setFoilQuantity(newQuantity)
     }
 
-    if (options) {
-      setCardOptions(options)
-    }
-
-    if (options && options.params && options.params.foil !== undefined) {
-      setFoilQuantity(options.params.foil)
+    if (options && options.foil !== undefined) {
+      setFoilQuantity(options.foil)
     }
   }
 
-  const removeCard = (options?: any): void => {
+  const removeCard = (): void => {
     setPrevQuantity(quantity)
     setQuantity(0)
-
-    if (options) {
-      setCardOptions(options)
-    }
-
-    if (options && options.params && options.params.foil) {
-      setFoilQuantity(0)
-    }
+    setFoilQuantity(0)
   }
+
   // Updates the card quantity on the db
   const updateCardQuantity = async (): Promise<void> => {
-    if (prevQuantity === 0 && quantity === 1) {
-      await add(id, cardOptions)
-      addToast(
-        `${name} added to ${(options && options.deckId && options.name) ||
-          'Collection'}`
-      )
-    } else if (quantity <= 0) {
-      await remove(id, cardOptions)
-      addToast(
-        `${name} was removed from ${(options &&
-          options.deckId &&
-          options.name) ||
-          'Collection'}`,
-        {
-          appearance: 'info',
-        }
-      )
-    } else if (prevQuantity !== quantity) {
-      await update(id, quantity, cardOptions)
-      addToast(
-        `${name} quantity updated to ${quantity} in ${(options &&
-          options.deckId &&
-          options.name) ||
-          'Collection'}`,
-        {
-          appearance: 'info',
-        }
-      )
+    try {
+      const params = { quantity, foil: foilQuantity }
+
+      if (prevQuantity === 0 && quantity === 1) {
+        await add(id, { ...options, params })
+        addToast(
+          `${name} added to ${(options && options.deckId && options.name) ||
+            'Collection'}`
+        )
+      } else if (quantity <= 0) {
+        await remove(id, { ...options, params })
+        addToast(
+          `${name} was removed from ${(options &&
+            options.deckId &&
+            options.name) ||
+            'Collection'}`,
+          {
+            appearance: 'info',
+          }
+        )
+      } else if (prevQuantity !== quantity) {
+        await update(id, { ...options, params })
+        addToast(
+          `${name} quantity updated to ${quantity} in ${(options &&
+            options.deckId &&
+            options.name) ||
+            'Collection'}`,
+          {
+            appearance: 'info',
+          }
+        )
+      }
+    } catch (error) {
+      console.log('Unable to update card.')
+    } finally {
+      if (typeof options.updateDeck === 'function') {
+        options.updateDeck()
+      }
     }
   }
 
