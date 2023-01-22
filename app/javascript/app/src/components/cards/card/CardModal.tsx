@@ -39,6 +39,7 @@ interface CardModalProps {
   foilQuantity: number
   cardActions: any
   cardProps: any
+  isDeck?: boolean
 }
 
 /**
@@ -65,7 +66,8 @@ export const CardModal = ({
   const [cardImages, setCardImages] = useState([])
   const [cardPrices, setCardPrices] = useState({})
 
-  const { scryfallId, locations } = cardProps
+  const { scryfallId, locations, categories } = cardProps
+  const { add, update, remove } = cardActions
 
   const inCollection = locations.filter(
     location => location.type === 'collection'
@@ -154,10 +156,12 @@ export const CardModal = ({
             </Container>
           </Grid.Item>
           <Grid.Item>
-            {cardProps &&
-              cardProps.promoTypes.map((promo, i) => (
-                <Text key={i}>{promo}</Text>
-              ))}
+            <Text size={6} isBold>
+              Categories:
+            </Text>
+            {categories.map(category => {
+              return <Text>{category}</Text>
+            })}
           </Grid.Item>
           <Grid.Item area="form" alignSelf="end">
             <Container width="100%">

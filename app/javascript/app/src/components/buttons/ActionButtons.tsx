@@ -23,20 +23,10 @@ Button.Right = styled(Button)`
   background-color: transparent;
 `
 
-interface UpdateCard {
-  (newQuantity: number): void
-}
-interface AddCard {
-  (): void
-}
-interface RemoveCard {
-  (): void
-}
-
 interface Actions {
-  updateCard: UpdateCard
-  addCard: AddCard
-  removeCard: RemoveCard
+  add: (options?: any) => void
+  update: (newQuantity: number, options?: any) => void
+  remove: () => void
 }
 
 interface Quantities {
@@ -75,9 +65,9 @@ export const ActionButtons = ({
           onClick={(): void => {
             const newQuantity = quantity - 1
             if (newQuantity) {
-              actions.updateCard(newQuantity)
+              actions.update(newQuantity)
             } else {
-              actions.removeCard()
+              actions.remove()
             }
           }}
         >
@@ -110,9 +100,9 @@ export const ActionButtons = ({
       variant="outline"
       onClick={(): void => {
         if (quantity) {
-          actions.updateCard(quantity + 1)
+          actions.update(quantity + 1)
         } else {
-          actions.addCard()
+          actions.add()
         }
       }}
     >

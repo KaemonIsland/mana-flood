@@ -105,6 +105,10 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
     }))
   }
 
+  const handleFocus = e => {
+    e.currentTarget.select()
+  }
+
   return (
     <Form onSubmit={submitForm}>
       <Input
@@ -114,6 +118,7 @@ export const Search = ({ callback }: SearchProps): ReactElement => {
         placeholder="name doesn't have to be exact"
         onChange={handleTextChange}
         value={form?.cardName || ''}
+        onFocus={handleFocus}
       />
       <Collapse isOpen={showAdvanced}>
         <Collapse.Content>

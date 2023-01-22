@@ -22,6 +22,16 @@ const ButtonOptions = styled.div(({ theme, isMobile }) => ({
   gridGap: theme.spaceScale(2),
 }))
 
+const getCardCount = (cards = []) => {
+  let count = 0
+  cards.forEach(({ deck }) => {
+    if (deck && deck.quantity) {
+      count += deck.quantity
+    }
+  })
+  return count
+}
+
 export const Deck = ({ deckId }): ReactElement => {
   const navigate = useNavigate()
   const isMobile = useMediaQuery({ maxWidth: 650 })
@@ -91,6 +101,9 @@ export const Deck = ({ deckId }): ReactElement => {
               </Flex>
               <Text as="h1" size={8} family="source sans">
                 {deck?.name}
+              </Text>
+              <Text as="p" size={3} family="roboto">
+                Deck Size: {getCardCount(deck?.cards)}
               </Text>
             </Flex.Item>
             <Flex.Item>

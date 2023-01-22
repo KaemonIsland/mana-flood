@@ -8,16 +8,24 @@ import { Cards, Search as SearchComponent } from '..'
  */
 export const SearchCollapse = ({ cardOptions }): ReactElement => {
   const [query, setQuery] = useState(new URLSearchParams())
+  const [showCards, setShowCards] = useState(false)
 
   const submitQuery = (query: URLSearchParams): void => {
     setQuery(new URLSearchParams(query))
+    setShowCards(true)
   }
 
   return (
     <div>
       <SearchComponent callback={submitQuery} />
       <hr />
-      <Cards imageOnly showFilter={false} options={{ query, ...cardOptions }} />
+      {showCards && (
+        <Cards
+          imageOnly
+          showFilter={false}
+          options={{ query, ...cardOptions }}
+        />
+      )}
     </div>
   )
 }

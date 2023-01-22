@@ -60,4 +60,5 @@ export interface Card {
   setCode: string
   promoTypes?: Array<string>
   locations?: Array<Location>
+  categories: Array<string>
 }

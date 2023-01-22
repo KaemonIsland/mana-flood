@@ -25,13 +25,15 @@ export const Price = ({
   return (
     <Container isFullWidth {...containerProps}>
       <Flex alignItems="center" justifyContent="space-between">
-        <Container paddingRight={3} {...labelContainerProps}>
-          <Text align="right" family="roboto">
+        <Container paddingRight={2} {...labelContainerProps}>
+          <Text align="right" family="roboto" style={{ fontSize: '0.75rem' }}>
             {label}:
           </Text>
         </Container>
-        <Container width="3.5rem" {...priceContainerProps}>
-          <Text family="roboto">${price}</Text>
+        <Container width="3rem" {...priceContainerProps}>
+          <Text family="roboto" style={{ fontSize: '0.75rem' }}>
+            ${price}
+          </Text>
         </Container>
       </Flex>
     </Container>

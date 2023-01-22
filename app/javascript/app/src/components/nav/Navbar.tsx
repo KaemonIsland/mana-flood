@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import fetch from 'cross-fetch'
 import { Link, useNavigate } from 'react-router-dom'
-import { ThemeProvider, Text, Container, Button } from 'warlock-ui'
+import { ThemeProvider, Text, Container, Button, Flex } from 'warlock-ui'
 import { SearchCollapse, Drawer } from '../'
 
 const NavContainer = styled.div(({ theme }) => ({
@@ -141,7 +141,7 @@ export const Navbar = () => {
             </li>
             <li>
               <Button onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
-                Search Cards
+                Add Cards to Collection
               </Button>
             </li>
             <AuthContainer>
@@ -174,7 +174,12 @@ export const Navbar = () => {
         style={{ width: '100%', boxShadow: 'none' }}
       >
         <Container padding={4}>
-          <Button onClick={() => setIsDrawerOpen(false)}>Close Drawer</Button>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Button onClick={() => setIsDrawerOpen(false)}>Close Drawer</Button>
+            <Flex.Item>
+              <Text>Add Cards to Collection</Text>
+            </Flex.Item>
+          </Flex>
           <SearchCollapse />
         </Container>
       </Drawer>
