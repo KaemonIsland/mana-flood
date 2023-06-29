@@ -1,10 +1,13 @@
 require 'open-uri'
 require 'zip'
 require 'csv'
+require 'openssl'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
 
 def get_card_files(file_names)
   # Fetch csv files in zip format from mtgjson
-  content = open('https://www.mtgjson.com/api/v5/AllPrintingsCSVFiles.zip')
+  content = URI.open('https://www.mtgjson.com/api/v5/AllPrintingsCSVFiles.zip')
 
   # Clean up files!
   file_names.each do |file|
@@ -32,7 +35,7 @@ def remove_files(file_names)
 end
 
 def update_legalities
-  csv_text = File.read('legalities.csv')
+  csv_text = File.read('cardLegalities.csv')
 
   legalities = CSV.parse(csv_text, headers: true)
 
@@ -49,7 +52,7 @@ def update_legalities
 end
 
 def update_rulings
-  csv_text = File.read('rulings.csv')
+  csv_text = File.read('cardRulings.csv')
 
   rulings = CSV.parse(csv_text, headers: true)
 
@@ -70,10 +73,10 @@ def update_card_sets
 
   card_sets = CSV.parse(csv_text, headers: true)
 
-  card_set_attrs = card_sets.map do |card_set|
+  card_set_attrs = card_sets.map.with_index do |card_set, index|
     if card_set["isPartialPreview"] != '1'
       {
-        index: card_set["index"].to_i,
+        index: index,
         base_set_size: card_set["baseSetSize"] || 0,
         block: card_set["block"] || '',
         code: card_set["code"] || '',
@@ -94,7 +97,7 @@ def update_card_sets
     end
   end
 
-  CardSet.upsert_all(card_set_attrs.compact, unique_by: [:index])
+  CardSet.upsert_all(card_set_attrs.compact, unique_by: [:code])
 end
 
 # Checks available sets for partial preview codes and returns them
@@ -128,8 +131,8 @@ def update_cards
       {
         artist: card["artist"] || '',
         border_color: card["borderColor"] || '',
-        color_identity: (card["colorIdentity"] || '')&.split(','),
-        color_indicator: (card["colorIndicator"] || '')&.split(','),
+        color_identity: (card["colorIdentity"] || '')&.split(', '),
+        color_indicator: (card["colorIndicator"] || '')&.split(', '),
         colors: (card["colors"] || '')&.split(','),
         converted_mana_cost: card["convertedManaCost"] || 0,
         edhrec_rank: card["edhrecRank"] || 0,
@@ -245,7 +248,7 @@ namespace :cards do
   desc "Updates all card info for the app"
   task update: :environment do
     puts "Fetching CSV files from MTGJSON"
-    get_card_files(['cards.csv', 'sets.csv', 'legalities.csv', 'rulings.csv'])
+    get_card_files(['cards.csv', 'sets.csv', 'cardLegalities.csv', 'cardRulings.csv'])
 
     puts "Updating Legalities"
     update_legalities()
@@ -258,6 +261,10 @@ namespace :cards do
 
     puts "Updating Cards"
     update_cards()
+
+    puts "Updating Identifiers"
+
+    puts "Updating Prices"
 
     puts "Removing files"
     remove_files(['cards.csv', 'sets.csv', 'legalities.csv', 'rulings.csv'])

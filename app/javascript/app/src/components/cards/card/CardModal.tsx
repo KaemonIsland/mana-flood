@@ -159,7 +159,7 @@ export const CardModal = ({
             <Text size={6} isBold>
               Categories:
             </Text>
-            {categories.map(category => {
+            {(categories || []).map(category => {
               return <Text>{category}</Text>
             })}
           </Grid.Item>

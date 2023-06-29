@@ -49,7 +49,7 @@ class Api::V1::CardsController < ApplicationController
       @query = Card.with_color(params[:colors], Card).order("original_release_date ASC").ransack(params[:q])
     end
 
-    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(500))
+    @sorted_cards = Card.sort_by_color(@query.result.by_mana_and_name.limit(50000))
 
     @stats = Card.card_stats(@sorted_cards)
   end

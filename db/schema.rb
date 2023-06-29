@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_02_164855) do
+ActiveRecord::Schema.define(version: 2023_06_29_152051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2023_01_02_164855) do
     t.string "set_type"
     t.boolean "is_non_foil_only", default: false
     t.integer "index"
+    t.index ["code"], name: "index_card_sets_on_code", unique: true
     t.index ["index"], name: "index_card_sets_on_index", unique: true
   end
 
@@ -154,7 +155,6 @@ ActiveRecord::Schema.define(version: 2023_01_02_164855) do
     t.integer "quantity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "foil"
     t.string "categories", default: [], array: true
     t.index ["card_id"], name: "index_decked_cards_on_card_id"
     t.index ["deck_id"], name: "index_decked_cards_on_deck_id"

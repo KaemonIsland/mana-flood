@@ -122,7 +122,9 @@ module CardStats
 
         # Otherwise we update the color identity
         card.color_identity.each { |color|
-          stats[:colors][color.to_sym] += 1
+          if (color.to_sym)
+            stats[:colors][color.strip.to_sym] += 1
+          end
         }
 
 
