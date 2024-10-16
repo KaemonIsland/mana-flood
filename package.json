@@ -43,7 +43,7 @@
     "husky": "7.0.4",
     "lint-staged": "10.5.4",
     "react-is": "16.13.1",
-    "typedoc": "0.22.15",
+    "typedoc": "0.26.10",
     "warlock-config": "1.2.0",
     "webpack-dev-server": "3.11.3"
   }
